@@ -195,21 +195,23 @@ function App() {
               </div>
             </div>
 
-            <div className="intro-points">
+            <div className="intro-editorial" data-testid="intro-editorial">
               {introduction.points.map((point) => (
                 <article
-                  className={`intro-point intro-point--${point.tone}`}
-                  data-testid="intro-point"
+                  className={`intro-passage intro-passage--${point.tone}`}
+                  data-testid="intro-passage"
                   key={point.title}
                 >
-                  <p className="intro-point__label">{point.label}</p>
+                  <p className="intro-passage__label">{point.label}</p>
                   <h3>{point.title}</h3>
                   <p>{point.description}</p>
                 </article>
               ))}
-            </div>
 
-            <p className="intro-conclusion">{introduction.conclusion}</p>
+              <p className="intro-conclusion" data-testid="intro-conclusion">
+                {introduction.conclusion}
+              </p>
+            </div>
           </div>
         </section>
 

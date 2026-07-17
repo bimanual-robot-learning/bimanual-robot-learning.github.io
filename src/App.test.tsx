@@ -38,18 +38,21 @@ describe('workshop landing page', () => {
     expect(within(scheduleTable).getAllByText('Pending')).toHaveLength(3)
   })
 
-  it('presents the workshop premise as three equally weighted ideas', () => {
+  it('presents the workshop premise as a single academic reading flow', () => {
     render(<App />)
 
-    const premiseCards = screen.getAllByTestId('intro-point')
-    expect(premiseCards).toHaveLength(3)
-    expect(within(premiseCards[0]).getByRole('heading', { name: 'Context' })).toBeInTheDocument()
+    const introductionSection = screen.getByTestId('intro-editorial')
+    const passages = within(introductionSection).getAllByTestId('intro-passage')
+
+    expect(passages).toHaveLength(3)
+    expect(within(passages[0]).getByRole('heading', { name: 'Context' })).toBeInTheDocument()
     expect(
-      within(premiseCards[1]).getByRole('heading', { name: 'Scaling view' }),
+      within(passages[1]).getByRole('heading', { name: 'Scaling view' }),
     ).toBeInTheDocument()
     expect(
-      within(premiseCards[2]).getByRole('heading', { name: 'Structure view' }),
+      within(passages[2]).getByRole('heading', { name: 'Structure view' }),
     ).toBeInTheDocument()
+    expect(within(introductionSection).getByTestId('intro-conclusion')).toBeInTheDocument()
   })
 
   it('gives CFP topics equal emphasis and highlights submission and award details', () => {
