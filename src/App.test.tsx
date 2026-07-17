@@ -40,18 +40,19 @@ describe('workshop landing page', () => {
     expect(within(scheduleTable).getAllByText('Pending')).toHaveLength(3)
   })
 
-  it('uses square, airy invited-speaker cards across breakpoints', () => {
+  it('uses square invited-speaker cards with airy column spacing', () => {
     const speakerGridRule = appStyles.match(/\.speaker-grid\s*\{([^}]*)\}/)?.[1]
     const speakerMediaRule = appStyles.match(
       /\.person-card--speaker\s+\.person-card__media\s*\{([^}]*)\}/,
     )?.[1]
 
-    expect(speakerGridRule).toContain('width: min(100%, 720px);')
-    expect(speakerGridRule).toContain('column-gap: 26px;')
-    expect(speakerGridRule).toContain('row-gap: 72px;')
+    expect(speakerGridRule).toContain('width: min(100%, 812px);')
+    expect(speakerGridRule).toContain('column-gap: 72px;')
+    expect(speakerGridRule).toContain('row-gap: 32px;')
     expect(speakerMediaRule).toContain('aspect-ratio: 1;')
-    expect(appStyles).toContain('row-gap: 56px;')
-    expect(appStyles).toContain('row-gap: 40px;')
+    expect(appStyles).toContain('column-gap: 36px;')
+    expect(appStyles).not.toContain('row-gap: 72px;')
+    expect(appStyles).not.toContain('row-gap: 56px;')
   })
 
   it("shows Hao Dong's complete organizer affiliation", () => {
