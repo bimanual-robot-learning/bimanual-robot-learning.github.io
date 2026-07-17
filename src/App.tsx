@@ -195,33 +195,21 @@ function App() {
               </div>
             </div>
 
-            <div className="intro-layout">
-              <div className="intro-copy">
-                <p className="intro-lead">{introduction[0]}</p>
-                <div className="intro-columns">
-                  <p>{introduction[1]}</p>
-                  <p>{introduction[2]}</p>
-                </div>
-                <p className="intro-conclusion">{introduction[3]}</p>
-              </div>
-
-              <aside className="tension-map" aria-label="Scaling and structure framework">
-                <div className="tension-card tension-card--scale">
-                  <span>01</span>
-                  <h3>Scaling</h3>
-                  <p>Data · models · demonstrations</p>
-                </div>
-                <div className="tension-node">
-                  <span>Bimanual</span>
-                  <strong>Intelligence</strong>
-                </div>
-                <div className="tension-card tension-card--structure">
-                  <span>02</span>
-                  <h3>Structure</h3>
-                  <p>Roles · coupling · coordination</p>
-                </div>
-              </aside>
+            <div className="intro-points">
+              {introduction.points.map((point) => (
+                <article
+                  className={`intro-point intro-point--${point.tone}`}
+                  data-testid="intro-point"
+                  key={point.title}
+                >
+                  <p className="intro-point__label">{point.label}</p>
+                  <h3>{point.title}</h3>
+                  <p>{point.description}</p>
+                </article>
+              ))}
             </div>
+
+            <p className="intro-conclusion">{introduction.conclusion}</p>
           </div>
         </section>
 
@@ -347,7 +335,12 @@ function App() {
 
             <div className="topic-grid">
               {topicGroups.map((group) => (
-                <article className="topic-card" key={group.label}>
+                <article
+                  className="topic-card"
+                  data-accent="shared-blue"
+                  data-testid="topic-card"
+                  key={group.label}
+                >
                   <p className="topic-card__label">{group.label}</p>
                   <h3>{group.title}</h3>
                   <ul>
@@ -368,8 +361,14 @@ function App() {
                 <h3>Short papers & extended abstracts</h3>
               </div>
               <div className="submission-panel__copy">
-                <p>{submission.description}</p>
-                <p>{submission.presentation}</p>
+                <article data-testid="submission-highlight">
+                  <span>Submission requirements</span>
+                  <p>{submission.description}</p>
+                </article>
+                <article data-testid="submission-highlight">
+                  <span>At the workshop</span>
+                  <p>{submission.presentation}</p>
+                </article>
               </div>
               <a
                 className="button button--orange"
@@ -402,7 +401,13 @@ function App() {
                 </p>
                 <ul>
                   {awards.map((award) => (
-                    <li key={award}>{award}</li>
+                    <li data-testid="award-item" key={award.name}>
+                      <span>
+                        <strong>{award.name}</strong>
+                        <small>{award.count}</small>
+                      </span>
+                      <b>{award.prize}</b>
+                    </li>
                   ))}
                 </ul>
               </article>

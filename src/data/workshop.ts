@@ -33,6 +33,19 @@ export interface TopicGroup {
   items: string[]
 }
 
+export interface IntroductionPoint {
+  label: string
+  title: string
+  description: string
+  tone: 'context' | 'scale' | 'structure'
+}
+
+export interface AwardItem {
+  name: string
+  count: string
+  prize: string
+}
+
 export const workshopMeta: WorkshopMeta = {
   eyebrow: 'Workshop @ IROS 2026',
   title: 'Scaling vs. Structure?',
@@ -45,12 +58,36 @@ export const workshopMeta: WorkshopMeta = {
   repositoryUrl: 'https://github.com/bimanual-robot-learning/bimanual-robot-learning.github.io',
 }
 
-export const introduction = [
-  'Recent advances in data-driven robot learning have accelerated progress in single-arm manipulation through large-scale teleoperation datasets, foundation policies, and vision–language–action models. As these systems begin to exhibit scaling behavior, a natural question emerges: can the same paradigm simply extend to bimanual manipulation, or does dual-arm intelligence demand fundamentally new structural inductive biases?',
-  'One view holds that bimanual capability can emerge by scaling data and model capacity, supported by diverse demonstrations from teleoperation, simulation, and human video, together with foundation policies.',
-  'Another argues that bimanual manipulation introduces qualitatively new challenges—including inter-arm coupling, role assignment, temporal coordination, and shared physical constraints—that may require new architectures, coordination mechanisms, or hierarchical representations.',
-  'This workshop brings together researchers to examine the scaling–structure question and advance our understanding of bimanual robotic intelligence.',
-]
+export const introduction: {
+  points: IntroductionPoint[]
+  conclusion: string
+} = {
+  points: [
+    {
+      label: '01 / Context',
+      title: 'Context',
+      description:
+        'Recent advances in data-driven robot learning have accelerated progress in single-arm manipulation through large-scale teleoperation datasets, foundation policies, and vision–language–action models. As these systems begin to exhibit scaling behavior, a natural question emerges: can the same paradigm simply extend to bimanual manipulation, or does dual-arm intelligence demand fundamentally new structural inductive biases?',
+      tone: 'context',
+    },
+    {
+      label: '02 / Scaling',
+      title: 'Scaling view',
+      description:
+        'One view holds that bimanual capability can emerge by scaling data and model capacity, supported by diverse demonstrations from teleoperation, simulation, and human video, together with foundation policies.',
+      tone: 'scale',
+    },
+    {
+      label: '03 / Structure',
+      title: 'Structure view',
+      description:
+        'Another argues that bimanual manipulation introduces qualitatively new challenges—including inter-arm coupling, role assignment, temporal coordination, and shared physical constraints—that may require new architectures, coordination mechanisms, or hierarchical representations.',
+      tone: 'structure',
+    },
+  ],
+  conclusion:
+    'This workshop brings together researchers to examine the scaling–structure question and advance our understanding of bimanual robotic intelligence.',
+}
 
 export const schedule: ScheduleEntry[] = [
   {
@@ -240,9 +277,17 @@ export const submission = {
     'Accepted submissions will be presented in a poster session, with a subset selected for spotlight talks.',
 }
 
-export const awards = [
-  'Best Workshop Paper Award: 1 paper, with a cash prize of USD 1,000.',
-  'Outstanding Workshop Paper Award: 3 papers, each with a cash prize of USD 500.',
+export const awards: AwardItem[] = [
+  {
+    name: 'Best Workshop Paper Award',
+    count: '1 paper',
+    prize: 'USD 1,000',
+  },
+  {
+    name: 'Outstanding Workshop Paper Award',
+    count: '3 papers · each',
+    prize: 'USD 500',
+  },
 ]
 
 export const importantDates = [

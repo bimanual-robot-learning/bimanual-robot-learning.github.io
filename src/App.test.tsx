@@ -38,6 +38,41 @@ describe('workshop landing page', () => {
     expect(within(scheduleTable).getAllByText('Pending')).toHaveLength(3)
   })
 
+  it('presents the workshop premise as three equally weighted ideas', () => {
+    render(<App />)
+
+    const premiseCards = screen.getAllByTestId('intro-point')
+    expect(premiseCards).toHaveLength(3)
+    expect(within(premiseCards[0]).getByRole('heading', { name: 'Context' })).toBeInTheDocument()
+    expect(
+      within(premiseCards[1]).getByRole('heading', { name: 'Scaling view' }),
+    ).toBeInTheDocument()
+    expect(
+      within(premiseCards[2]).getByRole('heading', { name: 'Structure view' }),
+    ).toBeInTheDocument()
+  })
+
+  it('gives CFP topics equal emphasis and highlights submission and award details', () => {
+    render(<App />)
+
+    const topicCards = screen.getAllByTestId('topic-card')
+    expect(topicCards).toHaveLength(3)
+    for (const card of topicCards) {
+      expect(card).toHaveAttribute('data-accent', 'shared-blue')
+    }
+
+    expect(screen.getAllByTestId('submission-highlight')).toHaveLength(2)
+
+    const awardItems = screen.getAllByTestId('award-item')
+    expect(awardItems).toHaveLength(2)
+    expect(within(awardItems[0]).getByText('Best Workshop Paper Award')).toBeInTheDocument()
+    expect(within(awardItems[0]).getByText('USD 1,000')).toBeInTheDocument()
+    expect(
+      within(awardItems[1]).getByText('Outstanding Workshop Paper Award'),
+    ).toBeInTheDocument()
+    expect(within(awardItems[1]).getByText('USD 500')).toBeInTheDocument()
+  })
+
   it('uses accessible local portraits and safe external calls to action', () => {
     render(<App />)
 
