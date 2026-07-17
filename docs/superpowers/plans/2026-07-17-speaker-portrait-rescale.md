@@ -79,7 +79,7 @@ Update the existing `@media (max-width: 1120px)` speaker rule to:
 }
 ```
 
-Do not change the existing `@media (max-width: 920px)` two-column rule or the smallest single-column rule.
+Do not change the existing `@media (max-width: 720px)` two-column rule or the `@media (max-width: 480px)` single-column rule.
 
 - [ ] **Step 3: Run the focused test and confirm the GREEN state**
 
@@ -128,7 +128,7 @@ At `1440px` and `1024px` viewport widths, verify:
 - portraits load successfully and retain their existing aspect ratio and crop;
 - there is no horizontal overflow.
 
-At `768px`, verify the existing two-column responsive layout remains readable.
+At `768px`, verify the compact 3+2 layout remains readable. At `720px`, verify the existing two-column responsive layout, and at `480px`, verify the existing single-column layout.
 
 - [ ] **Step 3: Inspect the final diff**
 

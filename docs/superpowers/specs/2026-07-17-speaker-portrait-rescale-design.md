@@ -15,8 +15,8 @@ At the current desktop geometry, this changes each portrait from approximately `
 
 ## Responsive behavior
 
-- Apply the compact `720px` grid and `26px` gap above the existing `920px` layout breakpoint.
-- Preserve the current two-column layout at `920px` and below and the single-column layout at the smallest breakpoint. Those layouts already use viewport-limited widths, so further shrinking would reduce readability.
+- Apply the compact `720px` grid and `26px` gap above the existing `720px` layout breakpoint.
+- Preserve the current two-column layout at `720px` and below and the single-column layout at `480px` and below. Those layouts already use viewport-limited widths, so further shrinking would reduce readability.
 - Do not change organizer cards or any other section.
 
 ## Verification
@@ -24,4 +24,3 @@ At the current desktop geometry, this changes each portrait from approximately `
 - Add a focused style regression assertion for the speaker grid width and gap.
 - Run the full Vitest suite, linter, and production build.
 - Inspect the section at a desktop viewport to confirm the 3+2 composition, added whitespace, image loading, and lack of horizontal overflow.
-
