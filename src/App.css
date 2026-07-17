@@ -239,42 +239,6 @@
   pointer-events: none;
 }
 
-.hero__axis {
-  position: absolute;
-  display: flex;
-  min-width: 140px;
-  padding: 10px 14px;
-  align-items: center;
-  gap: 12px;
-  color: var(--white);
-  background: rgba(7, 16, 29, 0.7);
-  border: 1px solid rgba(255, 255, 255, 0.22);
-  border-radius: 4px;
-  backdrop-filter: blur(10px);
-  font-family: var(--font-mono);
-  font-size: 0.7rem;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-}
-
-.hero__axis span {
-  color: var(--orange);
-}
-
-.hero__axis--scale {
-  top: 42%;
-  left: 34%;
-}
-
-.hero__axis--structure {
-  right: 9%;
-  bottom: 21%;
-}
-
-.hero__axis--structure span {
-  color: var(--cyan);
-}
-
 .hero__content {
   position: relative;
   z-index: 2;
@@ -1364,10 +1328,6 @@
 
   .hero__content {
     padding-top: 96px;
-  }
-
-  .hero__axis {
-    display: none;
   }
 
   .topic-grid {

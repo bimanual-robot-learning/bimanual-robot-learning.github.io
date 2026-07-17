@@ -12,6 +12,7 @@ describe('workshop landing page', () => {
     ).toBeInTheDocument()
     expect(screen.getByText('Workshop @ IROS 2026')).toBeInTheDocument()
     expect(screen.getAllByText(/8:00 AM–12:30 PM EDT/)).not.toHaveLength(0)
+    expect(document.querySelectorAll('.hero__axis')).toHaveLength(0)
 
     for (const section of [
       'Introduction',

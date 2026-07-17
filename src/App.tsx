@@ -121,14 +121,6 @@ function App() {
           <div className="hero__media" aria-hidden="true">
             <img src="/images/workshop-hero.jpg" alt="" />
             <div className="hero__media-overlay" />
-            <div className="hero__axis hero__axis--scale">
-              <span>01</span>
-              Scaling
-            </div>
-            <div className="hero__axis hero__axis--structure">
-              <span>02</span>
-              Structure
-            </div>
           </div>
 
           <div className="hero__content page-width">
