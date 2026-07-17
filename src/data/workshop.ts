@@ -234,7 +234,7 @@ export const organizers: Person[] = [
   },
   {
     name: 'Hao Dong',
-    institution: 'Peking University',
+    institution: 'Peking University · PrimeBot',
     image: '/images/organizers/hao-dong.jpg',
     imageAlt: 'Portrait of workshop organizer Hao Dong',
   },

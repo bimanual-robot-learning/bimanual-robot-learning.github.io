@@ -40,11 +40,30 @@ describe('workshop landing page', () => {
     expect(within(scheduleTable).getAllByText('Pending')).toHaveLength(3)
   })
 
-  it('uses a compact, airy invited-speaker grid on desktop', () => {
+  it('uses square, airy invited-speaker cards across breakpoints', () => {
     const speakerGridRule = appStyles.match(/\.speaker-grid\s*\{([^}]*)\}/)?.[1]
+    const speakerMediaRule = appStyles.match(
+      /\.person-card--speaker\s+\.person-card__media\s*\{([^}]*)\}/,
+    )?.[1]
 
     expect(speakerGridRule).toContain('width: min(100%, 720px);')
-    expect(speakerGridRule).toContain('gap: 26px;')
+    expect(speakerGridRule).toContain('column-gap: 26px;')
+    expect(speakerGridRule).toContain('row-gap: 72px;')
+    expect(speakerMediaRule).toContain('aspect-ratio: 1;')
+    expect(appStyles).toContain('row-gap: 56px;')
+    expect(appStyles).toContain('row-gap: 40px;')
+  })
+
+  it("shows Hao Dong's complete organizer affiliation", () => {
+    render(<App />)
+
+    const heading = screen.getByRole('heading', { name: 'Hao Dong' })
+    const card = heading.closest('[data-testid="organizer-card"]')
+
+    expect(card).not.toBeNull()
+    expect(
+      within(card as HTMLElement).getByText('Peking University · PrimeBot'),
+    ).toBeInTheDocument()
   })
 
   it('presents the workshop premise as a single academic reading flow', () => {
