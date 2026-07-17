@@ -724,6 +724,8 @@
 
 .speaker-grid {
   display: grid;
+  width: min(100%, 930px);
+  margin-inline: auto;
   grid-template-columns: repeat(6, minmax(0, 1fr));
   gap: 22px;
 }
