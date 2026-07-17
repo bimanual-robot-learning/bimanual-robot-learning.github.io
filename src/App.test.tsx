@@ -2,6 +2,7 @@ import { render, screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { describe, expect, it } from 'vitest'
 import App from './App'
+import appStyles from './App.css?raw'
 
 describe('workshop landing page', () => {
   it('renders the workshop identity and every primary section', () => {
@@ -37,6 +38,13 @@ describe('workshop landing page', () => {
     expect(within(scheduleTable).getAllByRole('row')).toHaveLength(11)
     expect(within(scheduleTable).getAllByText('Tentative')).toHaveLength(2)
     expect(within(scheduleTable).getAllByText('Pending')).toHaveLength(3)
+  })
+
+  it('uses a compact, airy invited-speaker grid on desktop', () => {
+    const speakerGridRule = appStyles.match(/\.speaker-grid\s*\{([^}]*)\}/)?.[1]
+
+    expect(speakerGridRule).toContain('width: min(100%, 720px);')
+    expect(speakerGridRule).toContain('gap: 26px;')
   })
 
   it('presents the workshop premise as a single academic reading flow', () => {

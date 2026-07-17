@@ -688,10 +688,10 @@
 
 .speaker-grid {
   display: grid;
-  width: min(100%, 930px);
+  width: min(100%, 720px);
   margin-inline: auto;
   grid-template-columns: repeat(6, minmax(0, 1fr));
-  gap: 22px;
+  gap: 26px;
 }
 
 .speaker-grid .person-card {
@@ -1236,7 +1236,7 @@
 
   .speaker-grid {
     grid-template-columns: repeat(6, minmax(0, 1fr));
-    gap: 22px;
+    gap: 26px;
   }
 
   .organizer-grid {
