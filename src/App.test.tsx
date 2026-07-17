@@ -1,0 +1,94 @@
+import { render, screen, within } from '@testing-library/react'
+import userEvent from '@testing-library/user-event'
+import { describe, expect, it } from 'vitest'
+import App from './App'
+
+describe('workshop landing page', () => {
+  it('renders the workshop identity and every primary section', () => {
+    render(<App />)
+
+    expect(
+      screen.getByRole('heading', { name: /Scaling vs\. Structure\?/i, level: 1 }),
+    ).toBeInTheDocument()
+    expect(screen.getByText('Workshop @ IROS 2026')).toBeInTheDocument()
+    expect(screen.getAllByText(/8:00 AM–12:30 PM EDT/)).not.toHaveLength(0)
+
+    for (const section of [
+      'Introduction',
+      'Workshop Schedule',
+      'Invited Speakers',
+      'Call for Papers',
+      'Workshop Organizers',
+    ]) {
+      expect(screen.getByRole('heading', { name: section })).toBeInTheDocument()
+    }
+  })
+
+  it('renders all people and the complete schedule from structured content', () => {
+    render(<App />)
+
+    expect(screen.getAllByTestId('speaker-card')).toHaveLength(5)
+    expect(screen.getAllByTestId('organizer-card')).toHaveLength(7)
+
+    const scheduleTable = screen.getByRole('table', {
+      name: 'IROS 2026 workshop schedule',
+    })
+    expect(within(scheduleTable).getAllByRole('row')).toHaveLength(11)
+    expect(within(scheduleTable).getAllByText('Tentative')).toHaveLength(2)
+    expect(within(scheduleTable).getAllByText('Pending')).toHaveLength(3)
+  })
+
+  it('uses accessible local portraits and safe external calls to action', () => {
+    render(<App />)
+
+    const portraits = screen.getAllByRole('img')
+    expect(portraits).toHaveLength(12)
+    for (const portrait of portraits) {
+      expect(portrait).toHaveAttribute('src', expect.stringMatching(/^\/images\//))
+      expect(portrait).toHaveAttribute('alt', expect.stringMatching(/Portrait of/))
+    }
+
+    const submitLinks = screen.getAllByRole('link', { name: /OpenReview/i })
+    expect(submitLinks).not.toHaveLength(0)
+    for (const link of submitLinks) {
+      expect(link).toHaveAttribute('target', '_blank')
+      expect(link).toHaveAttribute('rel', 'noreferrer')
+    }
+
+    expect(screen.getByRole('link', { name: /PrimeBot/i })).toHaveAttribute(
+      'href',
+      'https://www.primebot.cn/',
+    )
+    expect(screen.getByRole('link', { name: /GitHub repository/i })).toHaveAttribute(
+      'href',
+      'https://github.com/bimanual-robot-learning/bimanual-robot-learning.github.io',
+    )
+  })
+
+  it('toggles the compact navigation for small screens', async () => {
+    const user = userEvent.setup()
+    render(<App />)
+
+    const toggle = screen.getByLabelText('Open navigation')
+    expect(toggle).toHaveAttribute('aria-expanded', 'false')
+
+    await user.click(toggle)
+    expect(toggle).toHaveAttribute('aria-label', 'Close navigation')
+    expect(toggle).toHaveAttribute('aria-expanded', 'true')
+
+    await user.click(screen.getByRole('link', { name: 'Schedule' }))
+    expect(toggle).toHaveAttribute('aria-label', 'Open navigation')
+    expect(toggle).toHaveAttribute('aria-expanded', 'false')
+  })
+
+  it('starts keyboard navigation with a skip link to the main content', async () => {
+    const user = userEvent.setup()
+    render(<App />)
+
+    const skipLink = screen.getByRole('link', { name: 'Skip to main content' })
+    expect(skipLink).toHaveAttribute('href', '#main-content')
+
+    await user.tab()
+    expect(skipLink).toHaveFocus()
+  })
+})
