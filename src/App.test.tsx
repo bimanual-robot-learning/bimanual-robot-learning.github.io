@@ -56,9 +56,22 @@ describe('workshop landing page', () => {
   })
 
   it('uses the approved floating badge geometry and readable CFP topic text', () => {
+    const tabletMedia = appStyles.match(
+      /@media \(max-width: 920px\) \{([\s\S]*?)\n\}\n\n@media \(max-width: 720px\)/,
+    )?.[1]
+    const mobileMedia = appStyles.match(
+      /@media \(max-width: 480px\) \{([\s\S]*?)\n\}\s*$/,
+    )?.[1]
     const conferenceBrandRule = appStyles.match(
       /\.hero__conference-brand\s*\{([^}]*)\}/,
     )?.[1]
+    const tabletConferenceBrandRule = tabletMedia?.match(
+      /\.hero__conference-brand\s*\{([^}]*)\}/,
+    )?.[1]
+    const mobileConferenceBrandRule = mobileMedia?.match(
+      /\.hero__conference-brand\s*\{([^}]*)\}/,
+    )?.[1]
+    const mobileEyebrowRule = mobileMedia?.match(/\.hero__eyebrow\s*\{([^}]*)\}/)?.[1]
     const heroEyebrowRule = appStyles.match(/\.hero__eyebrow\s*\{([^}]*)\}/)?.[1]
     const heroSubtitleRule = appStyles.match(/\.hero__subtitle\s*\{([^}]*)\}/)?.[1]
     const topicItemRule = appStyles.match(/\.topic-card li\s*\{([^}]*)\}/)?.[1]
@@ -72,13 +85,13 @@ describe('workshop landing page', () => {
     expect(heroEyebrowRule).toContain('font-size: 0.82rem;')
     expect(heroSubtitleRule).toContain('font-size: clamp(1.3rem, 2.1vw, 1.75rem);')
     expect(topicItemRule).toContain('font-size: 0.92rem;')
-    expect(appStyles).toContain('top: 104px;')
-    expect(appStyles).toContain('right: 22px;')
-    expect(appStyles).toContain('width: 124px;')
-    expect(appStyles).toContain('top: 96px;')
-    expect(appStyles).toContain('right: 16px;')
-    expect(appStyles).toContain('width: 112px;')
-    expect(appStyles).toContain('max-width: calc(100% - 132px);')
+    expect(tabletConferenceBrandRule).toContain('top: 104px;')
+    expect(tabletConferenceBrandRule).toContain('right: 22px;')
+    expect(tabletConferenceBrandRule).toContain('width: 124px;')
+    expect(mobileConferenceBrandRule).toContain('top: 96px;')
+    expect(mobileConferenceBrandRule).toContain('right: 16px;')
+    expect(mobileConferenceBrandRule).toContain('width: 112px;')
+    expect(mobileEyebrowRule).toContain('max-width: calc(100% - 132px);')
   })
 
   it("shows Hao Dong's complete organizer affiliation", () => {
