@@ -55,8 +55,7 @@ describe('workshop landing page', () => {
     expect(appStyles).not.toContain('row-gap: 56px;')
   })
 
-  it('uses the approved Hero brand scale and readable CFP topic text', () => {
-    const brandRowRule = appStyles.match(/\.hero__brand-row\s*\{([^}]*)\}/)?.[1]
+  it('uses the approved floating badge geometry and readable CFP topic text', () => {
     const conferenceBrandRule = appStyles.match(
       /\.hero__conference-brand\s*\{([^}]*)\}/,
     )?.[1]
@@ -64,17 +63,22 @@ describe('workshop landing page', () => {
     const heroSubtitleRule = appStyles.match(/\.hero__subtitle\s*\{([^}]*)\}/)?.[1]
     const topicItemRule = appStyles.match(/\.topic-card li\s*\{([^}]*)\}/)?.[1]
 
-    expect(brandRowRule).toContain('max-width: 760px;')
-    expect(brandRowRule).toContain('justify-content: flex-start;')
-    expect(brandRowRule).toContain('gap: 32px;')
+    expect(appStyles).not.toContain('.hero__brand-row')
+    expect(conferenceBrandRule).toContain('position: absolute;')
+    expect(conferenceBrandRule).toContain('z-index: 3;')
+    expect(conferenceBrandRule).toContain('top: 118px;')
+    expect(conferenceBrandRule).toContain('right: clamp(32px, 5vw, 88px);')
     expect(conferenceBrandRule).toContain('width: 148px;')
     expect(heroEyebrowRule).toContain('font-size: 0.82rem;')
-    expect(heroEyebrowRule).toContain('letter-spacing: 0.1em;')
     expect(heroSubtitleRule).toContain('font-size: clamp(1.3rem, 2.1vw, 1.75rem);')
     expect(topicItemRule).toContain('font-size: 0.92rem;')
-    expect(topicItemRule).toContain('line-height: 1.55;')
-    expect(appStyles).toContain('width: 138px;')
-    expect(appStyles).toContain('width: 128px;')
+    expect(appStyles).toContain('top: 104px;')
+    expect(appStyles).toContain('right: 22px;')
+    expect(appStyles).toContain('width: 124px;')
+    expect(appStyles).toContain('top: 96px;')
+    expect(appStyles).toContain('right: 16px;')
+    expect(appStyles).toContain('width: 112px;')
+    expect(appStyles).toContain('max-width: calc(100% - 132px);')
   })
 
   it("shows Hao Dong's complete organizer affiliation", () => {
