@@ -170,6 +170,29 @@ describe('workshop landing page', () => {
     expect(logo).toHaveAttribute('src', '/images/iros-2026-logo.png')
   })
 
+  it('floats the conference badge outside the Hero title column', () => {
+    render(<App />)
+
+    const title = screen.getByRole('heading', {
+      name: /Scaling vs\. Structure\?/i,
+      level: 1,
+    })
+    const hero = title.closest('.hero')
+    const heroContent = title.closest('.hero__content')
+    const conferenceBadge = screen.getByRole('link', {
+      name: 'Visit the official IROS 2026 website',
+    })
+
+    expect(hero).not.toBeNull()
+    expect(heroContent).not.toBeNull()
+    expect(hero as HTMLElement).toContainElement(conferenceBadge)
+    expect(heroContent as HTMLElement).not.toContainElement(conferenceBadge)
+    expect(heroContent?.querySelector('.hero__brand-row')).toBeNull()
+    expect(
+      within(heroContent as HTMLElement).getByText('Workshop @ IROS 2026'),
+    ).toBeInTheDocument()
+  })
+
   it('toggles the compact navigation for small screens', async () => {
     const user = userEvent.setup()
     render(<App />)
