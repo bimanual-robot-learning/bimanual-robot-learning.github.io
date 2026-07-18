@@ -187,7 +187,7 @@ describe('workshop landing page', () => {
     expect(logo).toHaveAttribute('src', '/images/iros-2026-logo.png')
   })
 
-  it('floats the conference badge outside the Hero title column', () => {
+  it('groups the conference badge above the workshop eyebrow', () => {
     render(<App />)
 
     const title = screen.getByRole('heading', {
@@ -196,18 +196,24 @@ describe('workshop landing page', () => {
     })
     const hero = title.closest('.hero')
     const heroContent = title.closest('.hero__content')
+    const identity = heroContent?.querySelector('.hero__identity')
     const conferenceBadge = screen.getByRole('link', {
       name: 'Visit the official IROS 2026 website',
     })
+    const workshopEyebrow = within(heroContent as HTMLElement).getByText(
+      'Workshop @ IROS 2026',
+    )
 
     expect(hero).not.toBeNull()
     expect(heroContent).not.toBeNull()
-    expect(hero as HTMLElement).toContainElement(conferenceBadge)
-    expect(heroContent as HTMLElement).not.toContainElement(conferenceBadge)
-    expect(heroContent?.querySelector('.hero__brand-row')).toBeNull()
-    expect(
-      within(heroContent as HTMLElement).getByText('Workshop @ IROS 2026'),
-    ).toBeInTheDocument()
+    expect(identity).not.toBeNull()
+    expect(identity as HTMLElement).toContainElement(conferenceBadge)
+    expect(identity as HTMLElement).toContainElement(workshopEyebrow)
+    expect(Array.from((identity as HTMLElement).children)).toEqual([
+      conferenceBadge,
+      workshopEyebrow,
+    ])
+    expect(hero?.querySelector(':scope > .hero__conference-brand')).toBeNull()
   })
 
   it('toggles the compact navigation for small screens', async () => {
