@@ -108,7 +108,7 @@ describe('workshop landing page', () => {
   it('uses accessible local portraits and safe external calls to action', () => {
     render(<App />)
 
-    const portraits = screen.getAllByRole('img')
+    const portraits = screen.getAllByRole('img', { name: /Portrait of/ })
     expect(portraits).toHaveLength(12)
     for (const portrait of portraits) {
       expect(portrait).toHaveAttribute('src', expect.stringMatching(/^\/images\//))
@@ -130,6 +130,20 @@ describe('workshop landing page', () => {
       'href',
       'https://github.com/bimanual-robot-learning/bimanual-robot-learning.github.io',
     )
+  })
+
+  it('links a locally stored official IROS 2026 logo from the Hero', () => {
+    render(<App />)
+
+    const conferenceLink = screen.getByRole('link', {
+      name: 'Visit the official IROS 2026 website',
+    })
+    expect(conferenceLink).toHaveAttribute('href', 'https://2026.ieee-iros.org/')
+    expect(conferenceLink).toHaveAttribute('target', '_blank')
+    expect(conferenceLink).toHaveAttribute('rel', 'noreferrer')
+
+    const logo = screen.getByRole('img', { name: 'IROS 2026 Pittsburgh' })
+    expect(logo).toHaveAttribute('src', '/images/iros-2026-logo.png')
   })
 
   it('toggles the compact navigation for small screens', async () => {

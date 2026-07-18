@@ -8,6 +8,7 @@ export interface WorkshopMeta {
   date: string
   time: string
   location: string
+  conferenceUrl: string
   openReviewUrl: string
   repositoryUrl: string
 }
@@ -53,6 +54,7 @@ export const workshopMeta: WorkshopMeta = {
   date: 'September 27, 2026',
   time: '8:00 AM–12:30 PM EDT',
   location: 'Pittsburgh, PA, USA',
+  conferenceUrl: 'https://2026.ieee-iros.org/',
   openReviewUrl:
     'https://openreview.net/group?id=IEEE.org%2FIROS%2F2026%2FWorkshop%2FBimanual_Manipulation',
   repositoryUrl: 'https://github.com/bimanual-robot-learning/bimanual-robot-learning.github.io',

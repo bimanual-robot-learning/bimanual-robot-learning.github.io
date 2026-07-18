@@ -124,9 +124,20 @@ function App() {
           </div>
 
           <div className="hero__content page-width">
-            <div className="hero__eyebrow">
-              <span className="live-dot" aria-hidden="true" />
-              {workshopMeta.eyebrow}
+            <div className="hero__brand-row">
+              <div className="hero__eyebrow">
+                <span className="live-dot" aria-hidden="true" />
+                {workshopMeta.eyebrow}
+              </div>
+              <a
+                className="hero__conference-brand"
+                href={workshopMeta.conferenceUrl}
+                target="_blank"
+                rel="noreferrer"
+                aria-label="Visit the official IROS 2026 website"
+              >
+                <img src="/images/iros-2026-logo.png" alt="IROS 2026 Pittsburgh" />
+              </a>
             </div>
 
             <h1 id="hero-title">
