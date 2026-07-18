@@ -55,13 +55,14 @@ describe('workshop landing page', () => {
     expect(appStyles).not.toContain('row-gap: 56px;')
   })
 
-  it('uses the approved floating badge geometry and readable CFP topic text', () => {
+  it('uses the approved left-aligned badge geometry and readable CFP topic text', () => {
     const tabletMedia = appStyles.match(
       /@media \(max-width: 920px\) \{([\s\S]*?)\n\}\n\n@media \(max-width: 720px\)/,
     )?.[1]
     const mobileMedia = appStyles.match(
       /@media \(max-width: 480px\) \{([\s\S]*?)\n\}\s*$/,
     )?.[1]
+    const heroIdentityRule = appStyles.match(/\.hero__identity\s*\{([^}]*)\}/)?.[1]
     const conferenceBrandRule = appStyles.match(
       /\.hero__conference-brand\s*\{([^}]*)\}/,
     )?.[1]
@@ -71,27 +72,25 @@ describe('workshop landing page', () => {
     const mobileConferenceBrandRule = mobileMedia?.match(
       /\.hero__conference-brand\s*\{([^}]*)\}/,
     )?.[1]
-    const mobileEyebrowRule = mobileMedia?.match(/\.hero__eyebrow\s*\{([^}]*)\}/)?.[1]
     const heroEyebrowRule = appStyles.match(/\.hero__eyebrow\s*\{([^}]*)\}/)?.[1]
     const heroSubtitleRule = appStyles.match(/\.hero__subtitle\s*\{([^}]*)\}/)?.[1]
     const topicItemRule = appStyles.match(/\.topic-card li\s*\{([^}]*)\}/)?.[1]
 
     expect(appStyles).not.toContain('.hero__brand-row')
-    expect(conferenceBrandRule).toContain('position: absolute;')
-    expect(conferenceBrandRule).toContain('z-index: 3;')
-    expect(conferenceBrandRule).toContain('top: 118px;')
-    expect(conferenceBrandRule).toContain('right: clamp(32px, 5vw, 88px);')
-    expect(conferenceBrandRule).toContain('width: 148px;')
+    expect(heroIdentityRule).toContain('display: flex;')
+    expect(heroIdentityRule).toContain('align-items: flex-start;')
+    expect(heroIdentityRule).toContain('flex-direction: column;')
+    expect(heroIdentityRule).toContain('gap: 16px;')
+    expect(conferenceBrandRule).not.toContain('position: absolute;')
+    expect(conferenceBrandRule).not.toContain('top:')
+    expect(conferenceBrandRule).not.toContain('right:')
+    expect(conferenceBrandRule).toContain('width: 132px;')
     expect(heroEyebrowRule).toContain('font-size: 0.82rem;')
     expect(heroSubtitleRule).toContain('font-size: clamp(1.3rem, 2.1vw, 1.75rem);')
     expect(topicItemRule).toContain('font-size: 0.92rem;')
-    expect(tabletConferenceBrandRule).toContain('top: 104px;')
-    expect(tabletConferenceBrandRule).toContain('right: 22px;')
-    expect(tabletConferenceBrandRule).toContain('width: 124px;')
-    expect(mobileConferenceBrandRule).toContain('top: 96px;')
-    expect(mobileConferenceBrandRule).toContain('right: 16px;')
-    expect(mobileConferenceBrandRule).toContain('width: 112px;')
-    expect(mobileEyebrowRule).toContain('max-width: calc(100% - 132px);')
+    expect(tabletConferenceBrandRule).toContain('width: 112px;')
+    expect(mobileConferenceBrandRule).toContain('width: 96px;')
+    expect(appStyles).not.toContain('max-width: calc(100% - 132px);')
   })
 
   it("shows Hao Dong's complete organizer affiliation", () => {

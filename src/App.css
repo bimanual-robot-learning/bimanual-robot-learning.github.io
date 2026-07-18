@@ -245,6 +245,13 @@
   padding-top: 88px;
 }
 
+.hero__identity {
+  display: flex;
+  align-items: flex-start;
+  flex-direction: column;
+  gap: 16px;
+}
+
 .hero__eyebrow {
   display: inline-flex;
   align-items: center;
@@ -270,13 +277,9 @@
 }
 
 .hero__conference-brand {
-  position: absolute;
-  z-index: 3;
-  top: 118px;
-  right: clamp(32px, 5vw, 88px);
   display: flex;
-  width: 148px;
-  padding: 10px 12px;
+  width: 132px;
+  padding: 8px 10px;
   background: rgba(248, 251, 252, 0.92);
   border: 1px solid rgba(255, 255, 255, 0.72);
   border-radius: 8px;
@@ -1379,9 +1382,7 @@
   }
 
   .hero__conference-brand {
-    top: 104px;
-    right: 22px;
-    width: 124px;
+    width: 112px;
   }
 
   .topic-grid {
@@ -1593,14 +1594,8 @@
     padding-top: 112px;
   }
 
-  .hero__eyebrow {
-    max-width: calc(100% - 132px);
-  }
-
   .hero__conference-brand {
-    top: 96px;
-    right: 16px;
-    width: 112px;
+    width: 96px;
   }
 
   .hero h1 {
