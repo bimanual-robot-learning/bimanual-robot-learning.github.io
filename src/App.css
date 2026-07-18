@@ -249,8 +249,8 @@
   display: flex;
   max-width: 760px;
   align-items: center;
-  justify-content: space-between;
-  gap: 24px;
+  justify-content: flex-start;
+  gap: 32px;
 }
 
 .hero__eyebrow {

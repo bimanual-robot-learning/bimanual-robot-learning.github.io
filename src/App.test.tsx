@@ -65,6 +65,8 @@ describe('workshop landing page', () => {
     const topicItemRule = appStyles.match(/\.topic-card li\s*\{([^}]*)\}/)?.[1]
 
     expect(brandRowRule).toContain('max-width: 760px;')
+    expect(brandRowRule).toContain('justify-content: flex-start;')
+    expect(brandRowRule).toContain('gap: 32px;')
     expect(conferenceBrandRule).toContain('width: 148px;')
     expect(heroEyebrowRule).toContain('font-size: 0.82rem;')
     expect(heroEyebrowRule).toContain('letter-spacing: 0.1em;')
