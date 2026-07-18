@@ -55,6 +55,26 @@ describe('workshop landing page', () => {
     expect(appStyles).not.toContain('row-gap: 56px;')
   })
 
+  it('uses the approved Hero brand scale and readable CFP topic text', () => {
+    const brandRowRule = appStyles.match(/\.hero__brand-row\s*\{([^}]*)\}/)?.[1]
+    const conferenceBrandRule = appStyles.match(
+      /\.hero__conference-brand\s*\{([^}]*)\}/,
+    )?.[1]
+    const heroEyebrowRule = appStyles.match(/\.hero__eyebrow\s*\{([^}]*)\}/)?.[1]
+    const heroSubtitleRule = appStyles.match(/\.hero__subtitle\s*\{([^}]*)\}/)?.[1]
+    const topicItemRule = appStyles.match(/\.topic-card li\s*\{([^}]*)\}/)?.[1]
+
+    expect(brandRowRule).toContain('max-width: 760px;')
+    expect(conferenceBrandRule).toContain('width: 148px;')
+    expect(heroEyebrowRule).toContain('font-size: 0.82rem;')
+    expect(heroEyebrowRule).toContain('letter-spacing: 0.1em;')
+    expect(heroSubtitleRule).toContain('font-size: clamp(1.3rem, 2.1vw, 1.75rem);')
+    expect(topicItemRule).toContain('font-size: 0.92rem;')
+    expect(topicItemRule).toContain('line-height: 1.55;')
+    expect(appStyles).toContain('width: 138px;')
+    expect(appStyles).toContain('width: 128px;')
+  })
+
   it("shows Hao Dong's complete organizer affiliation", () => {
     render(<App />)
 
@@ -92,6 +112,8 @@ describe('workshop landing page', () => {
     for (const card of topicCards) {
       expect(card).toHaveAttribute('data-accent', 'shared-blue')
     }
+    const topicItems = topicCards.flatMap((card) => within(card).getAllByRole('listitem'))
+    expect(topicItems).toHaveLength(9)
 
     expect(screen.getAllByTestId('submission-highlight')).toHaveLength(2)
 
