@@ -139,6 +139,32 @@ describe('workshop landing page', () => {
     expect(tabletNavRule).toContain('font-size: 0.8rem;')
   })
 
+  it('uses readable schedule metadata, headers, times, titles, and statuses', () => {
+    const scheduleMetaRule = appStyles.match(/\.schedule-meta\s*\{([^}]*)\}/)?.[1]
+    const headerRule = appStyles.match(
+      /\.schedule-table thead th\s*\{([^}]*)\}/,
+    )?.[1]
+    const timeRule = appStyles.match(/\.schedule-time\s*\{([^}]*)\}/)?.[1]
+    const titleRule = appStyles.match(
+      /\.schedule-title-cell\s*\{([^}]*)\}/,
+    )?.[1]
+    const statusRule = appStyles.match(/\.status-badge\s*\{([^}]*)\}/)?.[1]
+
+    expect(scheduleMetaRule).toContain('color: var(--slate-light-readable);')
+    expect(scheduleMetaRule).toContain('font-size: 0.78rem;')
+    expect(scheduleMetaRule).toContain('font-weight: 500;')
+    expect(headerRule).toContain('font-size: 0.78rem;')
+    expect(headerRule).toContain('font-weight: 600;')
+    expect(headerRule).toContain('letter-spacing: 0.07em;')
+    expect(timeRule).toContain('font-size: 0.875rem;')
+    expect(timeRule).toContain('font-weight: 500;')
+    expect(titleRule).toContain('color: var(--slate-light-readable);')
+    expect(titleRule).toContain('font-size: 1rem;')
+    expect(titleRule).toContain('font-weight: 500;')
+    expect(statusRule).toContain('font-size: 0.66rem;')
+    expect(statusRule).toContain('font-weight: 500;')
+  })
+
   it("shows Hao Dong's complete organizer affiliation", () => {
     render(<App />)
 

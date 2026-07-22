@@ -607,11 +607,12 @@
   padding: 16px 22px;
   flex-wrap: wrap;
   gap: 12px 28px;
-  color: var(--slate-light);
+  color: var(--slate-light-readable);
   background: rgba(255, 255, 255, 0.03);
   border-bottom: 1px solid var(--line-dark);
   font-family: var(--font-mono);
-  font-size: 0.66rem;
+  font-size: 0.78rem;
+  font-weight: 500;
   letter-spacing: 0.04em;
   text-transform: uppercase;
 }
@@ -638,7 +639,7 @@
 }
 
 .schedule-table thead {
-  color: var(--slate-light);
+  color: var(--slate-light-readable);
   background: rgba(82, 216, 230, 0.035);
 }
 
@@ -646,9 +647,9 @@
   padding: 18px 22px;
   border-bottom: 1px solid var(--line-dark);
   font-family: var(--font-mono);
-  font-size: 0.64rem;
-  font-weight: 500;
-  letter-spacing: 0.09em;
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.07em;
   text-transform: uppercase;
 }
 
@@ -693,13 +694,15 @@
 .schedule-time {
   color: var(--cyan);
   font-family: var(--font-mono);
-  font-size: 0.76rem;
+  font-size: 0.875rem;
+  font-weight: 500;
   white-space: nowrap;
 }
 
 .schedule-title-cell {
-  color: var(--slate-light);
-  font-size: 0.86rem;
+  color: var(--slate-light-readable);
+  font-size: 1rem;
+  font-weight: 500;
   line-height: 1.55;
 }
 
@@ -714,7 +717,8 @@
   border: 1px solid currentColor;
   border-radius: 999px;
   font-family: var(--font-mono);
-  font-size: 0.56rem;
+  font-size: 0.66rem;
+  font-weight: 500;
   letter-spacing: 0.07em;
   line-height: 1;
   text-transform: uppercase;
