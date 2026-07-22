@@ -88,7 +88,7 @@ describe('workshop landing page', () => {
     expect(conferenceBrandRule).toContain('width: 132px;')
     expect(heroEyebrowRule).toContain('font-size: 0.82rem;')
     expect(heroSubtitleRule).toContain('font-size: clamp(1.3rem, 2.1vw, 1.75rem);')
-    expect(topicItemRule).toContain('font-size: 0.92rem;')
+    expect(topicItemRule).toContain('font-size: 0.95rem;')
     expect(tabletConferenceBrandRule).toContain('width: 112px;')
     expect(mobileConferenceBrandRule).toContain('width: 96px;')
     expect(appStyles).not.toContain('max-width: calc(100% - 132px);')
@@ -167,6 +167,49 @@ describe('workshop landing page', () => {
     expect(titleRule).toContain('font-weight: 500;')
     expect(statusRule).toContain('font-size: 0.66rem;')
     expect(statusRule).toContain('font-weight: 500;')
+  })
+
+  it('uses readable supporting copy for content, affiliations, dates, and footer', () => {
+    const introBodyRule = appStyles.match(
+      /\.intro-passage > p:last-child\s*\{([^}]*)\}/,
+    )?.[1]
+    const affiliationRule = appStyles.match(
+      /\.person-card__copy p\s*\{([^}]*)\}/,
+    )?.[1]
+    const topicItemRule = appStyles.match(/\.topic-card li\s*\{([^}]*)\}/)?.[1]
+    const submissionLabelRule = appStyles.match(
+      /\.submission-panel__copy span\s*\{([^}]*)\}/,
+    )?.[1]
+    const submissionCopyRule = appStyles.match(
+      /\.submission-panel__copy p\s*\{([^}]*)\}/,
+    )?.[1]
+    const detailCopyRule = appStyles.match(/\.detail-card > p\s*\{([^}]*)\}/)?.[1]
+    const awardCountRule = appStyles.match(
+      /\.detail-card--awards small\s*\{([^}]*)\}/,
+    )?.[1]
+    const dateLabelRule = appStyles.match(/\.detail-card dt\s*\{([^}]*)\}/)?.[1]
+    const dateValueRule = appStyles.match(/\.detail-card dd\s*\{([^}]*)\}/)?.[1]
+    const footerRule = appStyles.match(/\.site-footer__bottom\s*\{([^}]*)\}/)?.[1]
+
+    expect(introBodyRule).toContain('color: var(--slate-readable);')
+    expect(introBodyRule).toContain('font-size: 1rem;')
+    expect(affiliationRule).toContain('color: var(--slate-readable);')
+    expect(affiliationRule).toContain('font-size: 0.86rem;')
+    expect(affiliationRule).toContain('font-weight: 500;')
+    expect(topicItemRule).toContain('font-size: 0.95rem;')
+    expect(submissionLabelRule).toContain('font-size: 0.69rem;')
+    expect(submissionLabelRule).toContain('font-weight: 600;')
+    expect(submissionCopyRule).toContain('font-size: 0.95rem;')
+    expect(submissionCopyRule).toContain('line-height: 1.55;')
+    expect(detailCopyRule).toContain('color: var(--slate-light-readable);')
+    expect(detailCopyRule).toContain('font-size: 0.9rem;')
+    expect(awardCountRule).toContain('font-size: 0.78rem;')
+    expect(dateLabelRule).toContain('font-size: 0.875rem;')
+    expect(dateLabelRule).toContain('font-weight: 500;')
+    expect(dateValueRule).toContain('font-size: 0.85rem;')
+    expect(dateValueRule).toContain('font-weight: 500;')
+    expect(footerRule).toContain('font-size: 0.72rem;')
+    expect(footerRule).toContain('color: rgba(216, 233, 236, 0.68);')
   })
 
   it("shows Hao Dong's complete organizer affiliation", () => {

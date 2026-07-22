@@ -553,9 +553,9 @@
 
 .intro-passage > p:last-child {
   margin: 0;
-  color: var(--slate);
-  font-size: 0.96rem;
-  line-height: 1.8;
+  color: var(--slate-readable);
+  font-size: 1rem;
+  line-height: 1.75;
   text-wrap: pretty;
 }
 
@@ -843,9 +843,10 @@
 
 .person-card__copy p {
   margin: 0;
-  color: var(--slate);
-  font-size: 0.76rem;
-  line-height: 1.45;
+  color: var(--slate-readable);
+  font-size: 0.86rem;
+  font-weight: 500;
+  line-height: 1.5;
 }
 
 .person-card--organizer {
@@ -967,7 +968,7 @@
   padding: 12px 0 12px 18px;
   color: rgba(220, 234, 236, 0.86);
   border-top: 1px solid var(--line-dark);
-  font-size: 0.92rem;
+  font-size: 0.95rem;
   line-height: 1.55;
 }
 
@@ -1030,8 +1031,8 @@
   margin-bottom: 7px;
   color: var(--cyan-deep);
   font-family: var(--font-mono);
-  font-size: 0.61rem;
-  font-weight: 500;
+  font-size: 0.69rem;
+  font-weight: 600;
   letter-spacing: 0.07em;
   text-transform: uppercase;
 }
@@ -1039,9 +1040,9 @@
 .submission-panel__copy p {
   margin: 0;
   color: var(--ink-800);
-  font-size: 0.83rem;
+  font-size: 0.95rem;
   font-weight: 500;
-  line-height: 1.6;
+  line-height: 1.55;
   text-wrap: pretty;
 }
 
@@ -1080,9 +1081,9 @@
 }
 
 .detail-card > p {
-  color: var(--slate-light);
-  font-size: 0.82rem;
-  line-height: 1.7;
+  color: var(--slate-light-readable);
+  font-size: 0.9rem;
+  line-height: 1.65;
 }
 
 .detail-card > p a {
@@ -1112,8 +1113,7 @@
   min-width: 0;
 }
 
-.detail-card--awards strong,
-.detail-card--awards small {
+.detail-card--awards strong {
   display: block;
 }
 
@@ -1126,9 +1126,10 @@
 }
 
 .detail-card--awards small {
+  display: block;
   margin-top: 4px;
   color: var(--slate-light);
-  font-size: 0.69rem;
+  font-size: 0.78rem;
 }
 
 .detail-card--awards b {
@@ -1153,15 +1154,17 @@
 }
 
 .detail-card dt {
-  color: var(--slate-light);
-  font-size: 0.74rem;
+  color: var(--slate-light-readable);
+  font-size: 0.875rem;
+  font-weight: 500;
 }
 
 .detail-card dd {
   margin: 0;
   color: var(--white);
   font-family: var(--font-mono);
-  font-size: 0.69rem;
+  font-size: 0.85rem;
+  font-weight: 500;
   text-align: right;
 }
 
@@ -1229,10 +1232,10 @@
   margin-top: 84px;
   padding-top: 24px;
   grid-template-columns: 1fr 1fr 1fr;
-  color: rgba(216, 233, 236, 0.52);
+  color: rgba(216, 233, 236, 0.68);
   border-top: 1px solid var(--line-dark);
   font-family: var(--font-mono);
-  font-size: 0.62rem;
+  font-size: 0.72rem;
   letter-spacing: 0.05em;
   text-transform: uppercase;
 }
