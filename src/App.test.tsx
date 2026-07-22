@@ -141,6 +141,9 @@ describe('workshop landing page', () => {
 
   it('uses readable schedule metadata, headers, times, titles, and statuses', () => {
     const scheduleMetaRule = appStyles.match(/\.schedule-meta\s*\{([^}]*)\}/)?.[1]
+    const tableHeadRule = appStyles.match(
+      /\.schedule-table thead\s*\{([^}]*)\}/,
+    )?.[1]
     const headerRule = appStyles.match(
       /\.schedule-table thead th\s*\{([^}]*)\}/,
     )?.[1]
@@ -153,6 +156,7 @@ describe('workshop landing page', () => {
     expect(scheduleMetaRule).toContain('color: var(--slate-light-readable);')
     expect(scheduleMetaRule).toContain('font-size: 0.78rem;')
     expect(scheduleMetaRule).toContain('font-weight: 500;')
+    expect(tableHeadRule).toContain('color: var(--slate-light-readable);')
     expect(headerRule).toContain('font-size: 0.78rem;')
     expect(headerRule).toContain('font-weight: 600;')
     expect(headerRule).toContain('letter-spacing: 0.07em;')
