@@ -1,7 +1,8 @@
 # Typography Readability Design
 
-**Date:** 2026-07-22  
-**Status:** Approved design direction  
+**Date:** 2026-07-22
+
+**Status:** Approved design direction
 **Selected approach:** Balanced readability pass
 
 ## Context
