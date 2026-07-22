@@ -127,14 +127,12 @@ describe('workshop landing page', () => {
     expect(heroMetaRule).toContain('font-weight: 500;')
     expect(heroMetaRule).toContain('line-height: 1.5;')
     expect(sectionDescriptionRule).toContain(
-      'font-size: clamp(1.125rem, 1.35vw, 1.25rem);',
+      'font-size: clamp(1rem, 1.05vw, 1.0625rem);',
     )
-    expect(sectionDescriptionRule).toContain('font-weight: 500;')
-    expect(sectionDescriptionRule).toContain('line-height: 1.6;')
-    expect(sectionDescriptionRule).toContain('color: var(--slate-readable);')
-    expect(inverseDescriptionRule).toContain(
-      'color: var(--slate-light-readable);',
-    )
+    expect(sectionDescriptionRule).toContain('font-weight: 400;')
+    expect(sectionDescriptionRule).toContain('line-height: 1.64;')
+    expect(sectionDescriptionRule).toContain('color: var(--slate);')
+    expect(inverseDescriptionRule).toContain('color: var(--slate-light);')
     expect(narrowNavRule).toContain('font-size: 0.78rem;')
     expect(tabletNavRule).toContain('font-size: 0.8rem;')
   })
