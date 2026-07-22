@@ -3,6 +3,7 @@ import userEvent from '@testing-library/user-event'
 import { describe, expect, it } from 'vitest'
 import App from './App'
 import appStyles from './App.css?raw'
+import indexStyles from './index.css?raw'
 
 describe('workshop landing page', () => {
   it('renders the workshop identity and every primary section', () => {
@@ -91,6 +92,50 @@ describe('workshop landing page', () => {
     expect(tabletConferenceBrandRule).toContain('width: 112px;')
     expect(mobileConferenceBrandRule).toContain('width: 96px;')
     expect(appStyles).not.toContain('max-width: calc(100% - 132px);')
+  })
+
+  it('uses the approved readable foundation typography scale', () => {
+    const navRule = appStyles.match(/\.nav-links a\s*\{([^}]*)\}/)?.[1]
+    const navCtaRule = appStyles.match(/\.nav-cta\s*\{([^}]*)\}/)?.[1]
+    const buttonRule = appStyles.match(/\.button\s*\{([^}]*)\}/)?.[1]
+    const heroMetaRule = appStyles.match(/\.hero__meta span\s*\{([^}]*)\}/)?.[1]
+    const sectionDescriptionRule = appStyles.match(
+      /\.section-description\s*\{([^}]*)\}/,
+    )?.[1]
+    const inverseDescriptionRule = appStyles.match(
+      /\.section-heading--inverse \.section-description\s*\{([^}]*)\}/,
+    )?.[1]
+    const narrowDesktopMedia = appStyles.match(
+      /@media \(max-width: 1120px\) \{([\s\S]*?)\n\}\n\n@media \(max-width: 920px\)/,
+    )?.[1]
+    const tabletMedia = appStyles.match(
+      /@media \(max-width: 920px\) \{([\s\S]*?)\n\}\n\n@media \(max-width: 720px\)/,
+    )?.[1]
+    const narrowNavRule = narrowDesktopMedia?.match(
+      /\.nav-links a\s*\{([^}]*)\}/,
+    )?.[1]
+    const tabletNavRule = tabletMedia?.match(/\.nav-links a\s*\{([^}]*)\}/)?.[1]
+
+    expect(indexStyles).toContain('--slate-readable: #465b68;')
+    expect(indexStyles).toContain('--slate-light-readable: #c3d0d6;')
+    expect(navRule).toContain('color: rgba(229, 241, 243, 0.82);')
+    expect(navRule).toContain('font-size: 0.8rem;')
+    expect(navCtaRule).toContain('font-size: 0.75rem;')
+    expect(buttonRule).toContain('font-size: 0.78rem;')
+    expect(heroMetaRule).toContain('font-size: 0.9rem;')
+    expect(heroMetaRule).toContain('font-weight: 500;')
+    expect(heroMetaRule).toContain('line-height: 1.5;')
+    expect(sectionDescriptionRule).toContain(
+      'font-size: clamp(1.125rem, 1.35vw, 1.25rem);',
+    )
+    expect(sectionDescriptionRule).toContain('font-weight: 500;')
+    expect(sectionDescriptionRule).toContain('line-height: 1.6;')
+    expect(sectionDescriptionRule).toContain('color: var(--slate-readable);')
+    expect(inverseDescriptionRule).toContain(
+      'color: var(--slate-light-readable);',
+    )
+    expect(narrowNavRule).toContain('font-size: 0.78rem;')
+    expect(tabletNavRule).toContain('font-size: 0.8rem;')
   })
 
   it("shows Hao Dong's complete organizer affiliation", () => {
