@@ -122,6 +122,7 @@ describe('workshop landing page', () => {
     expect(navRule).toContain('font-size: 0.8rem;')
     expect(navCtaRule).toContain('font-size: 0.75rem;')
     expect(buttonRule).toContain('font-size: 0.78rem;')
+    expect(heroMetaRule).toContain('color: rgba(239, 247, 248, 0.92);')
     expect(heroMetaRule).toContain('font-size: 0.9rem;')
     expect(heroMetaRule).toContain('font-weight: 500;')
     expect(heroMetaRule).toContain('line-height: 1.5;')
