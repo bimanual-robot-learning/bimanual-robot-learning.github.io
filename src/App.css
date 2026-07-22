@@ -1113,7 +1113,8 @@
   min-width: 0;
 }
 
-.detail-card--awards strong {
+.detail-card--awards strong,
+.detail-card--awards small {
   display: block;
 }
 
@@ -1126,7 +1127,6 @@
 }
 
 .detail-card--awards small {
-  display: block;
   margin-top: 4px;
   color: var(--slate-light);
   font-size: 0.78rem;

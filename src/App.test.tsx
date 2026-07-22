@@ -184,26 +184,32 @@ describe('workshop landing page', () => {
       /\.submission-panel__copy p\s*\{([^}]*)\}/,
     )?.[1]
     const detailCopyRule = appStyles.match(/\.detail-card > p\s*\{([^}]*)\}/)?.[1]
-    const awardCountRule = appStyles.match(
-      /\.detail-card--awards small\s*\{([^}]*)\}/,
-    )?.[1]
+    const awardCountRule = Array.from(
+      appStyles.matchAll(/\.detail-card--awards small\s*\{([^}]*)\}/g),
+    ).at(-1)?.[1]
     const dateLabelRule = appStyles.match(/\.detail-card dt\s*\{([^}]*)\}/)?.[1]
     const dateValueRule = appStyles.match(/\.detail-card dd\s*\{([^}]*)\}/)?.[1]
     const footerRule = appStyles.match(/\.site-footer__bottom\s*\{([^}]*)\}/)?.[1]
 
     expect(introBodyRule).toContain('color: var(--slate-readable);')
     expect(introBodyRule).toContain('font-size: 1rem;')
+    expect(introBodyRule).toContain('line-height: 1.75;')
     expect(affiliationRule).toContain('color: var(--slate-readable);')
     expect(affiliationRule).toContain('font-size: 0.86rem;')
     expect(affiliationRule).toContain('font-weight: 500;')
+    expect(affiliationRule).toContain('line-height: 1.5;')
     expect(topicItemRule).toContain('font-size: 0.95rem;')
+    expect(topicItemRule).toContain('line-height: 1.55;')
     expect(submissionLabelRule).toContain('font-size: 0.69rem;')
     expect(submissionLabelRule).toContain('font-weight: 600;')
     expect(submissionCopyRule).toContain('font-size: 0.95rem;')
+    expect(submissionCopyRule).toContain('font-weight: 500;')
     expect(submissionCopyRule).toContain('line-height: 1.55;')
     expect(detailCopyRule).toContain('color: var(--slate-light-readable);')
     expect(detailCopyRule).toContain('font-size: 0.9rem;')
+    expect(detailCopyRule).toContain('line-height: 1.65;')
     expect(awardCountRule).toContain('font-size: 0.78rem;')
+    expect(dateLabelRule).toContain('color: var(--slate-light-readable);')
     expect(dateLabelRule).toContain('font-size: 0.875rem;')
     expect(dateLabelRule).toContain('font-weight: 500;')
     expect(dateValueRule).toContain('font-size: 0.85rem;')
