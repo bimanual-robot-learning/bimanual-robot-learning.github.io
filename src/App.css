@@ -1565,6 +1565,11 @@
     border-left: 0;
   }
 
+  .award-card__breakdown {
+    grid-template-columns: minmax(68px, 0.55fr) minmax(0, 1.45fr);
+    gap: 15px;
+  }
+
   .organizer-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }

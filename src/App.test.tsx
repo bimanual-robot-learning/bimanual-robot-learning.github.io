@@ -254,6 +254,9 @@ describe('workshop landing page', () => {
     const tabletPracticalRule = tabletMedia.match(
       /\.cfp-practical\s*\{([^}]*)\}/,
     )?.[1]
+    const tabletAwardBreakdownRule = tabletMedia.match(
+      /\.award-card__breakdown\s*\{([^}]*)\}/,
+    )?.[1]
     const mobileAwardGridRule = mobileMedia.match(
       /\.award-grid\s*\{([^}]*)\}/,
     )?.[1]
@@ -268,6 +271,10 @@ describe('workshop landing page', () => {
       'grid-template-columns: minmax(0, 1.5fr) minmax(270px, 0.5fr);',
     )
     expect(tabletPracticalRule).toContain('grid-template-columns: 1fr;')
+    expect(tabletAwardBreakdownRule).toContain(
+      'grid-template-columns: minmax(68px, 0.55fr) minmax(0, 1.45fr);',
+    )
+    expect(tabletAwardBreakdownRule).toContain('gap: 15px;')
     expect(mobileAwardGridRule).toContain('grid-template-columns: 1fr;')
   })
 
