@@ -698,7 +698,7 @@ Run:
 npm test -- --run src/App.test.tsx
 ```
 
-Expected: PASS, 20 tests total.
+Expected: PASS, 21 tests total.
 
 - [ ] **Step 4: Run lint**
 
@@ -730,7 +730,7 @@ Run:
 npm test
 ```
 
-Expected: PASS, 20 tests total.
+Expected: PASS, 21 tests total.
 
 - [ ] **Step 2: Run the production build**
 
