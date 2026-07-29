@@ -340,7 +340,7 @@ expect(sponsorRule).toContain('font-size: clamp(1.25rem, 2.2vw, 1.7rem);')
 expect(awardNameRule).toContain('font-size: clamp(1.15rem, 1.8vw, 1.45rem);')
 expect(awardCountRule).toContain('color: var(--cyan);')
 expect(awardCountRule).toContain('font-size: clamp(3.1rem, 5vw, 4.25rem);')
-expect(awardPrizeRule).toContain('color: var(--orange-soft);')
+expect(awardPrizeRule).toContain('color: var(--orange);')
 expect(awardPrizeRule).toContain('font-size: clamp(2.15rem, 3.8vw, 3.25rem);')
 expect(dateLabelRule).toContain('color: var(--slate-readable);')
 expect(dateValueRule).toContain('color: var(--ink-950);')
@@ -551,7 +551,7 @@ card rules and before the submission guideline rules:
 
 .award-card__prize b {
   display: block;
-  color: var(--orange-soft);
+  color: var(--orange);
   font-family: var(--font-display);
   font-size: clamp(2.15rem, 3.8vw, 3.25rem);
   font-weight: 650;

@@ -191,12 +191,18 @@ describe('workshop landing page', () => {
     const submissionPresentationCopyRule = appStyles.match(
       /\.submission-presentation p\s*\{([^}]*)\}/,
     )?.[1]
-    const detailCopyRule = appStyles.match(/\.detail-card > p\s*\{([^}]*)\}/)?.[1]
-    const awardCountRule = Array.from(
-      appStyles.matchAll(/\.detail-card--awards small\s*\{([^}]*)\}/g),
-    ).at(-1)?.[1]
-    const dateLabelRule = appStyles.match(/\.detail-card dt\s*\{([^}]*)\}/)?.[1]
-    const dateValueRule = appStyles.match(/\.detail-card dd\s*\{([^}]*)\}/)?.[1]
+    const sponsorRule = appStyles.match(
+      /\.awards-showcase__sponsor a\s*\{([^}]*)\}/,
+    )?.[1]
+    const awardNameRule = appStyles.match(/\.award-card h4\s*\{([^}]*)\}/)?.[1]
+    const awardCountRule = appStyles.match(
+      /\.award-card__recipients strong\s*\{([^}]*)\}/,
+    )?.[1]
+    const awardPrizeRule = appStyles.match(
+      /\.award-card__prize b\s*\{([^}]*)\}/,
+    )?.[1]
+    const dateLabelRule = appStyles.match(/\.important-dates dt\s*\{([^}]*)\}/)?.[1]
+    const dateValueRule = appStyles.match(/\.important-dates dd\s*\{([^}]*)\}/)?.[1]
     const footerRule = appStyles.match(/\.site-footer__bottom\s*\{([^}]*)\}/)?.[1]
 
     expect(introBodyRule).toContain('color: var(--slate-readable);')
@@ -221,17 +227,48 @@ describe('workshop landing page', () => {
     expect(submissionPresentationCopyRule).toContain('font-size: 1rem;')
     expect(submissionPresentationCopyRule).toContain('font-weight: 600;')
     expect(submissionPresentationCopyRule).toContain('line-height: 1.55;')
-    expect(detailCopyRule).toContain('color: var(--slate-light-readable);')
-    expect(detailCopyRule).toContain('font-size: 0.9rem;')
-    expect(detailCopyRule).toContain('line-height: 1.65;')
-    expect(awardCountRule).toContain('font-size: 0.78rem;')
-    expect(dateLabelRule).toContain('color: var(--slate-light-readable);')
-    expect(dateLabelRule).toContain('font-size: 0.875rem;')
-    expect(dateLabelRule).toContain('font-weight: 500;')
-    expect(dateValueRule).toContain('font-size: 0.85rem;')
-    expect(dateValueRule).toContain('font-weight: 500;')
+    expect(sponsorRule).toContain('color: var(--orange);')
+    expect(sponsorRule).toContain('font-size: clamp(1.25rem, 2.2vw, 1.7rem);')
+    expect(awardNameRule).toContain('font-size: clamp(1.15rem, 1.8vw, 1.45rem);')
+    expect(awardCountRule).toContain('color: var(--cyan);')
+    expect(awardCountRule).toContain('font-size: clamp(3.1rem, 5vw, 4.25rem);')
+    expect(awardPrizeRule).toContain('color: var(--orange);')
+    expect(awardPrizeRule).toContain('font-size: clamp(2.15rem, 3.8vw, 3.25rem);')
+    expect(dateLabelRule).toContain('color: var(--slate-readable);')
+    expect(dateValueRule).toContain('color: var(--ink-950);')
     expect(footerRule).toContain('font-size: 0.72rem;')
     expect(footerRule).toContain('color: rgba(216, 233, 236, 0.68);')
+  })
+
+  it('uses equal award columns and responsive practical-information layouts', () => {
+    const awardGridRule = appStyles.match(/\.award-grid\s*\{([^}]*)\}/)?.[1]
+    const awardBreakdownRule = appStyles.match(
+      /\.award-card__breakdown\s*\{([^}]*)\}/,
+    )?.[1]
+    const practicalRule = appStyles.match(/\.cfp-practical\s*\{([^}]*)\}/)?.[1]
+    const tabletStart = appStyles.indexOf('@media (max-width: 920px)')
+    const mobileStart = appStyles.indexOf('@media (max-width: 720px)')
+    const compactStart = appStyles.indexOf('@media (max-width: 480px)', mobileStart)
+    const tabletMedia = appStyles.slice(tabletStart, mobileStart)
+    const mobileMedia = appStyles.slice(mobileStart, compactStart)
+    const tabletPracticalRule = tabletMedia.match(
+      /\.cfp-practical\s*\{([^}]*)\}/,
+    )?.[1]
+    const mobileAwardGridRule = mobileMedia.match(
+      /\.award-grid\s*\{([^}]*)\}/,
+    )?.[1]
+
+    expect(awardGridRule).toContain(
+      'grid-template-columns: repeat(2, minmax(0, 1fr));',
+    )
+    expect(awardBreakdownRule).toContain(
+      'grid-template-columns: minmax(76px, 0.62fr) minmax(0, 1.38fr);',
+    )
+    expect(practicalRule).toContain(
+      'grid-template-columns: minmax(0, 1.5fr) minmax(270px, 0.5fr);',
+    )
+    expect(tabletPracticalRule).toContain('grid-template-columns: 1fr;')
+    expect(mobileAwardGridRule).toContain('grid-template-columns: 1fr;')
   })
 
   it('uses a two-column submission grid that stacks on mobile', () => {
