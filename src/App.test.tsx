@@ -176,6 +176,9 @@ describe('workshop landing page', () => {
       /\.person-card__copy p\s*\{([^}]*)\}/,
     )?.[1]
     const topicItemRule = appStyles.match(/\.topic-card li\s*\{([^}]*)\}/)?.[1]
+    const submissionHeadingRule = appStyles.match(
+      /\.submission-panel h3\s*\{([^}]*)\}/,
+    )?.[1]
     const submissionIntroRule = appStyles.match(
       /\.submission-panel__intro\s*\{([^}]*)\}/,
     )?.[1]
@@ -205,6 +208,7 @@ describe('workshop landing page', () => {
     expect(affiliationRule).toContain('line-height: 1.5;')
     expect(topicItemRule).toContain('font-size: 0.95rem;')
     expect(topicItemRule).toContain('line-height: 1.55;')
+    expect(submissionHeadingRule).toContain('text-wrap: balance;')
     expect(submissionIntroRule).toContain('color: var(--slate-readable);')
     expect(submissionIntroRule).toContain('font-size: 1rem;')
     expect(submissionIntroRule).toContain('font-weight: 500;')
