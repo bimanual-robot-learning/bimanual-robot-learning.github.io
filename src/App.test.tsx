@@ -234,13 +234,18 @@ describe('workshop landing page', () => {
     const submissionGuidelinesRule = appStyles.match(
       /\.submission-guidelines\s*\{([^}]*)\}/,
     )?.[1]
-    const mobileMedia = appStyles.match(
-      /@media \(max-width: 720px\) \{([\s\S]*?)\n\}\n\n@media \(max-width: 480px\)/,
-    )?.[1]
-    const mobileSubmissionGuidelinesRule = mobileMedia?.match(
+    const mobileStart = appStyles.indexOf('@media (max-width: 720px)')
+    const compactStart = appStyles.indexOf('@media (max-width: 480px)', mobileStart)
+
+    expect(mobileStart).toBeGreaterThanOrEqual(0)
+    expect(compactStart).toBeGreaterThanOrEqual(0)
+
+    const mobileMedia = appStyles.slice(mobileStart, compactStart)
+    const mobileSubmissionGuidelinesRule = mobileMedia.match(
       /\.submission-guidelines\s*\{([^}]*)\}/,
     )?.[1]
 
+    expect(submissionGuidelinesRule).toContain('display: grid;')
     expect(submissionGuidelinesRule).toContain(
       'grid-template-columns: repeat(2, minmax(0, 1fr));',
     )
