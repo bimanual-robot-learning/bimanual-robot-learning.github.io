@@ -176,11 +176,17 @@ describe('workshop landing page', () => {
       /\.person-card__copy p\s*\{([^}]*)\}/,
     )?.[1]
     const topicItemRule = appStyles.match(/\.topic-card li\s*\{([^}]*)\}/)?.[1]
-    const submissionLabelRule = appStyles.match(
-      /\.submission-panel__copy span\s*\{([^}]*)\}/,
+    const submissionIntroRule = appStyles.match(
+      /\.submission-panel__intro\s*\{([^}]*)\}/,
     )?.[1]
-    const submissionCopyRule = appStyles.match(
-      /\.submission-panel__copy p\s*\{([^}]*)\}/,
+    const submissionGuidelineHeadingRule = appStyles.match(
+      /\.submission-guideline h4\s*\{([^}]*)\}/,
+    )?.[1]
+    const submissionGuidelineCopyRule = appStyles.match(
+      /\.submission-guideline p\s*\{([^}]*)\}/,
+    )?.[1]
+    const submissionPresentationCopyRule = appStyles.match(
+      /\.submission-presentation p\s*\{([^}]*)\}/,
     )?.[1]
     const detailCopyRule = appStyles.match(/\.detail-card > p\s*\{([^}]*)\}/)?.[1]
     const awardCountRule = Array.from(
@@ -199,11 +205,18 @@ describe('workshop landing page', () => {
     expect(affiliationRule).toContain('line-height: 1.5;')
     expect(topicItemRule).toContain('font-size: 0.95rem;')
     expect(topicItemRule).toContain('line-height: 1.55;')
-    expect(submissionLabelRule).toContain('font-size: 0.69rem;')
-    expect(submissionLabelRule).toContain('font-weight: 600;')
-    expect(submissionCopyRule).toContain('font-size: 0.95rem;')
-    expect(submissionCopyRule).toContain('font-weight: 500;')
-    expect(submissionCopyRule).toContain('line-height: 1.55;')
+    expect(submissionIntroRule).toContain('color: var(--slate-readable);')
+    expect(submissionIntroRule).toContain('font-size: 1rem;')
+    expect(submissionIntroRule).toContain('font-weight: 500;')
+    expect(submissionIntroRule).toContain('line-height: 1.65;')
+    expect(submissionGuidelineHeadingRule).toContain('font-size: 0.75rem;')
+    expect(submissionGuidelineHeadingRule).toContain('font-weight: 700;')
+    expect(submissionGuidelineCopyRule).toContain('font-size: 0.96rem;')
+    expect(submissionGuidelineCopyRule).toContain('font-weight: 500;')
+    expect(submissionGuidelineCopyRule).toContain('line-height: 1.65;')
+    expect(submissionPresentationCopyRule).toContain('font-size: 1rem;')
+    expect(submissionPresentationCopyRule).toContain('font-weight: 600;')
+    expect(submissionPresentationCopyRule).toContain('line-height: 1.55;')
     expect(detailCopyRule).toContain('color: var(--slate-light-readable);')
     expect(detailCopyRule).toContain('font-size: 0.9rem;')
     expect(detailCopyRule).toContain('line-height: 1.65;')
@@ -215,6 +228,23 @@ describe('workshop landing page', () => {
     expect(dateValueRule).toContain('font-weight: 500;')
     expect(footerRule).toContain('font-size: 0.72rem;')
     expect(footerRule).toContain('color: rgba(216, 233, 236, 0.68);')
+  })
+
+  it('uses a two-column submission grid that stacks on mobile', () => {
+    const submissionGuidelinesRule = appStyles.match(
+      /\.submission-guidelines\s*\{([^}]*)\}/,
+    )?.[1]
+    const mobileMedia = appStyles.match(
+      /@media \(max-width: 720px\) \{([\s\S]*?)\n\}\n\n@media \(max-width: 480px\)/,
+    )?.[1]
+    const mobileSubmissionGuidelinesRule = mobileMedia?.match(
+      /\.submission-guidelines\s*\{([^}]*)\}/,
+    )?.[1]
+
+    expect(submissionGuidelinesRule).toContain(
+      'grid-template-columns: repeat(2, minmax(0, 1fr));',
+    )
+    expect(mobileSubmissionGuidelinesRule).toContain('grid-template-columns: 1fr;')
   })
 
   it("shows Hao Dong's complete organizer affiliation", () => {

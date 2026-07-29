@@ -984,15 +984,19 @@
 }
 
 .submission-panel {
-  display: grid;
   margin: 14px 0 28px;
-  padding: 28px;
-  align-items: center;
-  grid-template-columns: auto minmax(190px, 0.52fr) minmax(360px, 1.48fr) auto;
-  gap: 22px;
+  overflow: hidden;
   color: var(--ink-950);
   background: var(--paper);
   border-radius: 7px;
+}
+
+.submission-panel__header {
+  display: grid;
+  padding: 30px;
+  align-items: center;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  gap: 22px;
 }
 
 .submission-panel__icon {
@@ -1009,39 +1013,91 @@
 .submission-panel h3 {
   margin: 4px 0 0;
   font-family: var(--font-display);
-  font-size: 1.2rem;
+  font-size: 1.45rem;
   letter-spacing: -0.025em;
 }
 
-.submission-panel__copy {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 10px;
+.submission-panel__intro {
+  max-width: 680px;
+  margin: 9px 0 0;
+  color: var(--slate-readable);
+  font-size: 1rem;
+  font-weight: 500;
+  line-height: 1.65;
+  text-wrap: pretty;
 }
 
-.submission-panel__copy article {
-  padding: 15px 16px;
+.submission-guidelines {
+  display: grid;
+  padding: 0 30px 30px;
+  margin: 0;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  list-style: none;
+}
+
+.submission-guideline {
+  padding: 20px;
   background: rgba(7, 16, 29, 0.045);
-  border: 1px solid rgba(8, 25, 43, 0.08);
+  border: 1px solid rgba(8, 25, 43, 0.09);
   border-radius: 5px;
 }
 
-.submission-panel__copy span {
-  display: block;
-  margin-bottom: 7px;
+.submission-guideline h4 {
+  margin: 0 0 10px;
   color: var(--cyan-deep);
   font-family: var(--font-mono);
-  font-size: 0.69rem;
-  font-weight: 600;
+  font-size: 0.75rem;
+  font-weight: 700;
   letter-spacing: 0.07em;
   text-transform: uppercase;
 }
 
-.submission-panel__copy p {
+.submission-guideline p {
   margin: 0;
   color: var(--ink-800);
-  font-size: 0.95rem;
+  font-size: 0.96rem;
   font-weight: 500;
+  line-height: 1.65;
+  text-wrap: pretty;
+}
+
+.submission-guideline a {
+  color: var(--ink-950);
+  font-weight: 700;
+  text-decoration: underline;
+  text-decoration-color: var(--cyan-deep);
+  text-decoration-thickness: 2px;
+  text-underline-offset: 3px;
+}
+
+.submission-presentation {
+  display: grid;
+  margin: 0 30px 30px;
+  padding: 18px 20px;
+  align-items: start;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 18px;
+  background: rgba(82, 216, 230, 0.13);
+  border-left: 3px solid var(--cyan-deep);
+  border-radius: 5px;
+}
+
+.submission-presentation span {
+  padding-top: 3px;
+  color: var(--cyan-deep);
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+}
+
+.submission-presentation p {
+  margin: 0;
+  color: var(--ink-900);
+  font-size: 1rem;
+  font-weight: 600;
   line-height: 1.55;
   text-wrap: pretty;
 }
@@ -1304,12 +1360,12 @@
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
-  .submission-panel {
-    grid-template-columns: auto 0.7fr 1.3fr;
+  .submission-panel__header {
+    grid-template-columns: auto minmax(0, 1fr);
   }
 
-  .submission-panel .button {
-    grid-column: 2 / -1;
+  .submission-panel__header .button {
+    grid-column: 2;
     justify-self: start;
   }
 }
@@ -1409,15 +1465,6 @@
 
   .topic-card h3 {
     min-height: auto;
-  }
-
-  .submission-panel {
-    grid-template-columns: auto 1fr;
-  }
-
-  .submission-panel__copy,
-  .submission-panel .button {
-    grid-column: 1 / -1;
   }
 
   .cfp-details {
@@ -1578,6 +1625,23 @@
     grid-template-columns: 1fr;
   }
 
+  .submission-panel__header {
+    grid-template-columns: auto minmax(0, 1fr);
+  }
+
+  .submission-panel__header .button {
+    grid-column: 1 / -1;
+  }
+
+  .submission-guidelines {
+    grid-template-columns: 1fr;
+  }
+
+  .submission-presentation {
+    grid-template-columns: 1fr;
+    gap: 6px;
+  }
+
   .site-footer__bottom {
     grid-template-columns: 1fr;
     gap: 10px;
@@ -1659,18 +1723,21 @@
     aspect-ratio: 0.92;
   }
 
-  .submission-panel {
+  .submission-panel__header {
     padding: 22px;
     grid-template-columns: 1fr;
   }
 
-  .submission-panel__copy,
-  .submission-panel .button {
+  .submission-panel__header .button {
     grid-column: 1;
   }
 
-  .submission-panel__copy {
-    grid-template-columns: 1fr;
+  .submission-guidelines {
+    padding: 0 22px 22px;
+  }
+
+  .submission-presentation {
+    margin: 0 22px 22px;
   }
 
   .detail-card dl > div {
