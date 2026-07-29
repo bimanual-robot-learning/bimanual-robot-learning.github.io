@@ -47,6 +47,30 @@ export interface AwardItem {
   prize: string
 }
 
+export type SubmissionGuidelineLabel =
+  | 'Review'
+  | 'Format'
+  | 'Length'
+  | 'Appendices'
+
+export interface SubmissionGuideline {
+  label: SubmissionGuidelineLabel
+  prefix: string
+  link?: {
+    label: string
+    href: string
+  }
+  suffix: string
+}
+
+export interface SubmissionInfo {
+  eyebrow: string
+  title: string
+  introduction: string
+  guidelines: SubmissionGuideline[]
+  presentation: string
+}
+
 export const workshopMeta: WorkshopMeta = {
   eyebrow: 'Workshop @ IROS 2026',
   title: 'Scaling vs. Structure?',
@@ -272,11 +296,41 @@ export const topicGroups: TopicGroup[] = [
   },
 ]
 
-export const submission = {
-  description:
-    'We welcome short papers and extended abstracts of up to 4 pages, excluding references, describing ongoing or completed work. Submissions should be made through OpenReview.',
+export const submission: SubmissionInfo = {
+  eyebrow: 'Submission format',
+  title: 'Short papers & extended abstracts',
+  introduction:
+    'We welcome short papers and extended abstracts describing ongoing or completed work.',
+  guidelines: [
+    {
+      label: 'Review',
+      prefix:
+        'Submissions will undergo double-blind review. Authors must anonymize their manuscripts.',
+      suffix: '',
+    },
+    {
+      label: 'Format',
+      prefix: 'Use the ',
+      link: {
+        label: 'standard IEEE conference paper format',
+        href: 'https://conferences.ieeeauthorcenter.ieee.org/write-your-paper/authoring-tools-and-templates/',
+      },
+      suffix: '.',
+    },
+    {
+      label: 'Length',
+      prefix: 'Submissions must not exceed 4 pages, excluding references.',
+      suffix: '',
+    },
+    {
+      label: 'Appendices',
+      prefix:
+        'To keep submissions concise and consistent, we kindly ask authors not to include appendices.',
+      suffix: '',
+    },
+  ],
   presentation:
-    'Accepted submissions will be presented in a poster session, with a subset selected for spotlight talks.',
+    'Accepted submissions will be presented as posters, with a subset selected for spotlight talks.',
 }
 
 export const awards: AwardItem[] = [

@@ -4,6 +4,7 @@ import { describe, expect, it } from 'vitest'
 import App from './App'
 import appStyles from './App.css?raw'
 import indexStyles from './index.css?raw'
+import { workshopMeta } from './data/workshop'
 
 describe('workshop landing page', () => {
   it('renders the workshop identity and every primary section', () => {
@@ -256,7 +257,14 @@ describe('workshop landing page', () => {
     const topicItems = topicCards.flatMap((card) => within(card).getAllByRole('listitem'))
     expect(topicItems).toHaveLength(9)
 
-    expect(screen.getAllByTestId('submission-highlight')).toHaveLength(2)
+    const submissionGuidelines = screen.getAllByTestId('submission-guideline')
+    expect(submissionGuidelines).toHaveLength(4)
+    const submissionHeadings = ['Review', 'Format', 'Length', 'Appendices']
+    submissionGuidelines.forEach((guideline, index) => {
+      expect(
+        within(guideline).getByRole('heading', { name: submissionHeadings[index] }),
+      ).toBeInTheDocument()
+    })
 
     const awardItems = screen.getAllByTestId('award-item')
     expect(awardItems).toHaveLength(2)
@@ -266,6 +274,68 @@ describe('workshop landing page', () => {
       within(awardItems[1]).getByText('Outstanding Workshop Paper Award'),
     ).toBeInTheDocument()
     expect(within(awardItems[1]).getByText('USD 500')).toBeInTheDocument()
+  })
+
+  it('presents complete submission guidance with safe IEEE and OpenReview links', () => {
+    render(<App />)
+
+    const submissionPanel = screen.getByTestId('submission-panel')
+
+    expect(
+      within(submissionPanel).getByRole('heading', {
+        name: 'Short papers & extended abstracts',
+      }),
+    ).toBeInTheDocument()
+    expect(
+      within(submissionPanel).getByText(
+        'We welcome short papers and extended abstracts describing ongoing or completed work.',
+      ),
+    ).toBeInTheDocument()
+
+    const expectedGuidelines = [
+      [
+        'Review',
+        'Submissions will undergo double-blind review. Authors must anonymize their manuscripts.',
+      ],
+      ['Format', 'Use the standard IEEE conference paper format.'],
+      ['Length', 'Submissions must not exceed 4 pages, excluding references.'],
+      [
+        'Appendices',
+        'To keep submissions concise and consistent, we kindly ask authors not to include appendices.',
+      ],
+    ] as const
+    const guidelines = within(submissionPanel).getAllByTestId('submission-guideline')
+
+    expect(guidelines).toHaveLength(4)
+    for (const [index, [label, copy]] of expectedGuidelines.entries()) {
+      expect(
+        within(guidelines[index]).getByRole('heading', { name: label }),
+      ).toBeInTheDocument()
+      expect(guidelines[index].querySelector('p')).toHaveTextContent(copy)
+    }
+
+    const ieeeLink = within(submissionPanel).getByRole('link', {
+      name: 'standard IEEE conference paper format',
+    })
+    expect(ieeeLink).toHaveAttribute(
+      'href',
+      'https://conferences.ieeeauthorcenter.ieee.org/write-your-paper/authoring-tools-and-templates/',
+    )
+    expect(ieeeLink).toHaveAttribute('target', '_blank')
+    expect(ieeeLink).toHaveAttribute('rel', 'noreferrer')
+
+    expect(
+      within(submissionPanel).getByText(
+        'Accepted submissions will be presented as posters, with a subset selected for spotlight talks.',
+      ),
+    ).toBeInTheDocument()
+
+    const submitLink = within(submissionPanel).getByRole('link', {
+      name: 'Submit your work',
+    })
+    expect(submitLink).toHaveAttribute('href', workshopMeta.openReviewUrl)
+    expect(submitLink).toHaveAttribute('target', '_blank')
+    expect(submitLink).toHaveAttribute('rel', 'noreferrer')
   })
 
   it('uses accessible local portraits and safe external calls to action', () => {

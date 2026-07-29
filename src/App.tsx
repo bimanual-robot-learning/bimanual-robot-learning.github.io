@@ -358,34 +358,64 @@ function App() {
               ))}
             </div>
 
-            <div className="submission-panel">
-              <div className="submission-panel__icon" aria-hidden="true">
-                <FileText />
-              </div>
-              <div>
-                <p className="eyebrow">Submission format</p>
-                <h3>Short papers & extended abstracts</h3>
-              </div>
-              <div className="submission-panel__copy">
-                <article data-testid="submission-highlight">
-                  <span>Submission requirements</span>
-                  <p>{submission.description}</p>
-                </article>
-                <article data-testid="submission-highlight">
-                  <span>At the workshop</span>
-                  <p>{submission.presentation}</p>
-                </article>
-              </div>
-              <a
-                className="button button--orange"
-                href={workshopMeta.openReviewUrl}
-                target="_blank"
-                rel="noreferrer"
+            <section
+              className="submission-panel"
+              aria-labelledby="submission-title"
+              data-testid="submission-panel"
+            >
+              <header className="submission-panel__header">
+                <div className="submission-panel__icon" aria-hidden="true">
+                  <FileText />
+                </div>
+                <div>
+                  <p className="eyebrow">{submission.eyebrow}</p>
+                  <h3 id="submission-title">{submission.title}</h3>
+                  <p className="submission-panel__intro">{submission.introduction}</p>
+                </div>
+                <a
+                  className="button button--orange"
+                  href={workshopMeta.openReviewUrl}
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  Submit your work
+                  <ArrowUpRight size={18} aria-hidden="true" />
+                </a>
+              </header>
+
+              <ul
+                className="submission-guidelines"
+                aria-label="Submission requirements"
               >
-                Submit your work
-                <ArrowUpRight size={18} aria-hidden="true" />
-              </a>
-            </div>
+                {submission.guidelines.map((guideline) => (
+                  <li
+                    className="submission-guideline"
+                    data-testid="submission-guideline"
+                    key={guideline.label}
+                  >
+                    <h4>{guideline.label}</h4>
+                    <p>
+                      {guideline.prefix}
+                      {guideline.link && (
+                        <a
+                          href={guideline.link.href}
+                          target="_blank"
+                          rel="noreferrer"
+                        >
+                          {guideline.link.label}
+                        </a>
+                      )}
+                      {guideline.suffix}
+                    </p>
+                  </li>
+                ))}
+              </ul>
+
+              <div className="submission-presentation">
+                <span>At the workshop</span>
+                <p>{submission.presentation}</p>
+              </div>
+            </section>
 
             <div className="cfp-details">
               <article className="detail-card detail-card--awards">
