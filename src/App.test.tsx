@@ -304,15 +304,74 @@ describe('workshop landing page', () => {
         within(guideline).getByRole('heading', { name: submissionHeadings[index] }),
       ).toBeInTheDocument()
     })
+  })
 
-    const awardItems = screen.getAllByTestId('award-item')
+  it('places awards directly after the CFP topics and before practical information', () => {
+    render(<App />)
+
+    const topicCards = screen.getAllByTestId('topic-card')
+    const topicGrid = topicCards[0].parentElement
+    const awardsShowcase = screen.getByTestId('awards-showcase')
+    const practicalPanel = screen.getByTestId('cfp-practical')
+
+    expect(topicGrid).not.toBeNull()
+    expect(topicGrid?.nextElementSibling).toBe(awardsShowcase)
+    expect(awardsShowcase.nextElementSibling).toBe(practicalPanel)
+    expect(within(practicalPanel).getByTestId('submission-panel')).toBeInTheDocument()
+    expect(
+      within(practicalPanel).getByRole('heading', { name: 'Important Dates' }),
+    ).toBeInTheDocument()
+  })
+
+  it('presents award recipients and per-paper prizes without multiplication notation', () => {
+    render(<App />)
+
+    const awardsShowcase = screen.getByTestId('awards-showcase')
+    const awardItems = within(awardsShowcase).getAllByTestId('award-item')
+
     expect(awardItems).toHaveLength(2)
-    expect(within(awardItems[0]).getByText('Best Workshop Paper Award')).toBeInTheDocument()
+    expect(
+      within(awardItems[0]).getByRole('heading', {
+        name: 'Best Workshop Paper Award',
+      }),
+    ).toBeInTheDocument()
+    expect(within(awardItems[0]).getByText('1')).toBeInTheDocument()
+    expect(within(awardItems[0]).getByText('Selected paper')).toBeInTheDocument()
     expect(within(awardItems[0]).getByText('USD 1,000')).toBeInTheDocument()
     expect(
-      within(awardItems[1]).getByText('Outstanding Workshop Paper Award'),
+      within(awardItems[0]).getByText('For the selected paper'),
     ).toBeInTheDocument()
+
+    expect(
+      within(awardItems[1]).getByRole('heading', {
+        name: 'Outstanding Workshop Paper Award',
+      }),
+    ).toBeInTheDocument()
+    expect(within(awardItems[1]).getByText('3')).toBeInTheDocument()
+    expect(within(awardItems[1]).getByText('Selected papers')).toBeInTheDocument()
     expect(within(awardItems[1]).getByText('USD 500')).toBeInTheDocument()
+    expect(within(awardItems[1]).getByText('For each paper')).toBeInTheDocument()
+
+    expect(awardsShowcase).not.toHaveTextContent('×')
+    expect(awardsShowcase).not.toHaveTextContent('X 3')
+  })
+
+  it('features PrimeBot below the Awards heading with a safe sponsor link', () => {
+    render(<App />)
+
+    const awardsShowcase = screen.getByTestId('awards-showcase')
+    const awardsHeading = within(awardsShowcase).getByRole('heading', {
+      name: 'Awards',
+    })
+    const sponsorLine = within(awardsShowcase).getByTestId('award-sponsor')
+    const sponsorLink = within(sponsorLine).getByRole('link', { name: 'PrimeBot' })
+
+    expect(awardsHeading.compareDocumentPosition(sponsorLine)).toBe(
+      Node.DOCUMENT_POSITION_FOLLOWING,
+    )
+    expect(sponsorLink).toHaveAttribute('href', 'https://www.primebot.cn/')
+    expect(sponsorLink).toHaveAttribute('target', '_blank')
+    expect(sponsorLink).toHaveAttribute('rel', 'noreferrer')
   })
 
   it('presents complete submission guidance with safe IEEE and OpenReview links', () => {
