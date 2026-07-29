@@ -2,7 +2,6 @@ import { useState } from 'react'
 import {
   ArrowDown,
   ArrowUpRight,
-  Award,
   CalendarDays,
   Clock3,
   Code2,
@@ -359,101 +358,118 @@ function App() {
             </div>
 
             <section
-              className="submission-panel"
-              aria-labelledby="submission-title"
-              data-testid="submission-panel"
+              className="awards-showcase"
+              aria-labelledby="awards-title"
+              data-testid="awards-showcase"
             >
-              <header className="submission-panel__header">
-                <div className="submission-panel__icon" aria-hidden="true">
-                  <FileText />
-                </div>
-                <div>
-                  <p className="eyebrow">{submission.eyebrow}</p>
-                  <h3 id="submission-title">{submission.title}</h3>
-                  <p className="submission-panel__intro">{submission.introduction}</p>
-                </div>
-                <a
-                  className="button button--orange"
-                  href={workshopMeta.openReviewUrl}
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  Submit your work
-                  <ArrowUpRight size={18} aria-hidden="true" />
-                </a>
+              <div className="awards-showcase__grid" aria-hidden="true" />
+              <header className="awards-showcase__heading">
+                <p className="eyebrow">Recognition — IROS 2026 Workshop</p>
+                <h3 id="awards-title">Awards</h3>
+                <p className="awards-showcase__sponsor" data-testid="award-sponsor">
+                  Sponsored by{' '}
+                  <a href={sponsor.url} target="_blank" rel="noreferrer">
+                    {sponsor.name}
+                    <ArrowUpRight size={16} aria-hidden="true" />
+                  </a>
+                </p>
               </header>
 
-              <ul
-                className="submission-guidelines"
-                aria-label="Submission requirements"
-              >
-                {submission.guidelines.map((guideline) => (
-                  <li
-                    className="submission-guideline"
-                    data-testid="submission-guideline"
-                    key={guideline.label}
-                  >
-                    <h4>{guideline.label}</h4>
-                    <p>
-                      {guideline.prefix}
-                      {guideline.link && (
-                        <a
-                          href={guideline.link.href}
-                          target="_blank"
-                          rel="noreferrer"
-                        >
-                          {guideline.link.label}
-                        </a>
-                      )}
-                      {guideline.suffix}
-                    </p>
-                  </li>
-                ))}
-              </ul>
+              <div className="award-grid">
+                {awards.map((award) => {
+                  const isSingleRecipient = award.recipientCount === 1
 
-              <div className="submission-presentation">
-                <span>At the workshop</span>
-                <p>{submission.presentation}</p>
+                  return (
+                    <article
+                      className="award-card"
+                      data-testid="award-item"
+                      key={award.name}
+                    >
+                      <h4>{award.name}</h4>
+                      <div className="award-card__breakdown">
+                        <div className="award-card__recipients">
+                          <strong>{award.recipientCount}</strong>
+                          <span>Selected {isSingleRecipient ? 'paper' : 'papers'}</span>
+                        </div>
+                        <div className="award-card__prize">
+                          <b>{award.prize}</b>
+                          <small>{award.prizeClarification}</small>
+                        </div>
+                      </div>
+                    </article>
+                  )
+                })}
               </div>
             </section>
 
-            <div className="cfp-details">
-              <article className="detail-card detail-card--awards">
-                <div className="detail-card__heading">
-                  <Award aria-hidden="true" />
-                  <div>
-                    <p className="eyebrow">Recognition</p>
-                    <h3>Awards</h3>
+            <section className="cfp-practical" data-testid="cfp-practical">
+              <section
+                className="submission-panel"
+                aria-labelledby="submission-title"
+                data-testid="submission-panel"
+              >
+                <header className="submission-panel__header">
+                  <div className="submission-panel__icon" aria-hidden="true">
+                    <FileText />
                   </div>
-                </div>
-                <p>
-                  Outstanding contributions will be recognized through awards generously
-                  sponsored by{' '}
-                  <a href={sponsor.url} target="_blank" rel="noreferrer">
-                    {sponsor.name}
-                    <ArrowUpRight size={14} aria-hidden="true" />
+                  <div>
+                    <p className="eyebrow">{submission.eyebrow}</p>
+                    <h3 id="submission-title">{submission.title}</h3>
+                    <p className="submission-panel__intro">
+                      {submission.introduction}
+                    </p>
+                  </div>
+                  <a
+                    className="button button--orange"
+                    href={workshopMeta.openReviewUrl}
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    Submit your work
+                    <ArrowUpRight size={18} aria-hidden="true" />
                   </a>
-                  .
-                </p>
-                <ul>
-                  {awards.map((award) => (
-                    <li data-testid="award-item" key={award.name}>
-                      <span>
-                        <strong>{award.name}</strong>
-                        <small>{award.count}</small>
-                      </span>
-                      <b>{award.prize}</b>
+                </header>
+
+                <ul
+                  className="submission-guidelines"
+                  aria-label="Submission requirements"
+                >
+                  {submission.guidelines.map((guideline) => (
+                    <li
+                      className="submission-guideline"
+                      data-testid="submission-guideline"
+                      key={guideline.label}
+                    >
+                      <h4>{guideline.label}</h4>
+                      <p>
+                        {guideline.prefix}
+                        {guideline.link && (
+                          <a
+                            href={guideline.link.href}
+                            target="_blank"
+                            rel="noreferrer"
+                          >
+                            {guideline.link.label}
+                          </a>
+                        )}
+                        {guideline.suffix}
+                      </p>
                     </li>
                   ))}
                 </ul>
-              </article>
 
-              <article className="detail-card detail-card--dates">
-                <div className="detail-card__heading">
+                <div className="submission-presentation">
+                  <span>At the workshop</span>
+                  <p>{submission.presentation}</p>
+                </div>
+              </section>
+
+              <aside className="important-dates" aria-labelledby="dates-title">
+                <div className="important-dates__heading">
                   <CalendarDays aria-hidden="true" />
                   <div>
                     <p className="eyebrow">Mark your calendar</p>
-                    <h3>Important Dates</h3>
+                    <h3 id="dates-title">Important Dates</h3>
                   </div>
                 </div>
                 <dl>
@@ -464,8 +480,8 @@ function App() {
                     </div>
                   ))}
                 </dl>
-              </article>
-            </div>
+              </aside>
+            </section>
           </div>
         </section>
 

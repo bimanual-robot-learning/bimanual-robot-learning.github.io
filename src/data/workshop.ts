@@ -43,8 +43,9 @@ export interface IntroductionPoint {
 
 export interface AwardItem {
   name: string
-  count: string
+  recipientCount: number
   prize: string
+  prizeClarification: string
 }
 
 export type SubmissionGuidelineLabel =
@@ -336,13 +337,15 @@ export const submission: SubmissionInfo = {
 export const awards: AwardItem[] = [
   {
     name: 'Best Workshop Paper Award',
-    count: '1 paper',
+    recipientCount: 1,
     prize: 'USD 1,000',
+    prizeClarification: 'For the selected paper',
   },
   {
     name: 'Outstanding Workshop Paper Award',
-    count: '3 papers · each',
+    recipientCount: 3,
     prize: 'USD 500',
+    prizeClarification: 'For each paper',
   },
 ]
 
