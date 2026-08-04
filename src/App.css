@@ -2259,6 +2259,18 @@
     grid-template-columns: 1fr;
   }
 
+  .challenge-flow li + li::before {
+    top: -24px;
+    left: 50%;
+    content: '↓';
+    transform: translateX(-50%);
+  }
+
+  .challenge-prize-grid article + article {
+    border-top: 1px solid rgba(200, 88, 53, 0.22);
+    border-left: 0;
+  }
+
   .challenge-facts > div {
     border-right: 0;
     border-bottom: 1px solid var(--line-light);

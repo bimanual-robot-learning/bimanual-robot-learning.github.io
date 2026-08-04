@@ -420,6 +420,24 @@ describe('workshop landing page', () => {
     )
     expect(mobileStack.declarations).toContain('grid-template-columns: 1fr;')
 
+    const mobileFlowArrow = extractCssRule(
+      mobileMedia,
+      '.challenge-flow li + li::before',
+    ).declarations
+    expect(mobileFlowArrow).toContain('top: -24px;')
+    expect(mobileFlowArrow).toContain('left: 50%;')
+    expect(mobileFlowArrow).toContain("content: '↓';")
+    expect(mobileFlowArrow).toContain('transform: translateX(-50%);')
+
+    const mobilePrizeSeparator = extractCssRule(
+      mobileMedia,
+      '.challenge-prize-grid article + article',
+    ).declarations
+    expect(mobilePrizeSeparator).toContain(
+      'border-top: 1px solid rgba(200, 88, 53, 0.22);',
+    )
+    expect(mobilePrizeSeparator).toContain('border-left: 0;')
+
     const mobileFact = extractCssRule(
       mobileMedia,
       '.challenge-facts > div',
