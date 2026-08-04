@@ -213,6 +213,55 @@ describe('workshop landing page', () => {
     }
   })
 
+  it('uses the approved light Challenge field and prominent dark Prize Pool', () => {
+    const rule = (selector: string) =>
+      appStyles.match(new RegExp(`${selector}\\s*\\{([^}]*)\\}`))?.[1]
+    const challengeSectionRule = rule('\\.section--challenge')
+    const challengeFactsRule = rule('\\.challenge-facts')
+    const challengeFlowRule = rule('\\.challenge-flow')
+    const challengeTaskGridRule = rule('\\.challenge-task-grid')
+    const challengePrizePoolRule = rule('\\.challenge-prize-pool')
+    const challengePrizeHeadingRule = rule(
+      '\\.challenge-prize-pool > header h3',
+    )
+    const challengePrizeGridRule = rule('\\.challenge-prize-grid')
+    const challengeTimelineRule = rule('\\.challenge-timeline > ol')
+    const challengeResourcesRule = rule('\\.challenge-resources')
+    const challengeOrganizerGridRule = rule('\\.challenge-organizer-grid')
+    const challengeSponsorLinkRule = rule('\\.challenge-sponsor a')
+
+    expect(challengeSectionRule).toContain('background: var(--paper-soft);')
+    expect(challengeFactsRule).toContain(
+      'grid-template-columns: repeat(3, minmax(0, 1fr));',
+    )
+    expect(challengeFlowRule).toContain(
+      'grid-template-columns: repeat(3, minmax(0, 1fr));',
+    )
+    expect(challengeTaskGridRule).toContain(
+      'grid-template-columns: repeat(2, minmax(0, 1fr));',
+    )
+    expect(challengePrizePoolRule).toContain('background: var(--ink-950);')
+    expect(challengePrizeGridRule).toContain(
+      'grid-template-columns: repeat(3, minmax(0, 1fr));',
+    )
+    expect(challengeTimelineRule).toContain(
+      'grid-template-columns: repeat(5, minmax(0, 1fr));',
+    )
+    expect(challengeResourcesRule).toContain(
+      'grid-template-columns: repeat(2, minmax(0, 1fr));',
+    )
+    expect(challengeOrganizerGridRule).toContain(
+      'grid-template-columns: repeat(2, minmax(0, 1fr));',
+    )
+    expect(challengePrizeHeadingRule).toContain('color: var(--orange);')
+    expect(challengePrizeHeadingRule).toContain(
+      'font-size: clamp(3rem, 7vw, 5.5rem);',
+    )
+    expect(challengeSponsorLinkRule).toContain('color: var(--orange-deep);')
+    expect(challengeSponsorLinkRule).toContain('font-family: var(--font-display);')
+    expect(challengeSponsorLinkRule).toContain('font-size: 1.35rem;')
+  })
+
   it('hides decorative Challenge sequence numerals from assistive technology', () => {
     render(<App />)
 
