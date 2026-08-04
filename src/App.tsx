@@ -13,6 +13,7 @@ import {
 } from 'lucide-react'
 import {
   awards,
+  challengeOrganizers,
   importantDates,
   introduction,
   organizers,
@@ -36,7 +37,13 @@ const navigation = [
   { label: 'Organizers', href: '#organizers' },
 ]
 
-function PersonCard({ person, kind }: { person: Person; kind: 'speaker' | 'organizer' }) {
+function PersonCard({
+  person,
+  kind,
+}: {
+  person: Person
+  kind: 'speaker' | 'organizer' | 'challenge-organizer'
+}) {
   const initials = person.name
     .split(' ')
     .map((part) => part[0])
@@ -53,7 +60,7 @@ function PersonCard({ person, kind }: { person: Person; kind: 'speaker' | 'organ
       </div>
       <div className="person-card__copy">
         <h3>{person.name}</h3>
-        <p>{person.institution}</p>
+        {person.institution && <p>{person.institution}</p>}
       </div>
     </article>
   )
@@ -507,6 +514,31 @@ function App() {
                 <PersonCard key={organizer.name} person={organizer} kind="organizer" />
               ))}
             </div>
+
+            <section
+              className="challenge-organizers"
+              aria-labelledby="challenge-organizers-title"
+              data-testid="challenge-organizers"
+            >
+              <header>
+                <p className="eyebrow">Challenge team</p>
+                <h3 id="challenge-organizers-title">Challenge Organizers</h3>
+                <p>
+                  The team coordinating the challenge, data release, and real-world
+                  evaluation.
+                </p>
+              </header>
+
+              <div className="challenge-organizer-grid">
+                {challengeOrganizers.map((organizer) => (
+                  <PersonCard
+                    key={organizer.name}
+                    person={organizer}
+                    kind="challenge-organizer"
+                  />
+                ))}
+              </div>
+            </section>
           </div>
         </section>
       </main>

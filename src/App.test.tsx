@@ -289,6 +289,7 @@ describe('workshop landing page', () => {
 
     expect(screen.getAllByTestId('speaker-card')).toHaveLength(5)
     expect(screen.getAllByTestId('organizer-card')).toHaveLength(7)
+    expect(screen.getAllByTestId('challenge-organizer-card')).toHaveLength(4)
 
     const scheduleTable = screen.getByRole('table', {
       name: 'IROS 2026 workshop schedule',
@@ -296,6 +297,55 @@ describe('workshop landing page', () => {
     expect(within(scheduleTable).getAllByRole('row')).toHaveLength(11)
     expect(within(scheduleTable).getAllByText('Tentative')).toHaveLength(2)
     expect(within(scheduleTable).getAllByText('Pending')).toHaveLength(3)
+  })
+
+  it('shows four Challenge Organizers after the Workshop Organizers without affiliations', () => {
+    render(<App />)
+
+    const workshopOrganizerGrid =
+      screen.getAllByTestId('organizer-card')[0].parentElement
+    const challengeOrganizerSection = screen.getByTestId('challenge-organizers')
+    const challengeOrganizerCards = within(challengeOrganizerSection).getAllByTestId(
+      'challenge-organizer-card',
+    )
+    const expectedOrganizers = [
+      {
+        name: 'Kai Li',
+        image: '/images/challenge-organizers/kai-li.jpg',
+      },
+      {
+        name: 'Ran Cheng',
+        image: '/images/challenge-organizers/ran-cheng.jpg',
+      },
+      {
+        name: 'Yan Shen',
+        image: '/images/organizers/yan-shen.jpg',
+      },
+      {
+        name: 'Hao Dong',
+        image: '/images/organizers/hao-dong.jpg',
+      },
+    ]
+
+    expect(workshopOrganizerGrid).not.toBeNull()
+    expect(workshopOrganizerGrid?.nextElementSibling).toBe(challengeOrganizerSection)
+    expect(challengeOrganizerCards).toHaveLength(4)
+    for (const [index, expectedOrganizer] of expectedOrganizers.entries()) {
+      const card = challengeOrganizerCards[index]
+
+      expect(
+        within(card).getByRole('heading', { name: expectedOrganizer.name }),
+      ).toBeInTheDocument()
+      expect(card.querySelector('.person-card__copy p')).toBeNull()
+      expect(within(card).getByRole('img')).toHaveAttribute(
+        'src',
+        expectedOrganizer.image,
+      )
+      expect(within(card).getByRole('img')).toHaveAttribute(
+        'alt',
+        expect.stringMatching(/^Portrait of challenge organizer/),
+      )
+    }
   })
 
   it('uses square invited-speaker cards with airy column spacing', () => {
@@ -559,10 +609,13 @@ describe('workshop landing page', () => {
   it("shows Hao Dong's complete organizer affiliation", () => {
     render(<App />)
 
-    const heading = screen.getByRole('heading', { name: 'Hao Dong' })
-    const card = heading.closest('[data-testid="organizer-card"]')
+    const card = screen
+      .getAllByTestId('organizer-card')
+      .find((organizerCard) =>
+        within(organizerCard).queryByRole('heading', { name: 'Hao Dong' }),
+      )
 
-    expect(card).not.toBeNull()
+    expect(card).toBeDefined()
     expect(
       within(card as HTMLElement).getByText('Peking University · PrimeBot'),
     ).toBeInTheDocument()
@@ -740,7 +793,7 @@ describe('workshop landing page', () => {
     render(<App />)
 
     const portraits = screen.getAllByRole('img', { name: /Portrait of/ })
-    expect(portraits).toHaveLength(12)
+    expect(portraits).toHaveLength(16)
     for (const portrait of portraits) {
       expect(portrait).toHaveAttribute('src', expect.stringMatching(/^\/images\//))
       expect(portrait).toHaveAttribute('alt', expect.stringMatching(/Portrait of/))
