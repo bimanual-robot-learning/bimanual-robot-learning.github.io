@@ -48,7 +48,7 @@ function PersonCard({
     .split(' ')
     .map((part) => part[0])
     .join('')
-  const NameHeading = kind === 'challenge-organizer' ? 'h4' : 'h3'
+  const NameHeading = 'h3'
 
   return (
     <article className={`person-card person-card--${kind}`} data-testid={`${kind}-card`}>
@@ -497,10 +497,15 @@ function App() {
 
         <ChallengeSection />
 
-        <section className="section section--organizers" id="organizers" aria-labelledby="organizers-title">
+        <section
+          className="section section--organizers"
+          id="organizers"
+          aria-labelledby="organizers-title"
+          data-testid="workshop-organizers"
+        >
           <div className="page-width">
             <div className="section-heading">
-              <p className="section-index">06 / Team</p>
+              <p className="section-index">06 / Workshop Team</p>
               <div>
                 <h2 id="organizers-title">Workshop Organizers</h2>
                 <p className="section-description">
@@ -515,31 +520,36 @@ function App() {
                 <PersonCard key={organizer.name} person={organizer} kind="organizer" />
               ))}
             </div>
+          </div>
+        </section>
 
-            <section
-              className="challenge-organizers"
-              aria-labelledby="challenge-organizers-title"
-              data-testid="challenge-organizers"
-            >
-              <header>
-                <p className="eyebrow">Challenge team</p>
-                <h3 id="challenge-organizers-title">Challenge Organizers</h3>
-                <p>
+        <section
+          className="section section--challenge-organizers"
+          id="challenge-organizers"
+          aria-labelledby="challenge-organizers-title"
+          data-testid="challenge-organizers"
+        >
+          <div className="page-width">
+            <div className="section-heading">
+              <p className="section-index">07 / Challenge Team</p>
+              <div>
+                <h2 id="challenge-organizers-title">Challenge Organizers</h2>
+                <p className="section-description">
                   The team coordinating the challenge, data release, and real-world
                   evaluation.
                 </p>
-              </header>
-
-              <div className="challenge-organizer-grid">
-                {challengeOrganizers.map((organizer) => (
-                  <PersonCard
-                    key={organizer.name}
-                    person={organizer}
-                    kind="challenge-organizer"
-                  />
-                ))}
               </div>
-            </section>
+            </div>
+
+            <div className="challenge-organizer-grid">
+              {challengeOrganizers.map((organizer) => (
+                <PersonCard
+                  key={organizer.name}
+                  person={organizer}
+                  kind="challenge-organizer"
+                />
+              ))}
+            </div>
           </div>
         </section>
       </main>

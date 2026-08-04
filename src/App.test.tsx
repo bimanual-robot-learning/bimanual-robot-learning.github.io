@@ -623,12 +623,14 @@ describe('workshop landing page', () => {
     expect(within(scheduleTable).getAllByText('Pending')).toHaveLength(3)
   })
 
-  it('shows four Challenge Organizers after the Workshop Organizers without affiliations', () => {
+  it('renders independent Workshop and Challenge organizer sections', () => {
     render(<App />)
 
-    const workshopOrganizerGrid =
-      screen.getAllByTestId('organizer-card')[0].parentElement
+    const workshopOrganizerSection = screen.getByTestId('workshop-organizers')
     const challengeOrganizerSection = screen.getByTestId('challenge-organizers')
+    const workshopOrganizerCards = within(workshopOrganizerSection).getAllByTestId(
+      'organizer-card',
+    )
     const challengeOrganizerCards = within(challengeOrganizerSection).getAllByTestId(
       'challenge-organizer-card',
     )
@@ -655,14 +657,31 @@ describe('workshop landing page', () => {
       },
     ]
 
-    expect(workshopOrganizerGrid).not.toBeNull()
+    expect(within(workshopOrganizerSection).getByText('06 / Workshop Team')).toBeVisible()
     expect(
-      within(screen.getAllByTestId('organizer-card')[0]).getByRole('heading', {
+      within(workshopOrganizerSection).getByRole('heading', {
+        name: 'Workshop Organizers',
+        level: 2,
+      }),
+    ).toBeInTheDocument()
+    expect(within(challengeOrganizerSection).getByText('07 / Challenge Team')).toBeVisible()
+    expect(
+      within(challengeOrganizerSection).getByRole('heading', {
+        name: 'Challenge Organizers',
+        level: 2,
+      }),
+    ).toBeInTheDocument()
+    expect(workshopOrganizerSection).not.toContainElement(challengeOrganizerSection)
+    expect(
+      workshopOrganizerSection.compareDocumentPosition(challengeOrganizerSection),
+    ).toBe(Node.DOCUMENT_POSITION_FOLLOWING)
+    expect(workshopOrganizerCards).toHaveLength(7)
+    expect(
+      within(workshopOrganizerCards[0]).getByRole('heading', {
         name: 'Yan Shen',
         level: 3,
       }),
     ).toBeInTheDocument()
-    expect(workshopOrganizerGrid?.nextElementSibling).toBe(challengeOrganizerSection)
     expect(challengeOrganizerCards).toHaveLength(4)
     for (const [index, expectedOrganizer] of expectedOrganizers.entries()) {
       const card = challengeOrganizerCards[index]
@@ -670,7 +689,7 @@ describe('workshop landing page', () => {
       expect(
         within(card).getByRole('heading', {
           name: expectedOrganizer.name,
-          level: 4,
+          level: 3,
         }),
       ).toBeInTheDocument()
       expect(card.querySelector('.person-card__copy p')).toBeNull()
