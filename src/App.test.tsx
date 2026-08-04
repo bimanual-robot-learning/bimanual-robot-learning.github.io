@@ -28,7 +28,7 @@ const extractCssBlock = (source: string, marker: string) => {
   return source.slice(openingBrace + 1, closingBrace)
 }
 
-const extractCssRules = (source: string, selector: string) => {
+const findCssRules = (source: string, selector: string) => {
   let cursor = 0
   const matches: Array<{ declarations: string; selectors: string[] }> = []
 
@@ -45,6 +45,11 @@ const extractCssRules = (source: string, selector: string) => {
     cursor = closingBrace + 1
   }
 
+  return matches
+}
+
+const extractCssRules = (source: string, selector: string) => {
+  const matches = findCssRules(source, selector)
   if (matches.length === 0) throw new Error(`Missing CSS rule for ${selector}`)
   return matches
 }
@@ -316,6 +321,17 @@ describe('workshop landing page', () => {
     ).declarations
     expect(tabletFourthMilestone).toContain('padding-left: 0;')
     expect(tabletFourthMilestone).toContain('border-left: 0;')
+    for (const selector of [
+      '.challenge-flow',
+      '.challenge-task-grid',
+      '.challenge-prize-grid',
+      '.challenge-organizer-grid',
+    ]) {
+      const tabletOverrides = findCssRules(tabletMedia, selector)
+        .map(({ declarations }) => declarations)
+        .join('\n')
+      expect(tabletOverrides).not.toContain('grid-template-columns: 1fr;')
+    }
 
     const mobileStack = extractCssRule(mobileMedia, '.challenge-facts')
     expect(mobileStack.selectors).toEqual(
@@ -337,6 +353,12 @@ describe('workshop landing page', () => {
     ).declarations
     expect(mobileFact).toContain('border-right: 0;')
     expect(mobileFact).toContain('border-bottom: 1px solid var(--line-light);')
+    expect(
+      extractCssRule(mobileMedia, '.challenge-facts > div + div').declarations,
+    ).toContain('border-left: 0;')
+    expect(
+      extractCssRule(mobileMedia, '.challenge-facts > div:last-child').declarations,
+    ).toContain('border-bottom: 0;')
 
     const mobileTimeline = extractCssRules(mobileMedia, '.challenge-timeline > ol')
       .map(({ declarations }) => declarations)
