@@ -4,9 +4,39 @@ import { describe, expect, it } from 'vitest'
 import App from './App'
 import appStyles from './App.css?raw'
 import indexStyles from './index.css?raw'
-import { workshopMeta } from './data/workshop'
+import { challenge, challengeOrganizers, workshopMeta } from './data/workshop'
 
 describe('workshop landing page', () => {
+  it('defines the complete household manipulation challenge content', () => {
+    expect(challenge.title).toBe(
+      'Towards Bimanual Intelligence: A Real-World Household Manipulation Challenge',
+    )
+    expect(challenge.facts).toHaveLength(3)
+    expect(challenge.stages).toHaveLength(3)
+    expect(challenge.tasks).toHaveLength(4)
+    expect(challenge.prizePoolTotal).toBe('USD 2,000')
+    expect(challenge.prizes.map(({ amount }) => amount)).toEqual([
+      'USD 1,000',
+      'USD 500',
+      'USD 500',
+    ])
+    expect(challenge.timeline).toHaveLength(5)
+    expect(challenge.timeline.filter(({ time }) => time)).toHaveLength(3)
+    expect(challenge.resources).toEqual([
+      { label: 'Dataset', status: 'coming-soon' },
+      { label: 'Evaluation Portal', status: 'coming-soon' },
+    ])
+    expect(challengeOrganizers.map(({ name }) => name)).toEqual([
+      'Kai Li',
+      'Ran Cheng',
+      'Yan Shen',
+      'Hao Dong',
+    ])
+    expect(
+      challengeOrganizers.every(({ institution }) => institution === undefined),
+    ).toBe(true)
+  })
+
   it('renders the workshop identity and every primary section', () => {
     render(<App />)
 

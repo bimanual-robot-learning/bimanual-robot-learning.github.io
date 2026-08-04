@@ -23,9 +23,59 @@ export interface ScheduleEntry {
 
 export interface Person {
   name: string
-  institution: string
+  institution?: string
   image: string
   imageAlt: string
+}
+
+export interface ChallengeFact {
+  value: string
+  label: string
+}
+
+export interface ChallengeStage {
+  step: string
+  title: string
+  description: string
+}
+
+export interface ChallengeTask {
+  title: string
+  description: string
+}
+
+export interface ChallengePrize {
+  place: string
+  amount: string
+  recipient: string
+  accent: 'primary' | 'secondary'
+}
+
+export interface ChallengeMilestone {
+  label: string
+  date: string
+  time?: string
+}
+
+export interface ChallengeResource {
+  label: string
+  status: 'coming-soon'
+}
+
+export interface ChallengeInfo {
+  eyebrow: string
+  title: string
+  sponsorLine: string
+  introduction: string
+  scoringNote: string
+  facts: ChallengeFact[]
+  stages: ChallengeStage[]
+  tasks: ChallengeTask[]
+  prizePoolTotal: string
+  prizePoolNote: string
+  prizes: ChallengePrize[]
+  timeline: ChallengeMilestone[]
+  resources: ChallengeResource[]
 }
 
 export interface TopicGroup {
@@ -84,6 +134,146 @@ export const workshopMeta: WorkshopMeta = {
     'https://openreview.net/group?id=IEEE.org%2FIROS%2F2026%2FWorkshop%2FBimanual_Manipulation',
   repositoryUrl: 'https://github.com/bimanual-robot-learning/bimanual-robot-learning.github.io',
 }
+
+export const challenge: ChallengeInfo = {
+  eyebrow: 'Challenge Track · IROS 2026',
+  title:
+    'Towards Bimanual Intelligence: A Real-World Household Manipulation Challenge',
+  sponsorLine: 'Designed and sponsored by',
+  introduction:
+    'Designed and sponsored by PrimeBot, this challenge focuses on real-world bimanual manipulation in household environments. Participants will train on thousands of hours of real-robot teleoperation and UMI data spanning diverse household tasks, with the freedom to design their own data mixtures and training strategies.',
+  scoringNote:
+    'Final rankings will be determined by a combination of the online evaluation score and the final real-world evaluation score. Detailed scoring protocols will be announced before online evaluation opens.',
+  facts: [
+    {
+      value: 'Thousands of hours',
+      label: 'Real-world demonstrations',
+    },
+    {
+      value: 'Teleoperation + UMI',
+      label: 'Two complementary data sources',
+    },
+    {
+      value: 'Up to 5 finalists',
+      label: 'Selected for real-world evaluation',
+    },
+  ],
+  stages: [
+    {
+      step: '01',
+      title: 'Train',
+      description:
+        'Develop data mixtures and training strategies using the released datasets.',
+    },
+    {
+      step: '02',
+      title: 'Qualify Online',
+      description: 'Submit models through the online evaluation portal.',
+    },
+    {
+      step: '03',
+      title: 'Evaluate in the Real World',
+      description:
+        'Up to five top-performing entries advance to organized real-world evaluations.',
+    },
+  ],
+  tasks: [
+    {
+      title: 'Open the Washer Door',
+      description:
+        'Use the gripper to fully open the washing machine door.',
+    },
+    {
+      title: 'Load the Washer',
+      description:
+        'Place two pieces of clothing into the washing machine.',
+    },
+    {
+      title: 'Close the Washer Door',
+      description:
+        'Use the gripper to close the washing machine door securely.',
+    },
+    {
+      title: 'Fold Clothing',
+      description:
+        'Unfold an item of clothing and fold it neatly.',
+    },
+  ],
+  prizePoolTotal: 'USD 2,000',
+  prizePoolNote: 'in total prizes',
+  prizes: [
+    {
+      place: '1st Place',
+      amount: 'USD 1,000',
+      recipient: 'One winning team',
+      accent: 'primary',
+    },
+    {
+      place: '2nd Place',
+      amount: 'USD 500',
+      recipient: 'One winning team',
+      accent: 'secondary',
+    },
+    {
+      place: '3rd Place',
+      amount: 'USD 500',
+      recipient: 'One winning team',
+      accent: 'secondary',
+    },
+  ],
+  timeline: [
+    {
+      label: 'Sample Data Release',
+      date: 'August 7, 2026',
+      time: '11:59 PM AOE',
+    },
+    {
+      label: 'Full Dataset Release',
+      date: 'August 11, 2026',
+      time: '11:59 PM AOE',
+    },
+    {
+      label: 'Online Evaluation Opens',
+      date: 'August 25, 2026',
+      time: '11:59 PM AOE',
+    },
+    {
+      label: 'First Real-World Evaluation',
+      date: 'September 11, 2026',
+    },
+    {
+      label: 'Final Real-World Evaluation',
+      date: 'September 21, 2026',
+    },
+  ],
+  resources: [
+    { label: 'Dataset', status: 'coming-soon' },
+    { label: 'Evaluation Portal', status: 'coming-soon' },
+  ],
+}
+
+export const challengeOrganizers: Person[] = [
+  {
+    name: 'Kai Li',
+    image: '/images/challenge-organizers/kai-li.jpg',
+    imageAlt: 'Portrait of challenge organizer Kai Li',
+  },
+  {
+    name: 'Ran Cheng',
+    image: '/images/challenge-organizers/ran-cheng.jpg',
+    imageAlt: 'Portrait of challenge organizer Ran Cheng',
+  },
+  {
+    name: 'Yan Shen',
+    image: '/images/organizers/yan-shen.jpg',
+    imageAlt: 'Portrait of challenge organizer Yan Shen',
+  },
+  {
+    name: 'Hao Dong',
+    image: '/images/organizers/hao-dong.jpg',
+    imageAlt: 'Portrait of challenge organizer Hao Dong',
+  },
+]
 
 export const introduction: {
   points: IntroductionPoint[]
