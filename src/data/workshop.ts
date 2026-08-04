@@ -57,10 +57,17 @@ export interface ChallengeMilestone {
   time?: string
 }
 
-export interface ChallengeResource {
-  label: string
-  status: 'coming-soon'
-}
+export type ChallengeResource =
+  | {
+      label: string
+      status: 'coming-soon'
+      url?: never
+    }
+  | {
+      label: string
+      status: 'available'
+      url: string
+    }
 
 export interface ChallengeInfo {
   eyebrow: string

@@ -299,7 +299,7 @@ describe('workshop landing page', () => {
     expectGridColumns('.challenge-timeline > ol', 5)
     expectGridColumns('.challenge-resources', 2)
     expectGridColumns('.challenge-organizer-grid', 2)
-    expect(styleFor('.challenge-prize-pool > header h3').color).toBe(
+    expect(styleFor('.challenge-prize-pool > header .challenge-prize-total').color).toBe(
       'var(--orange)',
     )
     expect(styleFor('.challenge-sponsor a').color).toBe('var(--orange-deep)')
@@ -467,6 +467,13 @@ describe('workshop landing page', () => {
 
     const prizePool = screen.getByTestId('challenge-prize-pool')
 
+    expect(
+      within(prizePool).getByRole('heading', {
+        name: 'Challenge Prize Pool',
+        level: 3,
+      }),
+    ).toBeInTheDocument()
+    expect(prizePool).toHaveAccessibleName('Challenge Prize Pool')
     expect(within(prizePool).getByText('USD 2,000')).toBeInTheDocument()
     const prizes = within(prizePool).getAllByTestId('challenge-prize')
     expect(prizes).toHaveLength(3)
@@ -515,6 +522,37 @@ describe('workshop landing page', () => {
       expect(within(resource).getByText('Coming Soon')).toBeInTheDocument()
       expect(resource.closest('a, button')).toBeNull()
       expect(resource).not.toHaveAttribute('tabindex')
+    }
+  })
+
+  it('turns an available Challenge resource into a safe external call to action', () => {
+    const originalResources = [...challenge.resources]
+    challenge.resources.splice(
+      0,
+      challenge.resources.length,
+      {
+        label: 'Dataset',
+        status: 'available',
+        url: 'https://huggingface.co/datasets/example/household-challenge',
+      } as never,
+      originalResources[1],
+    )
+
+    try {
+      render(<App />)
+
+      const challengeSection = screen.getByTestId('challenge-section')
+      const datasetLink = within(challengeSection).getByRole('link', { name: /Dataset/i })
+
+      expect(datasetLink).toHaveAttribute(
+        'href',
+        'https://huggingface.co/datasets/example/household-challenge',
+      )
+      expect(datasetLink).toHaveAttribute('target', '_blank')
+      expect(datasetLink).toHaveAttribute('rel', 'noreferrer')
+      expect(within(datasetLink).queryByText('Coming Soon')).not.toBeInTheDocument()
+    } finally {
+      challenge.resources.splice(0, challenge.resources.length, ...originalResources)
     }
   })
 

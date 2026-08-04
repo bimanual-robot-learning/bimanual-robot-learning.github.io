@@ -72,8 +72,10 @@ function ChallengeSection() {
         >
           <div className="challenge-prize-pool__grid" aria-hidden="true" />
           <header>
-            <p className="eyebrow">Challenge Prize Pool</p>
-            <h3 id="challenge-prize-title">{challenge.prizePoolTotal}</h3>
+            <h3 className="eyebrow" id="challenge-prize-title">
+              Challenge Prize Pool
+            </h3>
+            <p className="challenge-prize-total">{challenge.prizePoolTotal}</p>
             <p>{challenge.prizePoolNote}</p>
           </header>
           <div className="challenge-prize-grid">
@@ -107,12 +109,28 @@ function ChallengeSection() {
             ))}
           </ol>
           <div className="challenge-resources" aria-label="Challenge resources">
-            {challenge.resources.map((resource) => (
-              <div data-testid="challenge-resource" key={resource.label}>
-                <span>{resource.label}</span>
-                <b>Coming Soon</b>
-              </div>
-            ))}
+            {challenge.resources.map((resource) =>
+              resource.status === 'available' ? (
+                <a
+                  data-testid="challenge-resource"
+                  href={resource.url}
+                  key={resource.label}
+                  rel="noreferrer"
+                  target="_blank"
+                >
+                  <span>{resource.label}</span>
+                  <b>
+                    Open
+                    <ArrowUpRight size={14} aria-hidden="true" />
+                  </b>
+                </a>
+              ) : (
+                <div data-testid="challenge-resource" key={resource.label}>
+                  <span>{resource.label}</span>
+                  <b>Coming Soon</b>
+                </div>
+              ),
+            )}
           </div>
         </section>
       </div>

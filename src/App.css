@@ -1553,7 +1553,7 @@
   color: var(--cyan);
 }
 
-.challenge-prize-pool > header h3 {
+.challenge-prize-pool > header .challenge-prize-total {
   margin: 0;
   color: var(--orange);
   font-family: var(--font-display);
@@ -1692,7 +1692,8 @@
   gap: 14px;
 }
 
-.challenge-resources > div {
+.challenge-resources > div,
+.challenge-resources > a {
   display: flex;
   min-height: 82px;
   padding: 20px 22px;
@@ -1702,6 +1703,7 @@
   background: rgba(82, 216, 230, 0.045);
   border: 1px dashed rgba(27, 132, 153, 0.38);
   border-radius: 6px;
+  text-decoration: none;
 }
 
 .challenge-resources span {
@@ -1712,6 +1714,9 @@
 }
 
 .challenge-resources b {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
   color: var(--cyan-deep);
   font-family: var(--font-mono);
   font-size: 0.66rem;
@@ -2411,7 +2416,8 @@
     gap: 3px;
   }
 
-  .challenge-resources > div {
+  .challenge-resources > div,
+  .challenge-resources > a {
     align-items: flex-start;
     flex-direction: column;
     gap: 5px;
