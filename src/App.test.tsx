@@ -52,9 +52,71 @@ describe('workshop landing page', () => {
       'Workshop Schedule',
       'Invited Speakers',
       'Call for Papers',
+      'Towards Bimanual Intelligence: A Real-World Household Manipulation Challenge',
       'Workshop Organizers',
     ]) {
       expect(screen.getByRole('heading', { name: section })).toBeInTheDocument()
+    }
+  })
+
+  it('places the Challenge between Call for Papers and Organizers', () => {
+    render(<App />)
+
+    const callForPapers = document.querySelector('#call-for-papers')
+    const challengeSection = screen.getByTestId('challenge-section')
+    const organizers = document.querySelector('#organizers')
+
+    expect(callForPapers?.nextElementSibling).toBe(challengeSection)
+    expect(challengeSection.nextElementSibling).toBe(organizers)
+    expect(screen.getByRole('link', { name: 'Challenge' })).toHaveAttribute(
+      'href',
+      '#challenge',
+    )
+  })
+
+  it('explains the Challenge evaluation flow and household tasks', () => {
+    render(<App />)
+
+    const challengeSection = screen.getByTestId('challenge-section')
+
+    expect(
+      within(challengeSection).getByRole('heading', {
+        name: challenge.title,
+        level: 2,
+      }),
+    ).toBeInTheDocument()
+    expect(within(challengeSection).getAllByTestId('challenge-fact')).toHaveLength(3)
+    expect(within(challengeSection).getAllByTestId('challenge-stage')).toHaveLength(3)
+    expect(within(challengeSection).getAllByTestId('challenge-task')).toHaveLength(4)
+    expect(within(challengeSection).getByText(challenge.scoringNote)).toBeVisible()
+  })
+
+  it('features the complete Challenge Prize Pool without multiplier notation', () => {
+    render(<App />)
+
+    const prizePool = screen.getByTestId('challenge-prize-pool')
+
+    expect(within(prizePool).getByText('USD 2,000')).toBeInTheDocument()
+    expect(within(prizePool).getAllByTestId('challenge-prize')).toHaveLength(3)
+    expect(within(prizePool).getAllByText('USD 1,000')).toHaveLength(1)
+    expect(within(prizePool).getAllByText('USD 500')).toHaveLength(2)
+    expect(prizePool).not.toHaveTextContent('×')
+  })
+
+  it('renders five Challenge milestones and two non-interactive resource states', () => {
+    render(<App />)
+
+    const challengeSection = screen.getByTestId('challenge-section')
+    const milestones = within(challengeSection).getAllByTestId('challenge-milestone')
+    const resources = within(challengeSection).getAllByTestId('challenge-resource')
+
+    expect(milestones).toHaveLength(5)
+    expect(challengeSection.textContent?.match(/11:59 PM AOE/g)).toHaveLength(3)
+    expect(resources).toHaveLength(2)
+    for (const resource of resources) {
+      expect(within(resource).getByText('Coming Soon')).toBeInTheDocument()
+      expect(resource.closest('a, button')).toBeNull()
+      expect(resource).not.toHaveAttribute('tabindex')
     }
   })
 
@@ -527,10 +589,13 @@ describe('workshop landing page', () => {
       expect(link).toHaveAttribute('rel', 'noreferrer')
     }
 
-    expect(screen.getByRole('link', { name: /PrimeBot/i })).toHaveAttribute(
-      'href',
-      'https://www.primebot.cn/',
-    )
+    const primeBotLinks = screen.getAllByRole('link', { name: /PrimeBot/i })
+    expect(primeBotLinks).toHaveLength(2)
+    for (const link of primeBotLinks) {
+      expect(link).toHaveAttribute('href', 'https://www.primebot.cn/')
+      expect(link).toHaveAttribute('target', '_blank')
+      expect(link).toHaveAttribute('rel', 'noreferrer')
+    }
     expect(screen.getByRole('link', { name: /GitHub repository/i })).toHaveAttribute(
       'href',
       'https://github.com/bimanual-robot-learning/bimanual-robot-learning.github.io',

@@ -24,6 +24,7 @@ import {
   workshopMeta,
   type Person,
 } from './data/workshop'
+import ChallengeSection from './components/ChallengeSection'
 import './App.css'
 
 const navigation = [
@@ -31,6 +32,7 @@ const navigation = [
   { label: 'Schedule', href: '#schedule' },
   { label: 'Speakers', href: '#speakers' },
   { label: 'Call for Papers', href: '#call-for-papers' },
+  { label: 'Challenge', href: '#challenge' },
   { label: 'Organizers', href: '#organizers' },
 ]
 
@@ -485,10 +487,12 @@ function App() {
           </div>
         </section>
 
+        <ChallengeSection />
+
         <section className="section section--organizers" id="organizers" aria-labelledby="organizers-title">
           <div className="page-width">
             <div className="section-heading">
-              <p className="section-index">05 / Team</p>
+              <p className="section-index">06 / Team</p>
               <div>
                 <h2 id="organizers-title">Workshop Organizers</h2>
                 <p className="section-description">
