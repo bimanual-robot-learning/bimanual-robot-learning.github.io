@@ -312,18 +312,22 @@ describe('workshop landing page', () => {
       {
         name: 'Kai Li',
         image: '/images/challenge-organizers/kai-li.jpg',
+        imageAlt: 'Portrait of challenge organizer Kai Li',
       },
       {
         name: 'Ran Cheng',
         image: '/images/challenge-organizers/ran-cheng.jpg',
+        imageAlt: 'Portrait of challenge organizer Ran Cheng',
       },
       {
         name: 'Yan Shen',
         image: '/images/organizers/yan-shen.jpg',
+        imageAlt: 'Portrait of challenge organizer Yan Shen',
       },
       {
         name: 'Hao Dong',
         image: '/images/organizers/hao-dong.jpg',
+        imageAlt: 'Portrait of challenge organizer Hao Dong',
       },
     ]
 
@@ -343,7 +347,7 @@ describe('workshop landing page', () => {
       )
       expect(within(card).getByRole('img')).toHaveAttribute(
         'alt',
-        expect.stringMatching(/^Portrait of challenge organizer/),
+        expectedOrganizer.imageAlt,
       )
     }
   })
