@@ -55,9 +55,9 @@ function ChallengeSection() {
           </div>
         </section>
 
-        <section className="challenge-block" aria-labelledby="challenge-tasks-title">
-          <p className="eyebrow">Real-world evaluation scope</p>
-          <h3 id="challenge-tasks-title">Household manipulation tasks</h3>
+        <section className="challenge-tasks" aria-labelledby="challenge-tasks-title">
+          <p className="eyebrow">Real-Robot Evaluation Scope</p>
+          <h3 id="challenge-tasks-title">Household Manipulation Tasks</h3>
           <div className="challenge-task-grid">
             {challenge.tasks.map((task, index) => (
               <article data-testid="challenge-task" key={task.title}>
@@ -74,13 +74,13 @@ function ChallengeSection() {
           aria-labelledby="challenge-prize-title"
           data-testid="challenge-prize-pool"
         >
-          <div className="challenge-prize-pool__grid" aria-hidden="true" />
           <header>
             <h3 className="eyebrow" id="challenge-prize-title">
               Challenge Prize Pool
             </h3>
-            <p className="challenge-prize-total">{challenge.prizePoolTotal}</p>
-            <p>{challenge.prizePoolNote}</p>
+            <p className="challenge-prize-total">
+              {challenge.prizePoolTotal} Total
+            </p>
           </header>
           <div className="challenge-prize-grid">
             {challenge.prizes.map((prize) => (
@@ -91,7 +91,6 @@ function ChallengeSection() {
               >
                 <h4>{prize.place}</h4>
                 <strong>{prize.amount}</strong>
-                <p>{prize.recipient}</p>
               </article>
             ))}
           </div>

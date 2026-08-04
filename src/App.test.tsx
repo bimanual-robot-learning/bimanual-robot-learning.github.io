@@ -315,9 +315,15 @@ describe('workshop landing page', () => {
     expectGridColumns('.challenge-timeline > ol', 5)
     expectGridColumns('.challenge-resources', 2)
     expectGridColumns('.challenge-organizer-grid', 2)
-    expect(styleFor('.challenge-prize-pool > header .challenge-prize-total').color).toBe(
-      'var(--orange)',
-    )
+    expect(
+      extractCssProperty(
+        extractCssRule(
+          appStyles,
+          '.challenge-prize-pool > header .challenge-prize-total',
+        ).declarations,
+        'color',
+      ),
+    ).toBe('var(--orange)')
     expect(styleFor('.challenge-sponsor a').color).toBe('var(--orange-deep)')
     stylesheet.remove()
   })
@@ -478,6 +484,35 @@ describe('workshop landing page', () => {
     }
   })
 
+  it('presents the complete household manipulation task scope in order', () => {
+    render(<App />)
+
+    const tasksHeading = screen.getByRole('heading', {
+      name: 'Household Manipulation Tasks',
+      level: 3,
+    })
+    const tasksSection = tasksHeading.closest('section')
+
+    expect(tasksSection).toHaveClass('challenge-tasks')
+    expect(tasksSection).not.toHaveClass('challenge-block')
+
+    const taskCards = within(tasksSection as HTMLElement).getAllByTestId(
+      'challenge-task',
+    )
+    expect(taskCards).toHaveLength(challenge.tasks.length)
+    for (const [index, expectedTask] of challenge.tasks.entries()) {
+      expect(
+        within(taskCards[index]).getByRole('heading', {
+          name: expectedTask.title,
+          level: 4,
+        }),
+      ).toBeInTheDocument()
+      expect(
+        within(taskCards[index]).getByText(expectedTask.description, { exact: true }),
+      ).toBeVisible()
+    }
+  })
+
   it('features the complete Challenge Prize Pool without multiplier notation', () => {
     render(<App />)
 
@@ -490,7 +525,8 @@ describe('workshop landing page', () => {
       }),
     ).toBeInTheDocument()
     expect(prizePool).toHaveAccessibleName('Challenge Prize Pool')
-    expect(within(prizePool).getByText('USD 2,000')).toBeInTheDocument()
+    expect(within(prizePool).getByText('USD 2,000 Total', { exact: true })).toBeVisible()
+    expect(within(prizePool).queryByText(/One winning team/i)).not.toBeInTheDocument()
     const prizes = within(prizePool).getAllByTestId('challenge-prize')
     expect(prizes).toHaveLength(3)
     for (const [index, expectedPrize] of challenge.prizes.entries()) {
@@ -505,6 +541,7 @@ describe('workshop landing page', () => {
     expect(within(prizePool).getAllByText('USD 1,000')).toHaveLength(1)
     expect(within(prizePool).getAllByText('USD 500')).toHaveLength(2)
     expect(prizePool).not.toHaveTextContent('×')
+    expect(prizePool.querySelector('.challenge-prize-pool__grid')).not.toBeInTheDocument()
   })
 
   it('renders five Challenge milestones and two non-interactive resource states', () => {
