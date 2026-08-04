@@ -30,8 +30,8 @@ function ChallengeSection() {
         <dl className="challenge-facts" aria-label="Challenge at a glance">
           {challenge.facts.map((fact) => (
             <div data-testid="challenge-fact" key={fact.label}>
-              <dt>{fact.value}</dt>
-              <dd>{fact.label}</dd>
+              <dt>{fact.label}</dt>
+              <dd>{fact.value}</dd>
             </div>
           ))}
         </dl>
@@ -42,7 +42,7 @@ function ChallengeSection() {
           <ol className="challenge-flow">
             {challenge.stages.map((stage) => (
               <li data-testid="challenge-stage" key={stage.step}>
-                <span>{stage.step}</span>
+                <span aria-hidden="true">{stage.step}</span>
                 <h4>{stage.title}</h4>
                 <p>{stage.description}</p>
               </li>
@@ -57,7 +57,7 @@ function ChallengeSection() {
           <div className="challenge-task-grid">
             {challenge.tasks.map((task, index) => (
               <article data-testid="challenge-task" key={task.title}>
-                <span>{String(index + 1).padStart(2, '0')}</span>
+                <span aria-hidden="true">{String(index + 1).padStart(2, '0')}</span>
                 <h4>{task.title}</h4>
                 <p>{task.description}</p>
               </article>
@@ -97,7 +97,7 @@ function ChallengeSection() {
           <ol>
             {challenge.timeline.map((milestone, index) => (
               <li data-testid="challenge-milestone" key={milestone.label}>
-                <span>{String(index + 1).padStart(2, '0')}</span>
+                <span aria-hidden="true">{String(index + 1).padStart(2, '0')}</span>
                 <h4>{milestone.label}</h4>
                 <p>
                   {milestone.date}

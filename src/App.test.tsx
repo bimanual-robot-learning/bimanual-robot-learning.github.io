@@ -193,6 +193,41 @@ describe('workshop landing page', () => {
     expect(within(challengeSection).getByText(challenge.scoringNote)).toBeVisible()
   })
 
+  it('uses definition semantics for Challenge fact labels and values', () => {
+    render(<App />)
+
+    const facts = screen.getAllByTestId('challenge-fact')
+    const expectedFacts = [
+      { label: 'Real-world demonstrations', value: 'Thousands of hours' },
+      {
+        label: 'Two complementary data sources',
+        value: 'Teleoperation + UMI',
+      },
+      { label: 'Selected for real-world evaluation', value: 'Up to 5 finalists' },
+    ]
+
+    expect(facts).toHaveLength(expectedFacts.length)
+    for (const [index, expectedFact] of expectedFacts.entries()) {
+      expect(facts[index].querySelector('dt')).toHaveTextContent(expectedFact.label)
+      expect(facts[index].querySelector('dd')).toHaveTextContent(expectedFact.value)
+    }
+  })
+
+  it('hides decorative Challenge sequence numerals from assistive technology', () => {
+    render(<App />)
+
+    const sequenceCards = [
+      ...screen.getAllByTestId('challenge-stage'),
+      ...screen.getAllByTestId('challenge-task'),
+      ...screen.getAllByTestId('challenge-milestone'),
+    ]
+
+    expect(sequenceCards).toHaveLength(12)
+    for (const card of sequenceCards) {
+      expect(card.querySelector(':scope > span')).toHaveAttribute('aria-hidden', 'true')
+    }
+  })
+
   it('features the complete Challenge Prize Pool without multiplier notation', () => {
     render(<App />)
 
