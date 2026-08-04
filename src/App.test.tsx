@@ -307,6 +307,10 @@ describe('workshop landing page', () => {
   })
 
   it('adapts the Challenge layout across tablet, mobile, and compact breakpoints', () => {
+    const narrowDesktopMedia = extractCssBlock(
+      appStyles,
+      '@media (max-width: 1120px)',
+    )
     const tabletMedia = extractCssBlock(appStyles, '@media (max-width: 920px)')
     const mobileMedia = extractCssBlock(appStyles, '@media (max-width: 720px)')
     const compactMedia = extractCssBlock(appStyles, '@media (max-width: 480px)')
@@ -338,6 +342,12 @@ describe('workshop landing page', () => {
         extractCssRule(appStyles, selector).declarations,
         'grid-template-columns',
       )
+      const narrowDesktopColumns = findCssRules(narrowDesktopMedia, selector)
+        .map(({ declarations }) =>
+          extractCssProperty(declarations, 'grid-template-columns'),
+        )
+        .filter((value): value is string => value !== undefined)
+        .at(-1)
       const tabletColumns = findCssRules(tabletMedia, selector)
         .map(({ declarations }) =>
           extractCssProperty(declarations, 'grid-template-columns'),
@@ -345,7 +355,9 @@ describe('workshop landing page', () => {
         .filter((value): value is string => value !== undefined)
         .at(-1)
 
-      expect(tabletColumns ?? baseColumns).toBe(expectedColumns)
+      expect(tabletColumns ?? narrowDesktopColumns ?? baseColumns).toBe(
+        expectedColumns,
+      )
     }
 
     const mobileStack = extractCssRule(mobileMedia, '.challenge-facts')
