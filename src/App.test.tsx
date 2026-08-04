@@ -507,13 +507,13 @@ describe('workshop landing page', () => {
     expect(
       extractCssRule(compactMedia, '.challenge-introduction').declarations,
     ).toContain('padding-left: 18px;')
-    const compactPrizeHeader = extractCssRule(
-      compactMedia,
+    const mobilePrizeHeader = extractCssRule(
+      mobileMedia,
       '.challenge-prize-pool > header',
     ).declarations
-    expect(compactPrizeHeader).toContain('align-items: flex-start;')
-    expect(compactPrizeHeader).toContain('flex-direction: column;')
-    expect(compactPrizeHeader).toContain('gap: 8px;')
+    expect(mobilePrizeHeader).toContain('align-items: flex-start;')
+    expect(mobilePrizeHeader).toContain('flex-direction: column;')
+    expect(mobilePrizeHeader).toContain('gap: 8px;')
     const compactSponsor = extractCssRule(
       compactMedia,
       '.challenge-sponsor',

@@ -2327,6 +2327,12 @@
     grid-template-columns: 112px minmax(0, 1fr);
   }
 
+  .challenge-prize-pool > header {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 8px;
+  }
+
   .site-footer__bottom {
     grid-template-columns: 1fr;
     gap: 10px;
@@ -2457,12 +2463,6 @@
 
   .challenge-introduction {
     padding-left: 18px;
-  }
-
-  .challenge-prize-pool > header {
-    align-items: flex-start;
-    flex-direction: column;
-    gap: 8px;
   }
 
   .challenge-sponsor {
