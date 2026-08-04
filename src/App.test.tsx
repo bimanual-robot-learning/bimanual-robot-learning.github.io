@@ -67,8 +67,14 @@ const extractCssProperty = (declarations: string, property: string) => {
 describe('workshop landing page', () => {
   it('stores the approved Challenge content', () => {
     expect(challenge).not.toHaveProperty('eyebrow')
+    expect(challenge).not.toHaveProperty('scoringNote')
+    expect(challenge).not.toHaveProperty('prizePoolNote')
     expect(challenge.title).toBe(
       'Towards Bimanual Intelligence: A Real-World Household Manipulation Challenge',
+    )
+    expect(challenge.sponsorLine).toBe('Designed and sponsored by')
+    expect(challenge.introduction).toBe(
+      'This challenge focuses on real-world bimanual manipulation in household environments. Participants will train on thousands of hours of real-robot teleoperation and UMI data spanning diverse household tasks, with the freedom to design their own data mixtures and training strategies.',
     )
     expect(challenge.facts).toEqual([
       { value: 'Thousands of hours', label: 'Real-world demonstrations' },
@@ -263,10 +269,10 @@ describe('workshop landing page', () => {
     const expectedFacts = [
       { label: 'Real-world demonstrations', value: 'Thousands of hours' },
       {
-        label: 'Two complementary data sources',
+        label: 'Complementary data sources',
         value: 'Teleoperation + UMI',
       },
-      { label: 'Selected for real-world evaluation', value: 'Up to 5 finalists' },
+      { label: 'Real-robot evaluation', value: '4 household tasks' },
     ]
 
     expect(facts).toHaveLength(expectedFacts.length)

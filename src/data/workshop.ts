@@ -150,7 +150,7 @@ export const challenge: ChallengeInfo = {
     'Towards Bimanual Intelligence: A Real-World Household Manipulation Challenge',
   sponsorLine: 'Designed and sponsored by',
   introduction:
-    'Designed and sponsored by PrimeBot, this challenge focuses on real-world bimanual manipulation in household environments. Participants will train on thousands of hours of real-robot teleoperation and UMI data spanning diverse household tasks, with the freedom to design their own data mixtures and training strategies.',
+    'This challenge focuses on real-world bimanual manipulation in household environments. Participants will train on thousands of hours of real-robot teleoperation and UMI data spanning diverse household tasks, with the freedom to design their own data mixtures and training strategies.',
   finalRanking: {
     label: 'Final Ranking',
     formula: 'Online evaluation score + final real-robot evaluation score',
