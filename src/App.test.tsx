@@ -287,7 +287,7 @@ describe('workshop landing page', () => {
     }
   })
 
-  it('uses the approved light Challenge field and prominent dark Prize Pool', () => {
+  it('uses the redesigned Challenge visual system', () => {
     const stylesheet = document.createElement('style')
     stylesheet.textContent = appStyles
     document.head.append(stylesheet)
@@ -306,15 +306,39 @@ describe('workshop landing page', () => {
       )
     }
 
-    expect(styleFor('.section--challenge').background).toBe('var(--paper-soft)')
-    expect(styleFor('.challenge-prize-pool').background).toBe('var(--ink-950)')
+    expect(styleFor('.section--challenge').background).toBe('var(--paper)')
+    expect(styleFor('.section--challenge-organizers').background).toBe(
+      'var(--paper)',
+    )
+    expect(styleFor('.challenge-facts').marginLeft).toBe('0px')
+    expect(styleFor('.challenge-prize-pool').background).not.toBe(
+      'var(--ink-950)',
+    )
     expectGridColumns('.challenge-facts', 3)
-    expectGridColumns('.challenge-flow', 3)
+    expectGridColumns('.challenge-flow', 2)
     expectGridColumns('.challenge-task-grid', 2)
     expectGridColumns('.challenge-prize-grid', 3)
     expectGridColumns('.challenge-timeline > ol', 5)
     expectGridColumns('.challenge-resources', 2)
-    expectGridColumns('.challenge-organizer-grid', 2)
+    expectGridColumns('.challenge-organizer-grid', 4)
+    expect(styleFor('.challenge-prize-grid').gap).toBe('0px')
+    expect(
+      extractCssProperty(
+        extractCssRule(
+          appStyles,
+          ".challenge-prize-grid article[data-accent='primary']",
+        ).declarations,
+        'background',
+      ),
+    ).toBe('transparent')
+    expect(styleFor('.challenge-evaluation').background).toBe(
+      'rgba(82, 216, 230, 0.08)',
+    )
+    const finalRanking = extractCssRule(
+      appStyles,
+      '.challenge-final-ranking',
+    ).declarations
+    expect(finalRanking).not.toMatch(/border-(?:top|bottom)\s*:/)
     expect(
       extractCssProperty(
         extractCssRule(
@@ -355,10 +379,10 @@ describe('workshop landing page', () => {
     expect(tabletFourthMilestone).toContain('padding-left: 0;')
     expect(tabletFourthMilestone).toContain('border-left: 0;')
     for (const [selector, expectedColumns] of [
-      ['.challenge-flow', 'repeat(3, minmax(0, 1fr))'],
+      ['.challenge-flow', 'repeat(2, minmax(0, 1fr))'],
       ['.challenge-task-grid', 'repeat(2, minmax(0, 1fr))'],
       ['.challenge-prize-grid', 'repeat(3, minmax(0, 1fr))'],
-      ['.challenge-organizer-grid', 'repeat(2, minmax(0, 1fr))'],
+      ['.challenge-organizer-grid', 'repeat(4, minmax(0, 1fr))'],
     ] as const) {
       const baseColumns = extractCssProperty(
         extractCssRule(appStyles, selector).declarations,
@@ -444,10 +468,10 @@ describe('workshop landing page', () => {
       extractCssRule(mobileMedia, '.person-card--challenge-organizer').declarations,
     ).toContain('grid-template-columns: 112px minmax(0, 1fr);')
 
-    const compactPanels = extractCssRule(compactMedia, '.challenge-block')
+    const compactPanels = extractCssRule(compactMedia, '.challenge-evaluation')
     expect(compactPanels.selectors).toEqual(
       expect.arrayContaining([
-        '.challenge-block',
+        '.challenge-evaluation',
         '.challenge-timeline',
         '.challenge-prize-pool',
       ]),
