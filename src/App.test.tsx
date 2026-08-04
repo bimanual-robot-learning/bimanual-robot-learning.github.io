@@ -484,7 +484,7 @@ describe('workshop landing page', () => {
     }
   })
 
-  it('presents the complete household manipulation task scope in order', () => {
+  it('renders the complete Household Manipulation Tasks scope in order', () => {
     render(<App />)
 
     const tasksHeading = screen.getByRole('heading', {
