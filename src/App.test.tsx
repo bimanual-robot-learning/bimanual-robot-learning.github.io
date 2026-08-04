@@ -219,7 +219,7 @@ describe('workshop landing page', () => {
     )
   })
 
-  it('explains the Challenge evaluation flow and household tasks', () => {
+  it('renders the redesigned Challenge introduction and evaluation', () => {
     render(<App />)
 
     const challengeSection = screen.getByTestId('challenge-section')
@@ -230,10 +230,19 @@ describe('workshop landing page', () => {
         level: 2,
       }),
     ).toBeInTheDocument()
+    expect(
+      within(challengeSection).queryByText('Challenge Track · IROS 2026'),
+    ).not.toBeInTheDocument()
+    expect(within(challengeSection).getByText(challenge.introduction)).toHaveClass(
+      'challenge-introduction',
+    )
     expect(within(challengeSection).getAllByTestId('challenge-fact')).toHaveLength(3)
 
     const stages = within(challengeSection).getAllByTestId('challenge-stage')
-    expect(stages).toHaveLength(3)
+    expect(stages).toHaveLength(2)
+    expect(
+      within(challengeSection).queryByRole('heading', { name: 'Train' }),
+    ).not.toBeInTheDocument()
     for (const [index, expectedStage] of challenge.stages.entries()) {
       expect(
         within(stages[index]).getByRole('heading', {
@@ -244,22 +253,18 @@ describe('workshop landing page', () => {
       expect(within(stages[index]).getByText(expectedStage.description)).toBeVisible()
     }
 
-    const tasks = within(challengeSection).getAllByTestId('challenge-task')
-    expect(tasks).toHaveLength(4)
-    for (const [index, expectedTask] of challenge.tasks.entries()) {
-      expect(
-        within(tasks[index]).getByRole('heading', {
-          name: expectedTask.title,
-          level: 4,
-        }),
-      ).toBeInTheDocument()
-      expect(within(tasks[index]).getByText(expectedTask.description)).toBeVisible()
-    }
-
     expect(
-      within(challengeSection).getByText(challenge.finalRanking.formula),
-    ).toBeVisible()
-    expect(within(challengeSection).getByText(challenge.finalRanking.note)).toBeVisible()
+      within(challengeSection).getByRole('heading', {
+        name: 'Evaluation Format',
+        level: 3,
+      }),
+    ).toBeInTheDocument()
+    const finalRanking = within(challengeSection).getByTestId(
+      'challenge-final-ranking',
+    )
+    expect(finalRanking).toHaveTextContent(challenge.finalRanking.label)
+    expect(finalRanking).toHaveTextContent(challenge.finalRanking.formula)
+    expect(finalRanking).toHaveTextContent(challenge.finalRanking.note)
   })
 
   it('uses definition semantics for Challenge fact labels and values', () => {
@@ -467,7 +472,7 @@ describe('workshop landing page', () => {
       ...screen.getAllByTestId('challenge-milestone'),
     ]
 
-    expect(sequenceCards).toHaveLength(12)
+    expect(sequenceCards).toHaveLength(11)
     for (const card of sequenceCards) {
       expect(card.querySelector(':scope > span')).toHaveAttribute('aria-hidden', 'true')
     }

@@ -9,23 +9,20 @@ function ChallengeSection() {
       aria-labelledby="challenge-title"
       data-testid="challenge-section"
     >
-      <div className="challenge-grid" aria-hidden="true" />
       <div className="page-width challenge-content">
-        <div className="section-heading">
+        <header className="challenge-heading">
           <p className="section-index">05 / Challenge Track</p>
-          <div>
-            <p className="eyebrow">{challenge.eyebrow}</p>
-            <h2 id="challenge-title">{challenge.title}</h2>
-            <p className="section-description">{challenge.introduction}</p>
-            <p className="challenge-sponsor">
-              {challenge.sponsorLine}{' '}
-              <a href={sponsor.url} target="_blank" rel="noreferrer">
-                {sponsor.name}
-                <ArrowUpRight size={16} aria-hidden="true" />
-              </a>
-            </p>
-          </div>
-        </div>
+          <h2 id="challenge-title">{challenge.title}</h2>
+          <p className="challenge-sponsor">
+            {challenge.sponsorLine}{' '}
+            <a href={sponsor.url} target="_blank" rel="noreferrer">
+              {sponsor.name}
+              <ArrowUpRight size={16} aria-hidden="true" />
+            </a>
+          </p>
+        </header>
+
+        <p className="challenge-introduction">{challenge.introduction}</p>
 
         <dl className="challenge-facts" aria-label="Challenge at a glance">
           {challenge.facts.map((fact) => (
@@ -36,9 +33,9 @@ function ChallengeSection() {
           ))}
         </dl>
 
-        <section className="challenge-block" aria-labelledby="evaluation-title">
-          <p className="eyebrow">Evaluation pipeline</p>
-          <h3 id="evaluation-title">From released data to real-world deployment</h3>
+        <section className="challenge-evaluation" aria-labelledby="evaluation-title">
+          <p className="eyebrow">How it works</p>
+          <h3 id="evaluation-title">Evaluation Format</h3>
           <ol className="challenge-flow">
             {challenge.stages.map((stage) => (
               <li data-testid="challenge-stage" key={stage.step}>
@@ -48,7 +45,14 @@ function ChallengeSection() {
               </li>
             ))}
           </ol>
-          <p className="challenge-scoring-note">{challenge.scoringNote}</p>
+          <div
+            className="challenge-final-ranking"
+            data-testid="challenge-final-ranking"
+          >
+            <p className="eyebrow">{challenge.finalRanking.label}</p>
+            <strong>{challenge.finalRanking.formula}</strong>
+            <p>{challenge.finalRanking.note}</p>
+          </div>
         </section>
 
         <section className="challenge-block" aria-labelledby="challenge-tasks-title">
