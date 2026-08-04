@@ -48,6 +48,7 @@ function PersonCard({
     .split(' ')
     .map((part) => part[0])
     .join('')
+  const NameHeading = kind === 'challenge-organizer' ? 'h4' : 'h3'
 
   return (
     <article className={`person-card person-card--${kind}`} data-testid={`${kind}-card`}>
@@ -59,7 +60,7 @@ function PersonCard({
         <span className="person-card__corner" aria-hidden="true" />
       </div>
       <div className="person-card__copy">
-        <h3>{person.name}</h3>
+        <NameHeading>{person.name}</NameHeading>
         {person.institution && <p>{person.institution}</p>}
       </div>
     </article>

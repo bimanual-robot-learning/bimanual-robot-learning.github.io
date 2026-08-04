@@ -332,13 +332,22 @@ describe('workshop landing page', () => {
     ]
 
     expect(workshopOrganizerGrid).not.toBeNull()
+    expect(
+      within(screen.getAllByTestId('organizer-card')[0]).getByRole('heading', {
+        name: 'Yan Shen',
+        level: 3,
+      }),
+    ).toBeInTheDocument()
     expect(workshopOrganizerGrid?.nextElementSibling).toBe(challengeOrganizerSection)
     expect(challengeOrganizerCards).toHaveLength(4)
     for (const [index, expectedOrganizer] of expectedOrganizers.entries()) {
       const card = challengeOrganizerCards[index]
 
       expect(
-        within(card).getByRole('heading', { name: expectedOrganizer.name }),
+        within(card).getByRole('heading', {
+          name: expectedOrganizer.name,
+          level: 4,
+        }),
       ).toBeInTheDocument()
       expect(card.querySelector('.person-card__copy p')).toBeNull()
       expect(within(card).getByRole('img')).toHaveAttribute(
