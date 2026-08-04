@@ -65,108 +65,53 @@ const extractCssProperty = (declarations: string, property: string) => {
 }
 
 describe('workshop landing page', () => {
-  it('defines the complete household manipulation challenge content', () => {
-    expect(challenge.title).toBe(
-      'Towards Bimanual Intelligence: A Real-World Household Manipulation Challenge',
-    )
-    expect(challenge.facts).toHaveLength(3)
+  it('stores the approved Challenge content', () => {
+    expect(challenge).not.toHaveProperty('eyebrow')
+    expect(challenge.facts).toEqual([
+      { value: 'Thousands of hours', label: 'Real-world demonstrations' },
+      { value: 'Teleoperation + UMI', label: 'Complementary data sources' },
+      { value: '4 household tasks', label: 'Real-robot evaluation' },
+    ])
     expect(challenge.stages).toEqual([
       {
         step: '01',
-        title: 'Train',
-        description:
-          'Develop data mixtures and training strategies using the released datasets.',
+        title: 'Online Evaluation',
+        description: 'Submit trained models through the online evaluation portal.',
       },
       {
         step: '02',
-        title: 'Qualify Online',
-        description: 'Submit models through the online evaluation portal.',
-      },
-      {
-        step: '03',
-        title: 'Evaluate in the Real World',
+        title: 'Real-Robot Evaluation',
         description:
-          'Up to five top-performing entries advance to organized real-world evaluations.',
+          'Up to five top-performing entries advance to household task evaluation.',
       },
     ])
-    expect(challenge.tasks).toEqual([
-      {
-        title: 'Open the Washer Door',
-        description: 'Use the gripper to fully open the washing machine door.',
-      },
-      {
-        title: 'Load the Washer',
-        description: 'Place two pieces of clothing into the washing machine.',
-      },
-      {
-        title: 'Close the Washer Door',
-        description: 'Use the gripper to close the washing machine door securely.',
-      },
-      {
-        title: 'Fold Clothing',
-        description: 'Unfold an item of clothing and fold it neatly.',
-      },
-    ])
-    expect(challenge.prizePoolTotal).toBe('USD 2,000')
+    expect(challenge.finalRanking).toEqual({
+      label: 'Final Ranking',
+      formula: 'Online evaluation score + final real-robot evaluation score',
+      note:
+        'Detailed scoring protocols will be announced before online evaluation opens.',
+    })
+    expect(challenge.tasks[1]).toEqual({
+      title: 'Put Clothing in the Washer',
+      description: 'Put two pieces of clothing into the washing machine.',
+    })
     expect(challenge.prizes).toEqual([
       {
         place: '1st Place',
         amount: 'USD 1,000',
-        recipient: 'One winning team',
         accent: 'primary',
       },
       {
         place: '2nd Place',
         amount: 'USD 500',
-        recipient: 'One winning team',
         accent: 'secondary',
       },
       {
         place: '3rd Place',
         amount: 'USD 500',
-        recipient: 'One winning team',
         accent: 'secondary',
       },
     ])
-    expect(challenge.timeline).toEqual([
-      {
-        label: 'Sample Data Release',
-        date: 'August 7, 2026',
-        time: '11:59 PM AOE',
-      },
-      {
-        label: 'Full Dataset Release',
-        date: 'August 11, 2026',
-        time: '11:59 PM AOE',
-      },
-      {
-        label: 'Online Evaluation Opens',
-        date: 'August 25, 2026',
-        time: '11:59 PM AOE',
-      },
-      {
-        label: 'First Real-World Evaluation',
-        date: 'September 11, 2026',
-      },
-      {
-        label: 'Final Real-World Evaluation',
-        date: 'September 21, 2026',
-      },
-    ])
-    expect(challenge.timeline.filter(({ time }) => time)).toHaveLength(3)
-    expect(challenge.resources).toEqual([
-      { label: 'Dataset', status: 'coming-soon' },
-      { label: 'Evaluation Portal', status: 'coming-soon' },
-    ])
-    expect(challengeOrganizers.map(({ name }) => name)).toEqual([
-      'Kai Li',
-      'Ran Cheng',
-      'Yan Shen',
-      'Hao Dong',
-    ])
-    expect(
-      challengeOrganizers.every(({ institution }) => institution === undefined),
-    ).toBe(true)
   })
 
   it('renders the workshop identity and every primary section', () => {

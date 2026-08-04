@@ -47,8 +47,13 @@ export interface ChallengeTask {
 export interface ChallengePrize {
   place: string
   amount: string
-  recipient: string
   accent: 'primary' | 'secondary'
+}
+
+export interface ChallengeFinalRanking {
+  label: 'Final Ranking'
+  formula: string
+  note: string
 }
 
 export interface ChallengeMilestone {
@@ -70,16 +75,14 @@ export type ChallengeResource =
     }
 
 export interface ChallengeInfo {
-  eyebrow: string
   title: string
   sponsorLine: string
   introduction: string
-  scoringNote: string
+  finalRanking: ChallengeFinalRanking
   facts: ChallengeFact[]
   stages: ChallengeStage[]
   tasks: ChallengeTask[]
   prizePoolTotal: string
-  prizePoolNote: string
   prizes: ChallengePrize[]
   timeline: ChallengeMilestone[]
   resources: ChallengeResource[]
@@ -143,14 +146,17 @@ export const workshopMeta: WorkshopMeta = {
 }
 
 export const challenge: ChallengeInfo = {
-  eyebrow: 'Challenge Track · IROS 2026',
   title:
     'Towards Bimanual Intelligence: A Real-World Household Manipulation Challenge',
   sponsorLine: 'Designed and sponsored by',
   introduction:
     'Designed and sponsored by PrimeBot, this challenge focuses on real-world bimanual manipulation in household environments. Participants will train on thousands of hours of real-robot teleoperation and UMI data spanning diverse household tasks, with the freedom to design their own data mixtures and training strategies.',
-  scoringNote:
-    'Final rankings will be determined by a combination of the online evaluation score and the final real-world evaluation score. Detailed scoring protocols will be announced before online evaluation opens.',
+  finalRanking: {
+    label: 'Final Ranking',
+    formula: 'Online evaluation score + final real-robot evaluation score',
+    note:
+      'Detailed scoring protocols will be announced before online evaluation opens.',
+  },
   facts: [
     {
       value: 'Thousands of hours',
@@ -158,30 +164,24 @@ export const challenge: ChallengeInfo = {
     },
     {
       value: 'Teleoperation + UMI',
-      label: 'Two complementary data sources',
+      label: 'Complementary data sources',
     },
     {
-      value: 'Up to 5 finalists',
-      label: 'Selected for real-world evaluation',
+      value: '4 household tasks',
+      label: 'Real-robot evaluation',
     },
   ],
   stages: [
     {
       step: '01',
-      title: 'Train',
-      description:
-        'Develop data mixtures and training strategies using the released datasets.',
+      title: 'Online Evaluation',
+      description: 'Submit trained models through the online evaluation portal.',
     },
     {
       step: '02',
-      title: 'Qualify Online',
-      description: 'Submit models through the online evaluation portal.',
-    },
-    {
-      step: '03',
-      title: 'Evaluate in the Real World',
+      title: 'Real-Robot Evaluation',
       description:
-        'Up to five top-performing entries advance to organized real-world evaluations.',
+        'Up to five top-performing entries advance to household task evaluation.',
     },
   ],
   tasks: [
@@ -191,9 +191,9 @@ export const challenge: ChallengeInfo = {
         'Use the gripper to fully open the washing machine door.',
     },
     {
-      title: 'Load the Washer',
+      title: 'Put Clothing in the Washer',
       description:
-        'Place two pieces of clothing into the washing machine.',
+        'Put two pieces of clothing into the washing machine.',
     },
     {
       title: 'Close the Washer Door',
@@ -207,24 +207,20 @@ export const challenge: ChallengeInfo = {
     },
   ],
   prizePoolTotal: 'USD 2,000',
-  prizePoolNote: 'in total prizes',
   prizes: [
     {
       place: '1st Place',
       amount: 'USD 1,000',
-      recipient: 'One winning team',
       accent: 'primary',
     },
     {
       place: '2nd Place',
       amount: 'USD 500',
-      recipient: 'One winning team',
       accent: 'secondary',
     },
     {
       place: '3rd Place',
       amount: 'USD 500',
-      recipient: 'One winning team',
       accent: 'secondary',
     },
   ],
