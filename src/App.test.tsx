@@ -6,6 +6,52 @@ import appStyles from './App.css?raw'
 import indexStyles from './index.css?raw'
 import { challenge, challengeOrganizers, workshopMeta } from './data/workshop'
 
+const findClosingBrace = (source: string, openingBrace: number) => {
+  let depth = 1
+  for (let index = openingBrace + 1; index < source.length; index += 1) {
+    if (source[index] === '{') depth += 1
+    if (source[index] === '}') depth -= 1
+    if (depth === 0) return index
+  }
+
+  throw new Error('Unclosed CSS block')
+}
+
+const extractCssBlock = (source: string, marker: string) => {
+  const markerStart = source.indexOf(marker)
+  expect(markerStart).toBeGreaterThanOrEqual(0)
+
+  const openingBrace = source.indexOf('{', markerStart + marker.length)
+  expect(openingBrace).toBeGreaterThan(markerStart)
+  const closingBrace = findClosingBrace(source, openingBrace)
+
+  return source.slice(openingBrace + 1, closingBrace)
+}
+
+const extractCssRules = (source: string, selector: string) => {
+  let cursor = 0
+  const matches: Array<{ declarations: string; selectors: string[] }> = []
+
+  while (cursor < source.length) {
+    const openingBrace = source.indexOf('{', cursor)
+    if (openingBrace === -1) break
+
+    const selectorText = source.slice(cursor, openingBrace).trim()
+    const closingBrace = findClosingBrace(source, openingBrace)
+    const declarations = source.slice(openingBrace + 1, closingBrace)
+    const selectors = selectorText.split(',').map((item) => item.trim())
+
+    if (selectors.includes(selector)) matches.push({ declarations, selectors })
+    cursor = closingBrace + 1
+  }
+
+  if (matches.length === 0) throw new Error(`Missing CSS rule for ${selector}`)
+  return matches
+}
+
+const extractCssRule = (source: string, selector: string) =>
+  extractCssRules(source, selector)[0]
+
 describe('workshop landing page', () => {
   it('defines the complete household manipulation challenge content', () => {
     expect(challenge.title).toBe(
@@ -246,6 +292,110 @@ describe('workshop landing page', () => {
     )
     expect(styleFor('.challenge-sponsor a').color).toBe('var(--orange-deep)')
     stylesheet.remove()
+  })
+
+  it('adapts the Challenge layout across tablet, mobile, and compact breakpoints', () => {
+    const tabletMedia = extractCssBlock(appStyles, '@media (max-width: 920px)')
+    const mobileMedia = extractCssBlock(appStyles, '@media (max-width: 720px)')
+    const compactMedia = extractCssBlock(appStyles, '@media (max-width: 480px)')
+
+    expect(extractCssRule(tabletMedia, '.challenge-facts').declarations).toContain(
+      'margin-left: 0;',
+    )
+    const tabletTimeline = extractCssRule(
+      tabletMedia,
+      '.challenge-timeline > ol',
+    ).declarations
+    expect(tabletTimeline).toContain(
+      'grid-template-columns: repeat(3, minmax(0, 1fr));',
+    )
+    expect(tabletTimeline).toContain('row-gap: 24px;')
+    const tabletFourthMilestone = extractCssRule(
+      tabletMedia,
+      '.challenge-timeline li:nth-child(4)',
+    ).declarations
+    expect(tabletFourthMilestone).toContain('padding-left: 0;')
+    expect(tabletFourthMilestone).toContain('border-left: 0;')
+
+    const mobileStack = extractCssRule(mobileMedia, '.challenge-facts')
+    expect(mobileStack.selectors).toEqual(
+      expect.arrayContaining([
+        '.challenge-facts',
+        '.challenge-flow',
+        '.challenge-task-grid',
+        '.challenge-prize-grid',
+        '.challenge-timeline > ol',
+        '.challenge-resources',
+        '.challenge-organizer-grid',
+      ]),
+    )
+    expect(mobileStack.declarations).toContain('grid-template-columns: 1fr;')
+
+    const mobileFact = extractCssRule(
+      mobileMedia,
+      '.challenge-facts > div',
+    ).declarations
+    expect(mobileFact).toContain('border-right: 0;')
+    expect(mobileFact).toContain('border-bottom: 1px solid var(--line-light);')
+
+    const mobileTimeline = extractCssRules(mobileMedia, '.challenge-timeline > ol')
+      .map(({ declarations }) => declarations)
+      .join('\n')
+    expect(mobileTimeline).toContain('gap: 0;')
+    const mobileMilestoneRule = extractCssRule(
+      mobileMedia,
+      '.challenge-timeline li',
+    )
+    expect(mobileMilestoneRule.selectors).toContain(
+      '.challenge-timeline li:nth-child(4)',
+    )
+    const mobileMilestone = mobileMilestoneRule.declarations
+    expect(mobileMilestone).toContain('padding: 18px 0;')
+    expect(mobileMilestone).toContain(
+      'grid-template-columns: 38px minmax(0, 1fr);',
+    )
+    expect(mobileMilestone).toContain('grid-template-rows: auto auto;')
+    expect(mobileMilestone).toContain('border-top: 1px solid var(--line-light);')
+    expect(mobileMilestone).toContain('border-left: 0;')
+    expect(mobileMilestone).toContain('gap: 12px;')
+    const mobileFirstMilestone = extractCssRule(
+      mobileMedia,
+      '.challenge-timeline li:first-child',
+    ).declarations
+    expect(mobileFirstMilestone).toContain('padding-top: 0;')
+    expect(mobileFirstMilestone).toContain('border-top: 0;')
+    expect(
+      extractCssRules(mobileMedia, '.challenge-timeline h4')
+        .map(({ declarations }) => declarations)
+        .join('\n'),
+    ).toContain('min-height: 0;')
+    expect(
+      extractCssRule(mobileMedia, '.person-card--challenge-organizer').declarations,
+    ).toContain('grid-template-columns: 112px minmax(0, 1fr);')
+
+    const compactPanels = extractCssRule(compactMedia, '.challenge-block')
+    expect(compactPanels.selectors).toEqual(
+      expect.arrayContaining([
+        '.challenge-block',
+        '.challenge-timeline',
+        '.challenge-prize-pool',
+      ]),
+    )
+    expect(compactPanels.declarations).toContain('padding: 26px 22px;')
+    const compactSponsor = extractCssRule(
+      compactMedia,
+      '.challenge-sponsor',
+    ).declarations
+    expect(compactSponsor).toContain('align-items: flex-start;')
+    expect(compactSponsor).toContain('flex-direction: column;')
+    expect(compactSponsor).toContain('gap: 3px;')
+    const compactResources = extractCssRule(
+      compactMedia,
+      '.challenge-resources > div',
+    ).declarations
+    expect(compactResources).toContain('align-items: flex-start;')
+    expect(compactResources).toContain('flex-direction: column;')
+    expect(compactResources).toContain('gap: 5px;')
   })
 
   it('hides decorative Challenge sequence numerals from assistive technology', () => {

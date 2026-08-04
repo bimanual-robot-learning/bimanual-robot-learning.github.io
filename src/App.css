@@ -2026,6 +2026,20 @@
     gap: 15px;
   }
 
+  .challenge-facts {
+    margin-left: 0;
+  }
+
+  .challenge-timeline > ol {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    row-gap: 24px;
+  }
+
+  .challenge-timeline li:nth-child(4) {
+    padding-left: 0;
+    border-left: 0;
+  }
+
   .organizer-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
@@ -2205,6 +2219,68 @@
     gap: 6px;
   }
 
+  .challenge-facts,
+  .challenge-flow,
+  .challenge-task-grid,
+  .challenge-prize-grid,
+  .challenge-timeline > ol,
+  .challenge-resources,
+  .challenge-organizer-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .challenge-facts > div {
+    border-right: 0;
+    border-bottom: 1px solid var(--line-light);
+  }
+
+  .challenge-facts > div + div {
+    border-left: 0;
+  }
+
+  .challenge-facts > div:last-child {
+    border-bottom: 0;
+  }
+
+  .challenge-timeline > ol {
+    gap: 0;
+  }
+
+  .challenge-timeline li,
+  .challenge-timeline li + li,
+  .challenge-timeline li:nth-child(4) {
+    display: grid;
+    padding: 18px 0;
+    grid-template-columns: 38px minmax(0, 1fr);
+    grid-template-rows: auto auto;
+    gap: 12px;
+    border-top: 1px solid var(--line-light);
+    border-left: 0;
+  }
+
+  .challenge-timeline li:first-child {
+    padding-top: 0;
+    border-top: 0;
+  }
+
+  .challenge-timeline li > span {
+    margin-bottom: 0;
+    grid-row: 1 / span 2;
+  }
+
+  .challenge-timeline h4,
+  .challenge-timeline li p {
+    grid-column: 2;
+  }
+
+  .challenge-timeline h4 {
+    min-height: 0;
+  }
+
+  .person-card--challenge-organizer {
+    grid-template-columns: 112px minmax(0, 1fr);
+  }
+
   .site-footer__bottom {
     grid-template-columns: 1fr;
     gap: 10px;
@@ -2321,6 +2397,24 @@
   .award-card__breakdown {
     grid-template-columns: minmax(68px, 0.55fr) minmax(0, 1.45fr);
     gap: 15px;
+  }
+
+  .challenge-block,
+  .challenge-timeline,
+  .challenge-prize-pool {
+    padding: 26px 22px;
+  }
+
+  .challenge-sponsor {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 3px;
+  }
+
+  .challenge-resources > div {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 5px;
   }
 
   .award-card__prize {
