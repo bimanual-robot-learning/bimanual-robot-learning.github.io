@@ -57,6 +57,13 @@ const extractCssRules = (source: string, selector: string) => {
 const extractCssRule = (source: string, selector: string) =>
   extractCssRules(source, selector)[0]
 
+const extractCssProperty = (declarations: string, property: string) => {
+  const matches = [
+    ...declarations.matchAll(new RegExp(`${property}:\\s*([^;]+);`, 'g')),
+  ]
+  return matches.at(-1)?.[1].trim()
+}
+
 describe('workshop landing page', () => {
   it('defines the complete household manipulation challenge content', () => {
     expect(challenge.title).toBe(
@@ -321,16 +328,24 @@ describe('workshop landing page', () => {
     ).declarations
     expect(tabletFourthMilestone).toContain('padding-left: 0;')
     expect(tabletFourthMilestone).toContain('border-left: 0;')
-    for (const selector of [
-      '.challenge-flow',
-      '.challenge-task-grid',
-      '.challenge-prize-grid',
-      '.challenge-organizer-grid',
-    ]) {
-      const tabletOverrides = findCssRules(tabletMedia, selector)
-        .map(({ declarations }) => declarations)
-        .join('\n')
-      expect(tabletOverrides).not.toContain('grid-template-columns: 1fr;')
+    for (const [selector, expectedColumns] of [
+      ['.challenge-flow', 'repeat(3, minmax(0, 1fr))'],
+      ['.challenge-task-grid', 'repeat(2, minmax(0, 1fr))'],
+      ['.challenge-prize-grid', 'repeat(3, minmax(0, 1fr))'],
+      ['.challenge-organizer-grid', 'repeat(2, minmax(0, 1fr))'],
+    ] as const) {
+      const baseColumns = extractCssProperty(
+        extractCssRule(appStyles, selector).declarations,
+        'grid-template-columns',
+      )
+      const tabletColumns = findCssRules(tabletMedia, selector)
+        .map(({ declarations }) =>
+          extractCssProperty(declarations, 'grid-template-columns'),
+        )
+        .filter((value): value is string => value !== undefined)
+        .at(-1)
+
+      expect(tabletColumns ?? baseColumns).toBe(expectedColumns)
     }
 
     const mobileStack = extractCssRule(mobileMedia, '.challenge-facts')
