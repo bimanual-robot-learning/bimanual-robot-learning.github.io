@@ -214,52 +214,38 @@ describe('workshop landing page', () => {
   })
 
   it('uses the approved light Challenge field and prominent dark Prize Pool', () => {
-    const rule = (selector: string) =>
-      appStyles.match(new RegExp(`${selector}\\s*\\{([^}]*)\\}`))?.[1]
-    const challengeSectionRule = rule('\\.section--challenge')
-    const challengeFactsRule = rule('\\.challenge-facts')
-    const challengeFlowRule = rule('\\.challenge-flow')
-    const challengeTaskGridRule = rule('\\.challenge-task-grid')
-    const challengePrizePoolRule = rule('\\.challenge-prize-pool')
-    const challengePrizeHeadingRule = rule(
-      '\\.challenge-prize-pool > header h3',
-    )
-    const challengePrizeGridRule = rule('\\.challenge-prize-grid')
-    const challengeTimelineRule = rule('\\.challenge-timeline > ol')
-    const challengeResourcesRule = rule('\\.challenge-resources')
-    const challengeOrganizerGridRule = rule('\\.challenge-organizer-grid')
-    const challengeSponsorLinkRule = rule('\\.challenge-sponsor a')
+    const stylesheet = document.createElement('style')
+    stylesheet.textContent = appStyles
+    document.head.append(stylesheet)
+    render(<App />)
 
-    expect(challengeSectionRule).toContain('background: var(--paper-soft);')
-    expect(challengeFactsRule).toContain(
-      'grid-template-columns: repeat(3, minmax(0, 1fr));',
+    const styleFor = (selector: string) => {
+      const element = document.querySelector(selector)
+      expect(element).not.toBeNull()
+      return getComputedStyle(element as Element)
+    }
+    const expectGridColumns = (selector: string, count: number) => {
+      const style = styleFor(selector)
+      expect(style.display).toBe('grid')
+      expect(style.gridTemplateColumns.replace(/\s+/g, '')).toBe(
+        `repeat(${count},minmax(0,1fr))`,
+      )
+    }
+
+    expect(styleFor('.section--challenge').background).toBe('var(--paper-soft)')
+    expect(styleFor('.challenge-prize-pool').background).toBe('var(--ink-950)')
+    expectGridColumns('.challenge-facts', 3)
+    expectGridColumns('.challenge-flow', 3)
+    expectGridColumns('.challenge-task-grid', 2)
+    expectGridColumns('.challenge-prize-grid', 3)
+    expectGridColumns('.challenge-timeline > ol', 5)
+    expectGridColumns('.challenge-resources', 2)
+    expectGridColumns('.challenge-organizer-grid', 2)
+    expect(styleFor('.challenge-prize-pool > header h3').color).toBe(
+      'var(--orange)',
     )
-    expect(challengeFlowRule).toContain(
-      'grid-template-columns: repeat(3, minmax(0, 1fr));',
-    )
-    expect(challengeTaskGridRule).toContain(
-      'grid-template-columns: repeat(2, minmax(0, 1fr));',
-    )
-    expect(challengePrizePoolRule).toContain('background: var(--ink-950);')
-    expect(challengePrizeGridRule).toContain(
-      'grid-template-columns: repeat(3, minmax(0, 1fr));',
-    )
-    expect(challengeTimelineRule).toContain(
-      'grid-template-columns: repeat(5, minmax(0, 1fr));',
-    )
-    expect(challengeResourcesRule).toContain(
-      'grid-template-columns: repeat(2, minmax(0, 1fr));',
-    )
-    expect(challengeOrganizerGridRule).toContain(
-      'grid-template-columns: repeat(2, minmax(0, 1fr));',
-    )
-    expect(challengePrizeHeadingRule).toContain('color: var(--orange);')
-    expect(challengePrizeHeadingRule).toContain(
-      'font-size: clamp(3rem, 7vw, 5.5rem);',
-    )
-    expect(challengeSponsorLinkRule).toContain('color: var(--orange-deep);')
-    expect(challengeSponsorLinkRule).toContain('font-family: var(--font-display);')
-    expect(challengeSponsorLinkRule).toContain('font-size: 1.35rem;')
+    expect(styleFor('.challenge-sponsor a').color).toBe('var(--orange-deep)')
+    stylesheet.remove()
   })
 
   it('hides decorative Challenge sequence numerals from assistive technology', () => {

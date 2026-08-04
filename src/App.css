@@ -849,7 +849,8 @@
   line-height: 1.5;
 }
 
-.person-card--organizer {
+.person-card--organizer,
+.person-card--challenge-organizer {
   display: grid;
   grid-template-columns: 104px 1fr;
   align-items: center;
@@ -858,12 +859,14 @@
   border-radius: 7px;
 }
 
-.person-card--organizer .person-card__media {
+.person-card--organizer .person-card__media,
+.person-card--challenge-organizer .person-card__media {
   aspect-ratio: 0.84;
   border-radius: 6px 0 0 6px;
 }
 
-.person-card--organizer .person-card__copy {
+.person-card--organizer .person-card__copy,
+.person-card--challenge-organizer .person-card__copy {
   padding: 18px;
 }
 
@@ -1755,24 +1758,6 @@
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 20px;
-}
-
-.person-card--challenge-organizer {
-  display: grid;
-  grid-template-columns: 104px 1fr;
-  align-items: center;
-  background: rgba(255, 255, 255, 0.54);
-  border: 1px solid var(--line-light);
-  border-radius: 7px;
-}
-
-.person-card--challenge-organizer .person-card__media {
-  aspect-ratio: 0.84;
-  border-radius: 6px 0 0 6px;
-}
-
-.person-card--challenge-organizer .person-card__copy {
-  padding: 18px;
 }
 
 .person-card--challenge-organizer .person-card__copy h4 {
