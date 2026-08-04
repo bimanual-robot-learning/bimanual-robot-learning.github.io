@@ -67,6 +67,9 @@ const extractCssProperty = (declarations: string, property: string) => {
 describe('workshop landing page', () => {
   it('stores the approved Challenge content', () => {
     expect(challenge).not.toHaveProperty('eyebrow')
+    expect(challenge.title).toBe(
+      'Towards Bimanual Intelligence: A Real-World Household Manipulation Challenge',
+    )
     expect(challenge.facts).toEqual([
       { value: 'Thousands of hours', label: 'Real-world demonstrations' },
       { value: 'Teleoperation + UMI', label: 'Complementary data sources' },
@@ -91,10 +94,25 @@ describe('workshop landing page', () => {
       note:
         'Detailed scoring protocols will be announced before online evaluation opens.',
     })
-    expect(challenge.tasks[1]).toEqual({
-      title: 'Put Clothing in the Washer',
-      description: 'Put two pieces of clothing into the washing machine.',
-    })
+    expect(challenge.tasks).toEqual([
+      {
+        title: 'Open the Washer Door',
+        description: 'Use the gripper to fully open the washing machine door.',
+      },
+      {
+        title: 'Put Clothing in the Washer',
+        description: 'Put two pieces of clothing into the washing machine.',
+      },
+      {
+        title: 'Close the Washer Door',
+        description: 'Use the gripper to close the washing machine door securely.',
+      },
+      {
+        title: 'Fold Clothing',
+        description: 'Unfold an item of clothing and fold it neatly.',
+      },
+    ])
+    expect(challenge.prizePoolTotal).toBe('USD 2,000')
     expect(challenge.prizes).toEqual([
       {
         place: '1st Place',
@@ -112,6 +130,45 @@ describe('workshop landing page', () => {
         accent: 'secondary',
       },
     ])
+    expect(challenge.timeline).toEqual([
+      {
+        label: 'Sample Data Release',
+        date: 'August 7, 2026',
+        time: '11:59 PM AOE',
+      },
+      {
+        label: 'Full Dataset Release',
+        date: 'August 11, 2026',
+        time: '11:59 PM AOE',
+      },
+      {
+        label: 'Online Evaluation Opens',
+        date: 'August 25, 2026',
+        time: '11:59 PM AOE',
+      },
+      {
+        label: 'First Real-World Evaluation',
+        date: 'September 11, 2026',
+      },
+      {
+        label: 'Final Real-World Evaluation',
+        date: 'September 21, 2026',
+      },
+    ])
+    expect(challenge.timeline.filter(({ time }) => time)).toHaveLength(3)
+    expect(challenge.resources).toEqual([
+      { label: 'Dataset', status: 'coming-soon' },
+      { label: 'Evaluation Portal', status: 'coming-soon' },
+    ])
+    expect(challengeOrganizers.map(({ name }) => name)).toEqual([
+      'Kai Li',
+      'Ran Cheng',
+      'Yan Shen',
+      'Hao Dong',
+    ])
+    expect(
+      challengeOrganizers.every(({ institution }) => institution === undefined),
+    ).toBe(true)
   })
 
   it('renders the workshop identity and every primary section', () => {
@@ -193,7 +250,10 @@ describe('workshop landing page', () => {
       expect(within(tasks[index]).getByText(expectedTask.description)).toBeVisible()
     }
 
-    expect(within(challengeSection).getByText(challenge.scoringNote)).toBeVisible()
+    expect(
+      within(challengeSection).getByText(challenge.finalRanking.formula),
+    ).toBeVisible()
+    expect(within(challengeSection).getByText(challenge.finalRanking.note)).toBeVisible()
   })
 
   it('uses definition semantics for Challenge fact labels and values', () => {
@@ -430,7 +490,6 @@ describe('workshop landing page', () => {
         }),
       ).toBeInTheDocument()
       expect(within(prizes[index]).getByText(expectedPrize.amount)).toBeVisible()
-      expect(within(prizes[index]).getByText(expectedPrize.recipient)).toBeVisible()
     }
     expect(within(prizePool).getAllByText('USD 1,000')).toHaveLength(1)
     expect(within(prizePool).getAllByText('USD 500')).toHaveLength(2)
