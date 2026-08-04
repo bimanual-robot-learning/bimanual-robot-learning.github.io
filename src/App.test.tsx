@@ -68,9 +68,14 @@ describe('workshop landing page', () => {
 
     expect(callForPapers?.nextElementSibling).toBe(challengeSection)
     expect(challengeSection.nextElementSibling).toBe(organizers)
-    expect(screen.getByRole('link', { name: 'Challenge' })).toHaveAttribute(
-      'href',
-      '#challenge',
+    const primaryNav = screen.getByRole('navigation', { name: 'Primary navigation' })
+    const primaryLinks = within(primaryNav).getAllByRole('link')
+    const challengeLink = within(primaryNav).getByRole('link', { name: 'Challenge' })
+    const organizerLink = within(primaryNav).getByRole('link', { name: 'Organizers' })
+
+    expect(challengeLink).toHaveAttribute('href', '#challenge')
+    expect(primaryLinks.indexOf(challengeLink) + 1).toBe(
+      primaryLinks.indexOf(organizerLink),
     )
   })
 
@@ -86,8 +91,31 @@ describe('workshop landing page', () => {
       }),
     ).toBeInTheDocument()
     expect(within(challengeSection).getAllByTestId('challenge-fact')).toHaveLength(3)
-    expect(within(challengeSection).getAllByTestId('challenge-stage')).toHaveLength(3)
-    expect(within(challengeSection).getAllByTestId('challenge-task')).toHaveLength(4)
+
+    const stages = within(challengeSection).getAllByTestId('challenge-stage')
+    expect(stages).toHaveLength(3)
+    for (const [index, expectedStage] of challenge.stages.entries()) {
+      expect(
+        within(stages[index]).getByRole('heading', {
+          name: expectedStage.title,
+          level: 4,
+        }),
+      ).toBeInTheDocument()
+      expect(within(stages[index]).getByText(expectedStage.description)).toBeVisible()
+    }
+
+    const tasks = within(challengeSection).getAllByTestId('challenge-task')
+    expect(tasks).toHaveLength(4)
+    for (const [index, expectedTask] of challenge.tasks.entries()) {
+      expect(
+        within(tasks[index]).getByRole('heading', {
+          name: expectedTask.title,
+          level: 4,
+        }),
+      ).toBeInTheDocument()
+      expect(within(tasks[index]).getByText(expectedTask.description)).toBeVisible()
+    }
+
     expect(within(challengeSection).getByText(challenge.scoringNote)).toBeVisible()
   })
 
@@ -97,7 +125,18 @@ describe('workshop landing page', () => {
     const prizePool = screen.getByTestId('challenge-prize-pool')
 
     expect(within(prizePool).getByText('USD 2,000')).toBeInTheDocument()
-    expect(within(prizePool).getAllByTestId('challenge-prize')).toHaveLength(3)
+    const prizes = within(prizePool).getAllByTestId('challenge-prize')
+    expect(prizes).toHaveLength(3)
+    for (const [index, expectedPrize] of challenge.prizes.entries()) {
+      expect(
+        within(prizes[index]).getByRole('heading', {
+          name: expectedPrize.place,
+          level: 4,
+        }),
+      ).toBeInTheDocument()
+      expect(within(prizes[index]).getByText(expectedPrize.amount)).toBeVisible()
+      expect(within(prizes[index]).getByText(expectedPrize.recipient)).toBeVisible()
+    }
     expect(within(prizePool).getAllByText('USD 1,000')).toHaveLength(1)
     expect(within(prizePool).getAllByText('USD 500')).toHaveLength(2)
     expect(prizePool).not.toHaveTextContent('×')
@@ -111,6 +150,22 @@ describe('workshop landing page', () => {
     const resources = within(challengeSection).getAllByTestId('challenge-resource')
 
     expect(milestones).toHaveLength(5)
+    for (const [index, expectedMilestone] of challenge.timeline.entries()) {
+      const milestone = milestones[index]
+
+      expect(
+        within(milestone).getByRole('heading', {
+          name: expectedMilestone.label,
+          level: 4,
+        }),
+      ).toBeInTheDocument()
+      expect(milestone).toHaveTextContent(expectedMilestone.date)
+      if (expectedMilestone.time) {
+        expect(within(milestone).getByText(new RegExp(expectedMilestone.time))).toBeVisible()
+      } else {
+        expect(milestone).not.toHaveTextContent('AOE')
+      }
+    }
     expect(challengeSection.textContent?.match(/11:59 PM AOE/g)).toHaveLength(3)
     expect(resources).toHaveLength(2)
     for (const resource of resources) {
