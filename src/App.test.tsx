@@ -382,7 +382,7 @@ describe('workshop landing page', () => {
       ['.challenge-flow', 'repeat(2, minmax(0, 1fr))'],
       ['.challenge-task-grid', 'repeat(2, minmax(0, 1fr))'],
       ['.challenge-prize-grid', 'repeat(3, minmax(0, 1fr))'],
-      ['.challenge-organizer-grid', 'repeat(4, minmax(0, 1fr))'],
+      ['.challenge-organizer-grid', 'repeat(2, minmax(0, 1fr))'],
     ] as const) {
       const baseColumns = extractCssProperty(
         extractCssRule(appStyles, selector).declarations,
