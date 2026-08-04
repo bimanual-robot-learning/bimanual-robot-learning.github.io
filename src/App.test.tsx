@@ -352,7 +352,7 @@ describe('workshop landing page', () => {
     stylesheet.remove()
   })
 
-  it('adapts the Challenge layout across tablet, mobile, and compact breakpoints', () => {
+  it('adapts the redesigned Challenge at tablet and mobile widths', () => {
     const narrowDesktopMedia = extractCssBlock(
       appStyles,
       '@media (max-width: 1120px)',
@@ -405,6 +405,12 @@ describe('workshop landing page', () => {
         expectedColumns,
       )
     }
+    expect(
+      extractCssRule(
+        appStyles,
+        '.person-card--challenge-organizer .person-card__media',
+      ).declarations,
+    ).toContain('aspect-ratio: 1;')
 
     const mobileStack = extractCssRule(mobileMedia, '.challenge-facts')
     expect(mobileStack.selectors).toEqual(
@@ -495,6 +501,19 @@ describe('workshop landing page', () => {
       ]),
     )
     expect(compactPanels.declarations).toContain('padding: 26px 22px;')
+    expect(
+      extractCssRule(compactMedia, '.challenge-heading h2').declarations,
+    ).toContain('font-size: clamp(2.45rem, 13vw, 3rem);')
+    expect(
+      extractCssRule(compactMedia, '.challenge-introduction').declarations,
+    ).toContain('padding-left: 18px;')
+    const compactPrizeHeader = extractCssRule(
+      compactMedia,
+      '.challenge-prize-pool > header',
+    ).declarations
+    expect(compactPrizeHeader).toContain('align-items: flex-start;')
+    expect(compactPrizeHeader).toContain('flex-direction: column;')
+    expect(compactPrizeHeader).toContain('gap: 8px;')
     const compactSponsor = extractCssRule(
       compactMedia,
       '.challenge-sponsor',
@@ -509,6 +528,7 @@ describe('workshop landing page', () => {
     expect(compactResources).toContain('align-items: flex-start;')
     expect(compactResources).toContain('flex-direction: column;')
     expect(compactResources).toContain('gap: 5px;')
+    expect(appStyles).not.toContain('.challenge-block')
   })
 
   it('hides decorative Challenge sequence numerals from assistive technology', () => {

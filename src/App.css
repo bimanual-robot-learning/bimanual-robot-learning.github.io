@@ -2451,6 +2451,20 @@
     padding: 26px 22px;
   }
 
+  .challenge-heading h2 {
+    font-size: clamp(2.45rem, 13vw, 3rem);
+  }
+
+  .challenge-introduction {
+    padding-left: 18px;
+  }
+
+  .challenge-prize-pool > header {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 8px;
+  }
+
   .challenge-sponsor {
     align-items: flex-start;
     flex-direction: column;
