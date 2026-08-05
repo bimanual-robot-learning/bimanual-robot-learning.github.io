@@ -408,11 +408,13 @@ describe('workshop landing page', () => {
     expect(styleFor('.challenge-prize-pool').background).not.toBe(
       'var(--ink-950)',
     )
-    expectGridColumns('.challenge-flow', 2)
+    expectGridColumns('.challenge-logistics', 2)
     expectGridColumns('.challenge-task-grid', 2)
     expectGridColumns('.challenge-prize-grid', 3)
-    expectGridColumns('.challenge-timeline > ol', 5)
-    expectGridColumns('.challenge-resources', 2)
+    expect(styleFor('.challenge-flow').display).toBe('grid')
+    expect(styleFor('.challenge-flow').gridTemplateColumns).toBe('1fr')
+    expect(styleFor('.challenge-timeline > ol').display).toBe('grid')
+    expect(styleFor('.challenge-timeline > ol').gridTemplateColumns).toBe('1fr')
     expectGridColumns('.challenge-organizer-grid', 2)
     expect(styleFor('.challenge-prize-grid').gap).toBe('0px')
     expect(
@@ -424,9 +426,10 @@ describe('workshop landing page', () => {
         'background',
       ),
     ).toBe('transparent')
-    expect(styleFor('.challenge-evaluation').background).toBe(
-      'rgba(82, 216, 230, 0.08)',
-    )
+    expect(styleFor('.challenge-participation').background).toBe('var(--ink-950)')
+    expect(styleFor('.challenge-resource--primary').background).toBe('var(--cyan)')
+    expect(styleFor('.challenge-evaluation').background).toBe('rgba(82, 216, 230, 0.08)')
+    expect(styleFor('.challenge-timeline').background).toBe('rgba(82, 216, 230, 0.08)')
     const finalRanking = extractCssRule(
       appStyles,
       '.challenge-final-ranking',
@@ -456,56 +459,10 @@ describe('workshop landing page', () => {
     stylesheet.remove()
   })
 
-  it('adapts the redesigned Challenge at tablet and mobile widths', () => {
-    const narrowDesktopMedia = extractCssBlock(
-      appStyles,
-      '@media (max-width: 1120px)',
-    )
-    const tabletMedia = extractCssBlock(appStyles, '@media (max-width: 920px)')
+  it('keeps unrelated Challenge grids responsive without stale logistics rules', () => {
     const mobileMedia = extractCssBlock(appStyles, '@media (max-width: 720px)')
     const compactMedia = extractCssBlock(appStyles, '@media (max-width: 480px)')
 
-    const tabletTimeline = extractCssRule(
-      tabletMedia,
-      '.challenge-timeline > ol',
-    ).declarations
-    expect(tabletTimeline).toContain(
-      'grid-template-columns: repeat(3, minmax(0, 1fr));',
-    )
-    expect(tabletTimeline).toContain('row-gap: 24px;')
-    const tabletFourthMilestone = extractCssRule(
-      tabletMedia,
-      '.challenge-timeline li:nth-child(4)',
-    ).declarations
-    expect(tabletFourthMilestone).toContain('padding-left: 0;')
-    expect(tabletFourthMilestone).toContain('border-left: 0;')
-    for (const [selector, expectedColumns] of [
-      ['.challenge-flow', 'repeat(2, minmax(0, 1fr))'],
-      ['.challenge-task-grid', 'repeat(2, minmax(0, 1fr))'],
-      ['.challenge-prize-grid', 'repeat(3, minmax(0, 1fr))'],
-      ['.challenge-organizer-grid', 'repeat(2, minmax(0, 1fr))'],
-    ] as const) {
-      const baseColumns = extractCssProperty(
-        extractCssRule(appStyles, selector).declarations,
-        'grid-template-columns',
-      )
-      const narrowDesktopColumns = findCssRules(narrowDesktopMedia, selector)
-        .map(({ declarations }) =>
-          extractCssProperty(declarations, 'grid-template-columns'),
-        )
-        .filter((value): value is string => value !== undefined)
-        .at(-1)
-      const tabletColumns = findCssRules(tabletMedia, selector)
-        .map(({ declarations }) =>
-          extractCssProperty(declarations, 'grid-template-columns'),
-        )
-        .filter((value): value is string => value !== undefined)
-        .at(-1)
-
-      expect(tabletColumns ?? narrowDesktopColumns ?? baseColumns).toBe(
-        expectedColumns,
-      )
-    }
     expect(
       extractCssRule(
         appStyles,
@@ -525,29 +482,15 @@ describe('workshop landing page', () => {
     expect(extractCssProperty(challengeInstitutionRule, 'font-size')).toBe('0.86rem')
     expect(challengeInstitutionRule).not.toContain('white-space: nowrap;')
 
-    const mobileStack = extractCssRule(mobileMedia, '.challenge-flow')
+    const mobileStack = extractCssRule(mobileMedia, '.challenge-task-grid')
     expect(mobileStack.selectors).toEqual(
       expect.arrayContaining([
-        '.challenge-flow',
         '.challenge-task-grid',
         '.challenge-prize-grid',
-        '.challenge-timeline > ol',
-        '.challenge-resources',
         '.challenge-organizer-grid',
       ]),
     )
     expect(mobileStack.declarations).toContain('grid-template-columns: 1fr;')
-
-    const mobileFlowArrow = extractCssRule(
-      mobileMedia,
-      '.challenge-flow li + li::before',
-    ).declarations
-    expect(mobileFlowArrow).toContain('top: -14px;')
-    expect(mobileFlowArrow).toContain('left: 50%;')
-    expect(mobileFlowArrow).toContain('width: 28px;')
-    expect(mobileFlowArrow).toContain('line-height: 14px;')
-    expect(mobileFlowArrow).toContain("content: '↓';")
-    expect(mobileFlowArrow).toContain('transform: translateX(-50%);')
 
     const mobilePrizeSeparator = extractCssRule(
       mobileMedia,
@@ -558,50 +501,10 @@ describe('workshop landing page', () => {
     )
     expect(mobilePrizeSeparator).toContain('border-left: 0;')
 
-    const mobileTimeline = extractCssRules(mobileMedia, '.challenge-timeline > ol')
-      .map(({ declarations }) => declarations)
-      .join('\n')
-    expect(mobileTimeline).toContain('gap: 0;')
-    const mobileMilestoneRule = extractCssRule(
-      mobileMedia,
-      '.challenge-timeline li',
-    )
-    expect(mobileMilestoneRule.selectors).toContain(
-      '.challenge-timeline li:nth-child(4)',
-    )
-    const mobileMilestone = mobileMilestoneRule.declarations
-    expect(mobileMilestone).toContain('padding: 18px 0;')
-    expect(mobileMilestone).toContain(
-      'grid-template-columns: 38px minmax(0, 1fr);',
-    )
-    expect(mobileMilestone).toContain('grid-template-rows: auto auto;')
-    expect(mobileMilestone).toContain('border-top: 1px solid var(--line-light);')
-    expect(mobileMilestone).toContain('border-left: 0;')
-    expect(mobileMilestone).toContain('gap: 12px;')
-    const mobileFirstMilestone = extractCssRule(
-      mobileMedia,
-      '.challenge-timeline li:first-child',
-    ).declarations
-    expect(mobileFirstMilestone).toContain('padding-top: 0;')
-    expect(mobileFirstMilestone).toContain('border-top: 0;')
-    expect(
-      extractCssRules(mobileMedia, '.challenge-timeline h4')
-        .map(({ declarations }) => declarations)
-        .join('\n'),
-    ).toContain('min-height: 0;')
     expect(
       extractCssRule(mobileMedia, '.person-card--challenge-organizer').declarations,
     ).toContain('grid-template-columns: 112px minmax(0, 1fr);')
 
-    const compactPanels = extractCssRule(compactMedia, '.challenge-evaluation')
-    expect(compactPanels.selectors).toEqual(
-      expect.arrayContaining([
-        '.challenge-evaluation',
-        '.challenge-timeline',
-        '.challenge-prize-pool',
-      ]),
-    )
-    expect(compactPanels.declarations).toContain('padding: 26px 22px;')
     expect(
       extractCssRule(compactMedia, '.challenge-heading h2').declarations,
     ).toContain('font-size: 2.5rem;')
@@ -625,61 +528,131 @@ describe('workshop landing page', () => {
     expect(compactSponsor).toContain('align-items: flex-start;')
     expect(compactSponsor).toContain('flex-direction: column;')
     expect(compactSponsor).toContain('gap: 3px;')
-    const compactResources = extractCssRule(
-      compactMedia,
-      '.challenge-resources > div',
-    ).declarations
-    expect(compactResources).toContain('align-items: flex-start;')
-    expect(compactResources).toContain('flex-direction: column;')
-    expect(compactResources).toContain('gap: 5px;')
     expect(appStyles).not.toContain('.challenge-block')
   })
 
-  it('owns the compact evaluation panel padding', () => {
-    expectOwnedCssProperties(appStyles, '.challenge-evaluation', {
-      padding: 'clamp(24px, 3vw, 34px)',
+  it('gives the Challenge title equal-scale lines with color-only accent emphasis', () => {
+    expectOwnedCssProperties(appStyles, '.challenge-title__line-one', {
+      display: 'block',
+      'white-space': 'nowrap',
+    })
+    expectOwnedCssProperties(appStyles, '.challenge-title__line-two', {
+      display: 'block',
+      'white-space': 'nowrap',
+    })
+    expectOwnedCssProperties(appStyles, '.challenge-title__accent', {
+      color: 'var(--orange-deep)',
+    })
+    for (const selector of [
+      '.challenge-title__line-one',
+      '.challenge-title__line-two',
+    ]) {
+      expect(extractCssRule(appStyles, selector).declarations).not.toMatch(/color\s*:/)
+    }
+    const accent = extractCssRule(appStyles, '.challenge-title__accent').declarations
+    expect(accent).not.toMatch(
+      /(?:font-size|font-weight|line-height|margin(?:-[a-z]+)?)\s*:/,
+    )
+    expect(appStyles).not.toContain('.challenge-title__lead')
+    expect(appStyles).not.toContain('.challenge-title__highlight')
+  })
+
+  it('uses restrained ink emphasis in the Challenge introduction', () => {
+    expectOwnedCssProperties(appStyles, '.challenge-introduction strong', {
+      color: 'var(--ink-950)',
+      'font-weight': '750',
     })
   })
 
-  it('owns the compact evaluation heading spacing', () => {
-    expectOwnedCssProperties(appStyles, '.challenge-evaluation > h3', {
-      margin: '0 0 20px',
+  it('owns the dark participation hierarchy and resource grid', () => {
+    expectOwnedCssProperties(appStyles, '.challenge-participation', {
+      padding: 'clamp(24px, 3vw, 30px)',
+      'margin-bottom': '32px',
+      color: 'var(--white)',
+      background: 'var(--ink-950)',
+      border: '1px solid rgba(82, 216, 230, 0.24)',
+      'border-radius': '7px',
+    })
+    expectOwnedCssProperties(appStyles, '.challenge-participation > header', {
+      display: 'grid',
+      'grid-template-columns': 'minmax(0, 0.9fr) minmax(0, 1.1fr)',
+    })
+    expectOwnedCssProperties(appStyles, '.challenge-resources', {
+      margin: '0',
+      padding: '0',
+      border: '0',
+      'grid-template-columns': 'minmax(0, 1.35fr) repeat(2, minmax(0, 1fr))',
+      gap: '12px',
+    })
+    for (const selector of [
+      '.challenge-resources > div',
+      '.challenge-resources > a',
+    ]) {
+      const rule = extractCssRule(appStyles, selector)
+      expect(extractCssProperty(rule.declarations, 'background')).toBe(
+        'rgba(255, 255, 255, 0.055)',
+      )
+      expect(extractCssProperty(rule.declarations, 'border')).toBe(
+        '1px solid rgba(82, 216, 230, 0.22)',
+      )
+    }
+    expectOwnedCssProperties(appStyles, '.challenge-resource--primary', {
+      color: 'var(--ink-950)',
+      background: 'var(--cyan)',
+    })
+    expectOwnedCssProperties(appStyles, '.challenge-resources > a:focus-visible', {
+      outline: '3px solid var(--orange)',
+      'outline-offset': '3px',
     })
   })
 
-  it('uses the compact evaluation flow gap', () => {
+  it('owns matching logistics panels with text-led evaluation and timeline rows', () => {
+    expectOwnedCssProperties(appStyles, '.challenge-logistics', {
+      display: 'grid',
+      'grid-template-columns': 'repeat(2, minmax(0, 1fr))',
+      gap: '16px',
+      'margin-bottom': '32px',
+    })
+    for (const selector of ['.challenge-evaluation', '.challenge-timeline']) {
+      expectOwnedCssProperties(appStyles, selector, {
+        padding: 'clamp(24px, 3vw, 30px)',
+        margin: '0',
+        background: 'rgba(82, 216, 230, 0.08)',
+        border: '1px solid rgba(27, 132, 153, 0.2)',
+        'border-radius': '7px',
+      })
+    }
     expectOwnedCssProperties(appStyles, '.challenge-flow', {
-      gap: '14px',
+      'grid-template-columns': '1fr',
+      gap: '0',
     })
-  })
-
-  it('keeps the evaluation connector inside the compact flow gap', () => {
-    const connector = extractCssRule(
-      appStyles,
-      '.challenge-flow li + li::before',
-    ).declarations
-
-    expect(extractCssProperty(connector, 'left')).toBe('-14px')
-    expect(extractCssProperty(connector, 'width')).toBe('14px')
-  })
-
-  it('owns the compact evaluation stage padding', () => {
     expectOwnedCssProperties(appStyles, '.challenge-flow li', {
-      padding: '20px',
+      display: 'grid',
+      background: 'transparent',
+      border: '0',
+      'border-radius': '0',
     })
-  })
-
-  it('owns the compact evaluation stage-number spacing', () => {
-    expectOwnedCssProperties(appStyles, '.challenge-flow li > span', {
-      'margin-bottom': '14px',
+    expectOwnedCssProperties(appStyles, '.challenge-flow li + li', {
+      'border-top': '1px solid rgba(27, 132, 153, 0.18)',
     })
-  })
-
-  it('uses compact final-ranking spacing', () => {
-    expectOwnedCssProperties(appStyles, '.challenge-final-ranking', {
-      padding: '20px 0 0',
-      margin: '20px 0 0',
+    expectOwnedCssProperties(appStyles, '.challenge-timeline > ol', {
+      'grid-template-columns': '1fr',
     })
+    expectOwnedCssProperties(appStyles, '.challenge-timeline li', {
+      display: 'grid',
+      'grid-template-columns': 'minmax(0, 1fr) auto',
+    })
+    expectOwnedCssProperties(appStyles, '.challenge-timeline li > span', {
+      display: 'none',
+    })
+    expectOwnedCssProperties(appStyles, '.challenge-timeline li + li', {
+      'border-top': '1px solid rgba(27, 132, 153, 0.18)',
+    })
+    expectOwnedCssProperties(appStyles, '.challenge-timeline li p', {
+      'text-align': 'right',
+    })
+    expect(appStyles).not.toContain('.challenge-facts')
+    expect(appStyles).not.toContain('.challenge-flow li + li::before')
   })
 
   it('hides decorative Challenge sequence numerals from assistive technology', () => {
