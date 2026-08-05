@@ -7,7 +7,9 @@ const ChallengeComingSoon = () => (
       className="challenge-coming-soon__content"
       aria-labelledby="challenge-title"
     >
-      <p className="challenge-coming-soon__eyebrow">PRIMEBOT × IROS 2026</p>
+      <p className="challenge-coming-soon__eyebrow">
+        BIMANUAL ROBOT LEARNING WORKSHOP · IROS 2026
+      </p>
       <h1 id="challenge-title">Towards Bimanual Intelligence</h1>
       <p className="challenge-coming-soon__subtitle">
         A Real-World Household Manipulation Challenge

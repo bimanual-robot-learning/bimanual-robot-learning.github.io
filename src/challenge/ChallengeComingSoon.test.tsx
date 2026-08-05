@@ -30,7 +30,9 @@ describe('ChallengeComingSoon', () => {
   it('renders the challenge announcement and workshop link', () => {
     render(<ChallengeComingSoon />)
 
-    expect(screen.getByText('PRIMEBOT × IROS 2026')).toBeInTheDocument()
+    expect(
+      screen.getByText('BIMANUAL ROBOT LEARNING WORKSHOP · IROS 2026'),
+    ).toBeInTheDocument()
     expect(
       screen.getByRole('heading', {
         level: 1,
@@ -62,6 +64,14 @@ describe('ChallengeComingSoon', () => {
       mobileRules,
       '.challenge-coming-soon h1',
     )
+    const headingRule = extractCssBlock(
+      challengeStyles,
+      '.challenge-coming-soon h1',
+    )
+    const subtitleRule = extractCssBlock(
+      challengeStyles,
+      '.challenge-coming-soon__subtitle',
+    )
     const reducedMotionRules = extractCssBlock(
       challengeStyles,
       '@media (prefers-reduced-motion: reduce)',
@@ -73,8 +83,14 @@ describe('ChallengeComingSoon', () => {
 
     expect(pageRule).toContain('min-height: 100svh;')
     expect(focusRule).toContain('outline: 3px solid var(--orange);')
+    expect(headingRule).toContain(
+      'font: 600 clamp(3.25rem, 6.5vw, 5.5rem)/0.98 var(--font-display);',
+    )
+    expect(subtitleRule).toContain(
+      'font: 500 clamp(1.5rem, 3.2vw, 2.25rem)/1.25 var(--font-display);',
+    )
     expect(mobileHeadingRule).toContain(
-      'font-size: clamp(2.8rem, 14vw, 4rem);',
+      'font-size: clamp(2.6rem, 12vw, 3.5rem);',
     )
     expect(reducedMotionBackRule).toContain('transition: none;')
   })
