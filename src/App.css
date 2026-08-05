@@ -1497,9 +1497,9 @@
 .challenge-flow li + li::before {
   position: absolute;
   top: 50%;
-  left: -18px;
+  left: -14px;
   z-index: 2;
-  width: 36px;
+  width: 14px;
   color: var(--cyan-deep);
   background: #f3fbfc;
   content: '\2192';
@@ -2292,9 +2292,11 @@
   }
 
   .challenge-flow li + li::before {
-    top: -24px;
+    top: -14px;
     left: 50%;
+    width: 28px;
     content: '↓';
+    line-height: 14px;
     transform: translateX(-50%);
   }
 

@@ -502,8 +502,10 @@ describe('workshop landing page', () => {
       mobileMedia,
       '.challenge-flow li + li::before',
     ).declarations
-    expect(mobileFlowArrow).toContain('top: -24px;')
+    expect(mobileFlowArrow).toContain('top: -14px;')
     expect(mobileFlowArrow).toContain('left: 50%;')
+    expect(mobileFlowArrow).toContain('width: 28px;')
+    expect(mobileFlowArrow).toContain('line-height: 14px;')
     expect(mobileFlowArrow).toContain("content: '↓';")
     expect(mobileFlowArrow).toContain('transform: translateX(-50%);')
 
@@ -622,6 +624,16 @@ describe('workshop landing page', () => {
     expectOwnedCssProperties(appStyles, '.challenge-flow', {
       gap: '14px',
     })
+  })
+
+  it('keeps the evaluation connector inside the compact flow gap', () => {
+    const connector = extractCssRule(
+      appStyles,
+      '.challenge-flow li + li::before',
+    ).declarations
+
+    expect(extractCssProperty(connector, 'left')).toBe('-14px')
+    expect(extractCssProperty(connector, 'width')).toBe('14px')
   })
 
   it('owns the compact evaluation stage padding', () => {
