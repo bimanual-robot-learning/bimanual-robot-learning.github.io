@@ -49,7 +49,7 @@ function ChallengeSection() {
           className="challenge-participation"
           aria-labelledby="challenge-participation-title"
         >
-          <header>
+          <header className="challenge-participation__header">
             <p className="eyebrow">{challenge.participation.eyebrow}</p>
             <h3 id="challenge-participation-title">
               {challenge.participation.title}

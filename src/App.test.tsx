@@ -330,6 +330,9 @@ describe('workshop landing page', () => {
     const logistics = within(challengeSection).getByTestId('challenge-logistics')
 
     expect(participation).toHaveClass('challenge-participation')
+    expect(participation?.querySelector('header')).toHaveClass(
+      'challenge-participation__header',
+    )
     expect(participation).toHaveAccessibleName(challenge.participation.title)
     expect(participation).toHaveTextContent(challenge.participation.eyebrow)
     expect(participation).toHaveTextContent(challenge.participation.description)
@@ -570,12 +573,33 @@ describe('workshop landing page', () => {
       'margin-bottom': '32px',
       color: 'var(--white)',
       background: 'var(--ink-950)',
-      border: '1px solid rgba(82, 216, 230, 0.24)',
-      'border-radius': '7px',
+      border: '1px solid rgba(82, 216, 230, 0.16)',
+      'border-radius': '8px',
     })
-    expectOwnedCssProperties(appStyles, '.challenge-participation > header', {
+    expectOwnedCssProperties(appStyles, '.challenge-participation__header', {
       display: 'grid',
-      'grid-template-columns': 'minmax(0, 0.9fr) minmax(0, 1.1fr)',
+      'margin-bottom': '18px',
+      'grid-template-columns': 'minmax(0, 0.9fr) minmax(320px, 1.1fr)',
+      'align-items': 'end',
+      gap: '28px',
+    })
+    expectOwnedCssProperties(appStyles, '.challenge-participation__header .eyebrow', {
+      margin: '0 0 6px',
+      color: 'var(--cyan)',
+    })
+    expectOwnedCssProperties(appStyles, '.challenge-participation__header h3', {
+      margin: '0',
+      color: 'var(--white)',
+      'font-family': 'var(--font-display)',
+      'font-size': 'clamp(1.55rem, 2.4vw, 2rem)',
+      'font-weight': '650',
+      'letter-spacing': '-0.035em',
+    })
+    expectOwnedCssProperties(appStyles, '.challenge-participation__header > p', {
+      margin: '0',
+      color: 'rgba(231, 241, 244, 0.72)',
+      'font-size': '0.86rem',
+      'line-height': '1.55',
     })
     expectOwnedCssProperties(appStyles, '.challenge-resources', {
       margin: '0',
@@ -641,14 +665,17 @@ describe('workshop landing page', () => {
     expectOwnedCssProperties(appStyles, '.challenge-timeline li', {
       display: 'grid',
       'grid-template-columns': 'minmax(0, 1fr) auto',
+      'grid-template-rows': 'auto auto',
+      gap: '3px 18px',
+      'border-top': '1px solid rgba(27, 132, 153, 0.18)',
     })
     expectOwnedCssProperties(appStyles, '.challenge-timeline li > span', {
       display: 'none',
     })
-    expectOwnedCssProperties(appStyles, '.challenge-timeline li + li', {
-      'border-top': '1px solid rgba(27, 132, 153, 0.18)',
-    })
     expectOwnedCssProperties(appStyles, '.challenge-timeline li p', {
+      'grid-column': '2',
+      'grid-row': '1 / span 2',
+      'align-self': 'center',
       'text-align': 'right',
     })
     expect(appStyles).not.toContain('.challenge-facts')
