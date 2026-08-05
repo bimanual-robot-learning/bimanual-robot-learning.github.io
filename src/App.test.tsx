@@ -5,9 +5,19 @@ import App from './App'
 import appStyles from './App.css?raw'
 import indexStyles from './index.css?raw'
 import { challenge, challengeOrganizers, workshopMeta } from './data/workshop'
+import type { ChallengeResource } from './data/workshop'
 import viteConfigSource from '../vite.config.ts?raw'
 import challengeHtml from '../challenge/index.html?raw'
 import sitemapXml from '../public/sitemap.xml?raw'
+
+const protocolRelativeResource: ChallengeResource = {
+  label: 'Invalid CDN resource',
+  status: 'available',
+  // @ts-expect-error Protocol-relative URLs must not be accepted as internal links.
+  url: '//cdn.example.com/challenge',
+  external: false,
+}
+void protocolRelativeResource
 
 const findClosingBrace = (source: string, openingBrace: number) => {
   let depth = 1

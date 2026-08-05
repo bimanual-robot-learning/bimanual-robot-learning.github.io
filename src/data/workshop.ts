@@ -83,7 +83,7 @@ export type ChallengeResource =
   | {
       label: string
       status: 'available'
-      url: `/${string}`
+      url: '/challenge/'
       external: false
     }
   | {
