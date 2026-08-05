@@ -808,22 +808,29 @@ describe('workshop landing page', () => {
   it('turns an available Challenge resource into a safe external call to action', () => {
     const originalResources = [...challenge.resources]
     challenge.resources.splice(
-      0,
-      challenge.resources.length,
+      1,
+      1,
       {
         label: 'Dataset',
         status: 'available',
         url: 'https://huggingface.co/datasets/example/household-challenge',
-      } as never,
-      originalResources[1],
+      },
     )
 
     try {
       render(<App />)
 
       const challengeSection = screen.getByTestId('challenge-section')
+      const resources = within(challengeSection).getAllByTestId('challenge-resource')
       const datasetLink = within(challengeSection).getByRole('link', { name: /Dataset/i })
 
+      expect(resources).toHaveLength(3)
+      expect(
+        within(challengeSection).getByRole('link', {
+          name: /Explore Challenge Details/i,
+        }),
+      ).toBeInTheDocument()
+      expect(within(challengeSection).getByText('Evaluation Portal')).toBeInTheDocument()
       expect(datasetLink).toHaveAttribute(
         'href',
         'https://huggingface.co/datasets/example/household-challenge',
