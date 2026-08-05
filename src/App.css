@@ -2458,7 +2458,7 @@
   }
 
   .challenge-heading h2 {
-    font-size: clamp(2.45rem, 13vw, 3rem);
+    font-size: 2.5rem;
   }
 
   .challenge-introduction {

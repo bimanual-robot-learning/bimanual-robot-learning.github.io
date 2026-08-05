@@ -503,7 +503,7 @@ describe('workshop landing page', () => {
     expect(compactPanels.declarations).toContain('padding: 26px 22px;')
     expect(
       extractCssRule(compactMedia, '.challenge-heading h2').declarations,
-    ).toContain('font-size: clamp(2.45rem, 13vw, 3rem);')
+    ).toContain('font-size: 2.5rem;')
     expect(
       extractCssRule(compactMedia, '.challenge-introduction').declarations,
     ).toContain('padding-left: 18px;')
