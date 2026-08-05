@@ -67,6 +67,19 @@ const extractCssProperty = (declarations: string, property: string) => {
   return matches.at(-1)?.[1].trim()
 }
 
+const expectOwnedCssProperties = (
+  source: string,
+  selector: string,
+  properties: Record<string, string>,
+) => {
+  const rule = extractCssRules(source, selector).at(-1)
+
+  expect(rule?.selectors).toEqual([selector])
+  for (const [property, value] of Object.entries(properties)) {
+    expect(extractCssProperty(rule?.declarations ?? '', property)).toBe(value)
+  }
+}
+
 describe('workshop landing page', () => {
   it('configures a directly addressable Challenge page', () => {
     expect(viteConfigSource).toContain(
@@ -591,6 +604,43 @@ describe('workshop landing page', () => {
     expect(compactResources).toContain('flex-direction: column;')
     expect(compactResources).toContain('gap: 5px;')
     expect(appStyles).not.toContain('.challenge-block')
+  })
+
+  it('owns the compact evaluation panel padding', () => {
+    expectOwnedCssProperties(appStyles, '.challenge-evaluation', {
+      padding: 'clamp(24px, 3vw, 34px)',
+    })
+  })
+
+  it('owns the compact evaluation heading spacing', () => {
+    expectOwnedCssProperties(appStyles, '.challenge-evaluation > h3', {
+      margin: '0 0 20px',
+    })
+  })
+
+  it('uses the compact evaluation flow gap', () => {
+    expectOwnedCssProperties(appStyles, '.challenge-flow', {
+      gap: '14px',
+    })
+  })
+
+  it('owns the compact evaluation stage padding', () => {
+    expectOwnedCssProperties(appStyles, '.challenge-flow li', {
+      padding: '20px',
+    })
+  })
+
+  it('owns the compact evaluation stage-number spacing', () => {
+    expectOwnedCssProperties(appStyles, '.challenge-flow li > span', {
+      'margin-bottom': '14px',
+    })
+  })
+
+  it('uses compact final-ranking spacing', () => {
+    expectOwnedCssProperties(appStyles, '.challenge-final-ranking', {
+      padding: '20px 0 0',
+      margin: '20px 0 0',
+    })
   })
 
   it('hides decorative Challenge sequence numerals from assistive technology', () => {

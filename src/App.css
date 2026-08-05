@@ -1441,7 +1441,6 @@
 
 .challenge-evaluation,
 .challenge-timeline {
-  padding: clamp(28px, 4vw, 42px);
   margin-bottom: 32px;
   background: rgba(255, 255, 255, 0.68);
   border: 1px solid var(--line-light);
@@ -1449,8 +1448,13 @@
 }
 
 .challenge-evaluation {
+  padding: clamp(24px, 3vw, 34px);
   background: rgba(82, 216, 230, 0.08);
   border-color: rgba(27, 132, 153, 0.2);
+}
+
+.challenge-timeline {
+  padding: clamp(28px, 4vw, 42px);
 }
 
 .challenge-evaluation > .eyebrow,
@@ -1473,12 +1477,16 @@
   text-wrap: balance;
 }
 
+.challenge-evaluation > h3 {
+  margin: 0 0 20px;
+}
+
 .challenge-flow {
   display: grid;
   padding: 0;
   margin: 0;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 18px;
+  gap: 14px;
   list-style: none;
 }
 
@@ -1512,6 +1520,10 @@
   border-radius: 6px;
 }
 
+.challenge-flow li {
+  padding: 20px;
+}
+
 .challenge-flow li > span,
 .challenge-task-grid article > span,
 .challenge-timeline li > span {
@@ -1522,6 +1534,10 @@
   font-size: 0.68rem;
   font-weight: 600;
   letter-spacing: 0.1em;
+}
+
+.challenge-flow li > span {
+  margin-bottom: 14px;
 }
 
 .challenge-flow h4,
@@ -1545,8 +1561,8 @@
 }
 
 .challenge-final-ranking {
-  padding: 26px 0 0;
-  margin: 28px 0 0;
+  padding: 20px 0 0;
+  margin: 20px 0 0;
   color: var(--ink-800);
   font-size: 0.95rem;
   line-height: 1.6;
