@@ -42,6 +42,8 @@ describe('ChallengeComingSoon', () => {
     expect(
       screen.getByText('A Real-World Household Manipulation Challenge'),
     ).toBeInTheDocument()
+    expect(screen.getByText('Designed and sponsored by')).toBeInTheDocument()
+    expect(screen.getByText('PrimeBot')).toBeInTheDocument()
     expect(
       screen.getByText('Full challenge details are coming soon.'),
     ).toBeInTheDocument()

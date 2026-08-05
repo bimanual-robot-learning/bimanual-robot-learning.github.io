@@ -14,6 +14,9 @@ const ChallengeComingSoon = () => (
       <p className="challenge-coming-soon__subtitle">
         A Real-World Household Manipulation Challenge
       </p>
+      <p className="challenge-coming-soon__sponsor">
+        <span>Designed and sponsored by</span> <strong>PrimeBot</strong>
+      </p>
       <p className="challenge-coming-soon__status">
         Full challenge details are coming soon.
       </p>

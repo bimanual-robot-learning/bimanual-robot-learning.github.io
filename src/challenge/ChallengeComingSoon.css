@@ -51,8 +51,20 @@
   font: 500 clamp(1.5rem, 3.2vw, 2.25rem)/1.25 var(--font-display);
 }
 
+.challenge-coming-soon__sponsor {
+  margin: 26px auto 0;
+  color: var(--slate-light-readable);
+  font: 500 0.86rem/1.5 var(--font-mono);
+  letter-spacing: 0.04em;
+}
+
+.challenge-coming-soon__sponsor strong {
+  color: var(--orange);
+  font-weight: 500;
+}
+
 .challenge-coming-soon__status {
-  margin: 42px auto 0;
+  margin: 26px auto 0;
   color: var(--slate-light-readable);
   font-size: clamp(1rem, 1.7vw, 1.2rem);
   line-height: 1.7;
@@ -102,7 +114,7 @@
   }
 
   .challenge-coming-soon__status {
-    margin-top: 32px;
+    margin-top: 24px;
   }
 }
 
