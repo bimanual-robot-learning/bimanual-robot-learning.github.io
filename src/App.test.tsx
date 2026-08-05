@@ -378,6 +378,36 @@ describe('workshop landing page', () => {
       ),
     ).toBe('var(--orange)')
     expect(styleFor('.challenge-sponsor a').color).toBe('var(--orange-deep)')
+    const titleLead = extractCssRule(
+      appStyles,
+      '.challenge-title__lead',
+    )
+    expect(titleLead.selectors).toEqual(
+      expect.arrayContaining([
+        '.challenge-title__lead',
+        '.challenge-title__highlight',
+      ]),
+    )
+    expect(titleLead.declarations).toContain('display: block;')
+    const titleHighlight = extractCssRules(
+      appStyles,
+      '.challenge-title__highlight',
+    ).at(-1)?.declarations
+    expect(titleHighlight).toContain('margin-top: 0.08em;')
+    expect(titleHighlight).toContain('color: var(--orange-deep);')
+    expect(titleHighlight).toContain('font-size: 0.92em;')
+    expect(titleHighlight).toContain('font-weight: 650;')
+    const introduction = extractCssRule(
+      appStyles,
+      '.challenge-introduction',
+    ).declarations
+    expect(introduction).toContain('max-width: 1060px;')
+    expect(introduction).toContain('border-left: 4px solid var(--cyan-deep);')
+    expect(introduction).toContain(
+      'font-size: clamp(1.08rem, 1.4vw, 1.18rem);',
+    )
+    expect(introduction).toContain('font-weight: 500;')
+    expect(introduction).toContain('line-height: 1.72;')
     stylesheet.remove()
   })
 
@@ -533,9 +563,12 @@ describe('workshop landing page', () => {
     expect(
       extractCssRule(compactMedia, '.challenge-heading h2').declarations,
     ).toContain('font-size: 2.5rem;')
-    expect(
-      extractCssRule(compactMedia, '.challenge-introduction').declarations,
-    ).toContain('padding-left: 18px;')
+    const compactIntroduction = extractCssRule(
+      compactMedia,
+      '.challenge-introduction',
+    ).declarations
+    expect(compactIntroduction).toContain('padding-left: 18px;')
+    expect(compactIntroduction).toContain('font-size: 1.06rem;')
     const mobilePrizeHeader = extractCssRule(
       mobileMedia,
       '.challenge-prize-pool > header',
