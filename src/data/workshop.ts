@@ -63,7 +63,7 @@ export interface ChallengePrize {
 }
 
 export interface ChallengeFinalRanking {
-  label: 'Final Ranking'
+  label: 'Final ranking'
   formula: string
   note: string
 }
@@ -191,8 +191,8 @@ export const challenge: ChallengeInfo = {
       'The full rules, dataset documentation, submission instructions, and leaderboard will live on the challenge website.',
   },
   finalRanking: {
-    label: 'Final Ranking',
-    formula: 'Online evaluation score + final real-robot evaluation score',
+    label: 'Final ranking',
+    formula: 'Online evaluation score + final real-robot evaluation score.',
     note:
       'Detailed scoring protocols will be announced before online evaluation opens.',
   },

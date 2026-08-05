@@ -154,8 +154,8 @@ describe('workshop landing page', () => {
       },
     ])
     expect(challenge.finalRanking).toEqual({
-      label: 'Final Ranking',
-      formula: 'Online evaluation score + final real-robot evaluation score',
+      label: 'Final ranking',
+      formula: 'Online evaluation score + final real-robot evaluation score.',
       note:
         'Detailed scoring protocols will be announced before online evaluation opens.',
     })
@@ -347,7 +347,7 @@ describe('workshop landing page', () => {
     const logisticsHeadings = within(logistics).getAllByRole('heading', { level: 3 })
     expect(logisticsHeadings.map(({ textContent }) => textContent)).toEqual([
       'Evaluation Format',
-      'Challenge timeline',
+      'Challenge Timeline',
     ])
 
     const stages = within(challengeSection).getAllByTestId('challenge-stage')

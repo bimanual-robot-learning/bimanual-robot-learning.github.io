@@ -119,7 +119,7 @@ function ChallengeSection() {
             aria-labelledby="challenge-timeline-title"
           >
             <p className="eyebrow">Important dates</p>
-            <h3 id="challenge-timeline-title">Challenge timeline</h3>
+            <h3 id="challenge-timeline-title">Challenge Timeline</h3>
             <ol>
               {challenge.timeline.map((milestone, index) => (
                 <li data-testid="challenge-milestone" key={milestone.label}>
