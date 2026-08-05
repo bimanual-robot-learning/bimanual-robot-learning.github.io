@@ -5,6 +5,8 @@ import App from './App'
 import appStyles from './App.css?raw'
 import indexStyles from './index.css?raw'
 import { challenge, challengeOrganizers, workshopMeta } from './data/workshop'
+import viteConfigSource from '../vite.config.ts?raw'
+import challengeHtml from '../challenge/index.html?raw'
 
 const findClosingBrace = (source: string, openingBrace: number) => {
   let depth = 1
@@ -65,6 +67,19 @@ const extractCssProperty = (declarations: string, property: string) => {
 }
 
 describe('workshop landing page', () => {
+  it('configures a directly addressable Challenge page', () => {
+    expect(viteConfigSource).toContain(
+      "challenge: resolve(__dirname, 'challenge/index.html')",
+    )
+    expect(challengeHtml).toContain(
+      '<title>Towards Bimanual Intelligence | IROS 2026 Challenge</title>',
+    )
+    expect(challengeHtml).toContain(
+      'https://bimanual-robot-learning.github.io/challenge/',
+    )
+    expect(challengeHtml).toContain('/src/challenge/main.tsx')
+  })
+
   it('stores the approved Challenge content', () => {
     expect(challenge).not.toHaveProperty('eyebrow')
     expect(challenge).not.toHaveProperty('scoringNote')
