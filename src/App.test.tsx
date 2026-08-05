@@ -7,6 +7,7 @@ import indexStyles from './index.css?raw'
 import { challenge, challengeOrganizers, workshopMeta } from './data/workshop'
 import viteConfigSource from '../vite.config.ts?raw'
 import challengeHtml from '../challenge/index.html?raw'
+import sitemapXml from '../public/sitemap.xml?raw'
 
 const findClosingBrace = (source: string, openingBrace: number) => {
   let depth = 1
@@ -78,6 +79,9 @@ describe('workshop landing page', () => {
       'https://bimanual-robot-learning.github.io/challenge/',
     )
     expect(challengeHtml).toContain('/src/challenge/main.tsx')
+    expect(sitemapXml).toContain(
+      '<loc>https://bimanual-robot-learning.github.io/challenge/</loc>',
+    )
   })
 
   it('stores the approved Challenge content', () => {
