@@ -75,7 +75,8 @@ export type ChallengeResource =
     }
 
 export interface ChallengeInfo {
-  title: string
+  titleLead: string
+  titleHighlight: string
   sponsorLine: string
   introduction: string
   finalRanking: ChallengeFinalRanking
@@ -146,8 +147,8 @@ export const workshopMeta: WorkshopMeta = {
 }
 
 export const challenge: ChallengeInfo = {
-  title:
-    'Towards Bimanual Intelligence: A Real-World Household Manipulation Challenge',
+  titleLead: 'Towards Bimanual Intelligence:',
+  titleHighlight: 'A Real-World Household Manipulation Challenge',
   sponsorLine: 'Designed and sponsored by',
   introduction:
     'This challenge focuses on real-world bimanual manipulation in household environments. Participants will train on thousands of hours of real-robot teleoperation and UMI data spanning diverse household tasks, with the freedom to design their own data mixtures and training strategies.',
@@ -258,21 +259,25 @@ export const challenge: ChallengeInfo = {
 export const challengeOrganizers: Person[] = [
   {
     name: 'Kai Li',
+    institution: 'PrimeBot',
     image: '/images/challenge-organizers/kai-li.jpg',
     imageAlt: 'Portrait of challenge organizer Kai Li',
   },
   {
     name: 'Ran Cheng',
+    institution: 'PrimeBot',
     image: '/images/challenge-organizers/ran-cheng.jpg',
     imageAlt: 'Portrait of challenge organizer Ran Cheng',
   },
   {
     name: 'Yan Shen',
+    institution: 'Peking University',
     image: '/images/organizers/yan-shen.jpg',
     imageAlt: 'Portrait of challenge organizer Yan Shen',
   },
   {
     name: 'Hao Dong',
+    institution: 'PrimeBot · Peking University',
     image: '/images/organizers/hao-dong.jpg',
     imageAlt: 'Portrait of challenge organizer Hao Dong',
   },

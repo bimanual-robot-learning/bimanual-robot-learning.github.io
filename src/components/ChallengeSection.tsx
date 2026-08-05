@@ -12,7 +12,12 @@ function ChallengeSection() {
       <div className="page-width challenge-content">
         <header className="challenge-heading">
           <p className="section-index">05 / Challenge Track</p>
-          <h2 id="challenge-title">{challenge.title}</h2>
+          <h2 id="challenge-title">
+            <span className="challenge-title__lead">{challenge.titleLead}</span>{' '}
+            <span className="challenge-title__highlight">
+              {challenge.titleHighlight}
+            </span>
+          </h2>
           <p className="challenge-sponsor">
             {challenge.sponsorLine}{' '}
             <a href={sponsor.url} target="_blank" rel="noreferrer">

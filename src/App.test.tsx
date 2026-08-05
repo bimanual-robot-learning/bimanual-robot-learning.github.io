@@ -88,8 +88,10 @@ describe('workshop landing page', () => {
     expect(challenge).not.toHaveProperty('eyebrow')
     expect(challenge).not.toHaveProperty('scoringNote')
     expect(challenge).not.toHaveProperty('prizePoolNote')
-    expect(challenge.title).toBe(
-      'Towards Bimanual Intelligence: A Real-World Household Manipulation Challenge',
+    expect(challenge).not.toHaveProperty('title')
+    expect(challenge.titleLead).toBe('Towards Bimanual Intelligence:')
+    expect(challenge.titleHighlight).toBe(
+      'A Real-World Household Manipulation Challenge',
     )
     expect(challenge.sponsorLine).toBe('Designed and sponsored by')
     expect(challenge.introduction).toBe(
@@ -185,15 +187,14 @@ describe('workshop landing page', () => {
       { label: 'Dataset', status: 'coming-soon' },
       { label: 'Evaluation Portal', status: 'coming-soon' },
     ])
-    expect(challengeOrganizers.map(({ name }) => name)).toEqual([
-      'Kai Li',
-      'Ran Cheng',
-      'Yan Shen',
-      'Hao Dong',
-    ])
     expect(
-      challengeOrganizers.every(({ institution }) => institution === undefined),
-    ).toBe(true)
+      challengeOrganizers.map(({ name, institution }) => ({ name, institution })),
+    ).toEqual([
+      { name: 'Kai Li', institution: 'PrimeBot' },
+      { name: 'Ran Cheng', institution: 'PrimeBot' },
+      { name: 'Yan Shen', institution: 'Peking University' },
+      { name: 'Hao Dong', institution: 'PrimeBot · Peking University' },
+    ])
   })
 
   it('renders the workshop identity and every primary section', () => {
@@ -242,13 +243,22 @@ describe('workshop landing page', () => {
     render(<App />)
 
     const challengeSection = screen.getByTestId('challenge-section')
+    const challengeHeading = within(challengeSection).getByRole('heading', {
+      name: 'Towards Bimanual Intelligence: A Real-World Household Manipulation Challenge',
+      level: 2,
+    })
+    const titleLead = challengeHeading.querySelector('.challenge-title__lead')
+    const titleHighlight = challengeHeading.querySelector(
+      '.challenge-title__highlight',
+    )
 
-    expect(
-      within(challengeSection).getByRole('heading', {
-        name: challenge.title,
-        level: 2,
-      }),
-    ).toBeInTheDocument()
+    expect(challengeHeading).toBeInTheDocument()
+    expect(titleLead).toHaveClass('challenge-title__lead')
+    expect(titleLead?.textContent).toBe('Towards Bimanual Intelligence:')
+    expect(titleHighlight).toHaveClass('challenge-title__highlight')
+    expect(titleHighlight?.textContent).toBe(
+      'A Real-World Household Manipulation Challenge',
+    )
     expect(
       within(challengeSection).queryByText('Challenge Track · IROS 2026'),
     ).not.toBeInTheDocument()
@@ -718,21 +728,25 @@ describe('workshop landing page', () => {
     const expectedOrganizers = [
       {
         name: 'Kai Li',
+        institution: 'PrimeBot',
         image: '/images/challenge-organizers/kai-li.jpg',
         imageAlt: 'Portrait of challenge organizer Kai Li',
       },
       {
         name: 'Ran Cheng',
+        institution: 'PrimeBot',
         image: '/images/challenge-organizers/ran-cheng.jpg',
         imageAlt: 'Portrait of challenge organizer Ran Cheng',
       },
       {
         name: 'Yan Shen',
+        institution: 'Peking University',
         image: '/images/organizers/yan-shen.jpg',
         imageAlt: 'Portrait of challenge organizer Yan Shen',
       },
       {
         name: 'Hao Dong',
+        institution: 'PrimeBot · Peking University',
         image: '/images/organizers/hao-dong.jpg',
         imageAlt: 'Portrait of challenge organizer Hao Dong',
       },
@@ -773,7 +787,9 @@ describe('workshop landing page', () => {
           level: 3,
         }),
       ).toBeInTheDocument()
-      expect(card.querySelector('.person-card__copy p')).toBeNull()
+      expect(card.querySelector('.person-card__copy p')).toHaveTextContent(
+        expectedOrganizer.institution,
+      )
       expect(within(card).getByRole('img')).toHaveAttribute(
         'src',
         expectedOrganizer.image,
