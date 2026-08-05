@@ -83,7 +83,14 @@ export type ChallengeResource =
   | {
       label: string
       status: 'available'
-      url: string
+      url: `/${string}`
+      external: false
+    }
+  | {
+      label: string
+      status: 'available'
+      url: `http://${string}` | `https://${string}`
+      external: true
     }
 
 export interface ChallengeInfo {
@@ -272,6 +279,7 @@ export const challenge: ChallengeInfo = {
       label: 'Explore Challenge Details',
       status: 'available',
       url: '/challenge/',
+      external: false,
     },
     { label: 'Dataset', status: 'coming-soon' },
     { label: 'Evaluation Portal', status: 'coming-soon' },

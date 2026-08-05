@@ -216,6 +216,7 @@ describe('workshop landing page', () => {
         label: 'Explore Challenge Details',
         status: 'available',
         url: '/challenge/',
+        external: false,
       },
       { label: 'Dataset', status: 'coming-soon' },
       { label: 'Evaluation Portal', status: 'coming-soon' },
@@ -800,6 +801,7 @@ describe('workshop landing page', () => {
         label: 'Dataset',
         status: 'available',
         url: 'https://huggingface.co/datasets/example/household-challenge',
+        external: true,
       },
     )
 

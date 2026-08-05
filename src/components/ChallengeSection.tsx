@@ -36,11 +36,11 @@ function ChallengeSection() {
           className="challenge-introduction"
           data-testid="challenge-introduction"
         >
-          {challenge.introductionSegments.map((segment) =>
+          {challenge.introductionSegments.map((segment, index) =>
             segment.emphasis ? (
-              <strong key={segment.text}>{segment.text}</strong>
+              <strong key={`${segment.text}-${index}`}>{segment.text}</strong>
             ) : (
-              <span key={segment.text}>{segment.text}</span>
+              <span key={`${segment.text}-${index}`}>{segment.text}</span>
             ),
           )}
         </p>
@@ -67,7 +67,7 @@ function ChallengeSection() {
                   data-testid="challenge-resource"
                   href={resource.url}
                   key={resource.label}
-                  {...(resource.url.startsWith('http')
+                  {...(resource.external
                     ? { rel: 'noreferrer', target: '_blank' }
                     : {})}
                 >
