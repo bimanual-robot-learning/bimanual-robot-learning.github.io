@@ -28,11 +28,6 @@ export interface Person {
   imageAlt: string
 }
 
-export interface ChallengeFact {
-  value: string
-  label: string
-}
-
 export interface ChallengeTitle {
   lineOne: string
   lineTwo: string
@@ -93,14 +88,10 @@ export type ChallengeResource =
 
 export interface ChallengeInfo {
   title: ChallengeTitle
-  titleLead: string
-  titleHighlight: string
   sponsorLine: string
-  introduction: string
   introductionSegments: ChallengeIntroductionSegment[]
   participation: ChallengeParticipation
   finalRanking: ChallengeFinalRanking
-  facts: ChallengeFact[]
   stages: ChallengeStage[]
   tasks: ChallengeTask[]
   prizePoolTotal: string
@@ -172,11 +163,7 @@ export const challenge: ChallengeInfo = {
     lineTwo: 'Bimanual Manipulation',
     accent: 'Challenge',
   },
-  titleLead: 'Towards Bimanual Intelligence:',
-  titleHighlight: 'A Real-World Household Manipulation Challenge',
   sponsorLine: 'Designed and sponsored by',
-  introduction:
-    'This challenge focuses on real-world bimanual manipulation in household environments. Participants will train on thousands of hours of real-robot teleoperation and UMI data spanning diverse household tasks, with the freedom to design their own data mixtures and training strategies.',
   introductionSegments: [
     {
       text: 'This challenge focuses on real-world bimanual manipulation in household environments. Participants train on ',
@@ -202,20 +189,6 @@ export const challenge: ChallengeInfo = {
     note:
       'Detailed scoring protocols will be announced before online evaluation opens.',
   },
-  facts: [
-    {
-      value: 'Thousands of hours',
-      label: 'Real-world demonstrations',
-    },
-    {
-      value: 'Teleoperation + UMI',
-      label: 'Complementary data sources',
-    },
-    {
-      value: '4 household tasks',
-      label: 'Real-robot evaluation',
-    },
-  ],
   stages: [
     {
       step: '01',

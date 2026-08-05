@@ -11,11 +11,16 @@ function ChallengeSection() {
     >
       <div className="page-width challenge-content">
         <header className="challenge-heading">
-          <p className="section-index">05 / Challenge Track</p>
+          <p className="section-index">05 / Workshop Challenge</p>
           <h2 id="challenge-title">
-            <span className="challenge-title__lead">{challenge.titleLead}</span>{' '}
-            <span className="challenge-title__highlight">
-              {challenge.titleHighlight}
+            <span className="challenge-title__line-one">
+              {challenge.title.lineOne}
+            </span>{' '}
+            <span className="challenge-title__line-two">
+              {challenge.title.lineTwo}{' '}
+              <span className="challenge-title__accent">
+                {challenge.title.accent}
+              </span>
             </span>
           </h2>
           <p className="challenge-sponsor">
@@ -27,38 +32,110 @@ function ChallengeSection() {
           </p>
         </header>
 
-        <p className="challenge-introduction">{challenge.introduction}</p>
+        <p
+          className="challenge-introduction"
+          data-testid="challenge-introduction"
+        >
+          {challenge.introductionSegments.map((segment) =>
+            segment.emphasis ? (
+              <strong key={segment.text}>{segment.text}</strong>
+            ) : (
+              <span key={segment.text}>{segment.text}</span>
+            ),
+          )}
+        </p>
 
-        <dl className="challenge-facts" aria-label="Challenge at a glance">
-          {challenge.facts.map((fact) => (
-            <div data-testid="challenge-fact" key={fact.label}>
-              <dt>{fact.label}</dt>
-              <dd>{fact.value}</dd>
-            </div>
-          ))}
-        </dl>
+        <section
+          className="challenge-participation"
+          aria-labelledby="challenge-participation-title"
+        >
+          <header>
+            <p className="eyebrow">{challenge.participation.eyebrow}</p>
+            <h3 id="challenge-participation-title">
+              {challenge.participation.title}
+            </h3>
+            <p>{challenge.participation.description}</p>
+          </header>
+          <div className="challenge-resources" aria-label="Challenge resources">
+            {challenge.resources.map((resource, index) => {
+              const className =
+                index === 0 ? 'challenge-resource--primary' : undefined
 
-        <section className="challenge-evaluation" aria-labelledby="evaluation-title">
-          <p className="eyebrow">How it works</p>
-          <h3 id="evaluation-title">Evaluation Format</h3>
-          <ol className="challenge-flow">
-            {challenge.stages.map((stage) => (
-              <li data-testid="challenge-stage" key={stage.step}>
-                <span aria-hidden="true">{stage.step}</span>
-                <h4>{stage.title}</h4>
-                <p>{stage.description}</p>
-              </li>
-            ))}
-          </ol>
-          <div
-            className="challenge-final-ranking"
-            data-testid="challenge-final-ranking"
-          >
-            <p className="eyebrow">{challenge.finalRanking.label}</p>
-            <strong>{challenge.finalRanking.formula}</strong>
-            <p>{challenge.finalRanking.note}</p>
+              return resource.status === 'available' ? (
+                <a
+                  className={className}
+                  data-testid="challenge-resource"
+                  href={resource.url}
+                  key={resource.label}
+                  {...(resource.url.startsWith('http')
+                    ? { rel: 'noreferrer', target: '_blank' }
+                    : {})}
+                >
+                  <span>{resource.label}</span>
+                  <b>Open</b>
+                </a>
+              ) : (
+                <div
+                  className={className}
+                  data-testid="challenge-resource"
+                  key={resource.label}
+                >
+                  <span>{resource.label}</span>
+                  <b>Coming Soon</b>
+                </div>
+              )
+            })}
           </div>
         </section>
+
+        <div className="challenge-logistics" data-testid="challenge-logistics">
+          <section
+            className="challenge-evaluation"
+            aria-labelledby="evaluation-title"
+          >
+            <p className="eyebrow">How it works</p>
+            <h3 id="evaluation-title">Evaluation Format</h3>
+            <ol className="challenge-flow">
+              {challenge.stages.map((stage) => (
+                <li data-testid="challenge-stage" key={stage.step}>
+                  <span aria-hidden="true">{stage.step}</span>
+                  <h4>{stage.title}</h4>
+                  <p>{stage.description}</p>
+                </li>
+              ))}
+            </ol>
+            <div
+              className="challenge-final-ranking"
+              data-testid="challenge-final-ranking"
+            >
+              <p className="eyebrow">{challenge.finalRanking.label}</p>
+              <strong>{challenge.finalRanking.formula}</strong>
+              <p>{challenge.finalRanking.note}</p>
+            </div>
+          </section>
+
+          <section
+            className="challenge-timeline"
+            aria-labelledby="challenge-timeline-title"
+          >
+            <p className="eyebrow">Important dates</p>
+            <h3 id="challenge-timeline-title">Challenge timeline</h3>
+            <ol>
+              {challenge.timeline.map((milestone, index) => (
+                <li data-testid="challenge-milestone" key={milestone.label}>
+                  <span aria-hidden="true">
+                    {String(index + 1).padStart(2, '0')}
+                  </span>
+                  <h4>{milestone.label}</h4>
+                  <p>
+                    {milestone.date}
+                    {milestone.time && <b>{` · ${milestone.time}`}</b>}
+                  </p>
+                </li>
+              ))}
+            </ol>
+          </section>
+        </div>
 
         <section className="challenge-tasks" aria-labelledby="challenge-tasks-title">
           <p className="eyebrow">Real-Robot Evaluation Scope</p>
@@ -101,46 +178,6 @@ function ChallengeSection() {
           </div>
         </section>
 
-        <section className="challenge-timeline" aria-labelledby="challenge-timeline-title">
-          <p className="eyebrow">Important dates</p>
-          <h3 id="challenge-timeline-title">Challenge timeline</h3>
-          <ol>
-            {challenge.timeline.map((milestone, index) => (
-              <li data-testid="challenge-milestone" key={milestone.label}>
-                <span aria-hidden="true">{String(index + 1).padStart(2, '0')}</span>
-                <h4>{milestone.label}</h4>
-                <p>
-                  {milestone.date}
-                  {milestone.time && <b>{` · ${milestone.time}`}</b>}
-                </p>
-              </li>
-            ))}
-          </ol>
-          <div className="challenge-resources" aria-label="Challenge resources">
-            {challenge.resources.map((resource) =>
-              resource.status === 'available' ? (
-                <a
-                  data-testid="challenge-resource"
-                  href={resource.url}
-                  key={resource.label}
-                  rel="noreferrer"
-                  target="_blank"
-                >
-                  <span>{resource.label}</span>
-                  <b>
-                    Open
-                    <ArrowUpRight size={14} aria-hidden="true" />
-                  </b>
-                </a>
-              ) : (
-                <div data-testid="challenge-resource" key={resource.label}>
-                  <span>{resource.label}</span>
-                  <b>Coming Soon</b>
-                </div>
-              ),
-            )}
-          </div>
-        </section>
       </div>
     </section>
   )

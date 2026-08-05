@@ -106,14 +106,10 @@ describe('workshop landing page', () => {
       lineTwo: 'Bimanual Manipulation',
       accent: 'Challenge',
     })
-    expect(challenge.titleLead).toBe('Towards Bimanual Intelligence:')
-    expect(challenge.titleHighlight).toBe(
-      'A Real-World Household Manipulation Challenge',
-    )
+    expect(challenge).not.toHaveProperty('titleLead')
+    expect(challenge).not.toHaveProperty('titleHighlight')
     expect(challenge.sponsorLine).toBe('Designed and sponsored by')
-    expect(challenge.introduction).toBe(
-      'This challenge focuses on real-world bimanual manipulation in household environments. Participants will train on thousands of hours of real-robot teleoperation and UMI data spanning diverse household tasks, with the freedom to design their own data mixtures and training strategies.',
-    )
+    expect(challenge).not.toHaveProperty('introduction')
     expect(challenge.introductionSegments).toEqual([
       {
         text: 'This challenge focuses on real-world bimanual manipulation in household environments. Participants train on ',
@@ -133,11 +129,7 @@ describe('workshop landing page', () => {
       description:
         'The full rules, dataset documentation, submission instructions, and leaderboard will live on the challenge website.',
     })
-    expect(challenge.facts).toEqual([
-      { value: 'Thousands of hours', label: 'Real-world demonstrations' },
-      { value: 'Teleoperation + UMI', label: 'Complementary data sources' },
-      { value: '4 household tasks', label: 'Real-robot evaluation' },
-    ])
+    expect(challenge).not.toHaveProperty('facts')
     expect(challenge.stages).toEqual([
       {
         step: '01',
@@ -253,7 +245,7 @@ describe('workshop landing page', () => {
       'Workshop Schedule',
       'Invited Speakers',
       'Call for Papers',
-      'Towards Bimanual Intelligence: A Real-World Household Manipulation Challenge',
+      'Real-World Household Bimanual Manipulation Challenge',
       'Workshop Organizers',
     ]) {
       expect(screen.getByRole('heading', { name: section })).toBeInTheDocument()
@@ -280,33 +272,69 @@ describe('workshop landing page', () => {
     )
   })
 
-  it('renders the redesigned Challenge introduction and evaluation', () => {
+  it('renders the Challenge title and segmented introduction', () => {
     render(<App />)
 
     const challengeSection = screen.getByTestId('challenge-section')
     const challengeHeading = within(challengeSection).getByRole('heading', {
-      name: 'Towards Bimanual Intelligence: A Real-World Household Manipulation Challenge',
+      name: 'Real-World Household Bimanual Manipulation Challenge',
       level: 2,
     })
-    const titleLead = challengeHeading.querySelector('.challenge-title__lead')
-    const titleHighlight = challengeHeading.querySelector(
-      '.challenge-title__highlight',
-    )
+    const lineOne = challengeHeading.querySelector('.challenge-title__line-one')
+    const lineTwo = challengeHeading.querySelector('.challenge-title__line-two')
+    const accent = challengeHeading.querySelector('.challenge-title__accent')
 
-    expect(challengeHeading).toBeInTheDocument()
-    expect(titleLead).toHaveClass('challenge-title__lead')
-    expect(titleLead?.textContent).toBe('Towards Bimanual Intelligence:')
-    expect(titleHighlight).toHaveClass('challenge-title__highlight')
-    expect(titleHighlight?.textContent).toBe(
-      'A Real-World Household Manipulation Challenge',
-    )
-    expect(
-      within(challengeSection).queryByText('Challenge Track · IROS 2026'),
-    ).not.toBeInTheDocument()
-    expect(within(challengeSection).getByText(challenge.introduction)).toHaveClass(
+    expect(challengeSection.querySelectorAll('h2')).toHaveLength(1)
+    expect(lineOne).toHaveTextContent('Real-World Household')
+    expect(lineTwo).toHaveTextContent('Bimanual Manipulation Challenge')
+    expect(accent).toHaveTextContent('Challenge')
+    expect(challengeHeading.querySelector('.challenge-title__lead')).toBeNull()
+    expect(challengeHeading.querySelector('.challenge-title__highlight')).toBeNull()
+    expect(within(challengeSection).getByText('05 / Workshop Challenge')).toBeVisible()
+    expect(challengeSection).not.toHaveTextContent('Towards Bimanual Intelligence:')
+
+    const introduction = within(challengeSection).getByTestId(
       'challenge-introduction',
     )
-    expect(within(challengeSection).getAllByTestId('challenge-fact')).toHaveLength(3)
+    expect(introduction).toHaveClass('challenge-introduction')
+    expect(introduction.querySelectorAll('strong')).toHaveLength(2)
+    expect(within(introduction).getByText('thousands of hours')).toBeVisible()
+    expect(within(introduction).getByText('teleoperation and UMI data')).toBeVisible()
+    expect(within(challengeSection).queryByTestId('challenge-fact')).toBeNull()
+    expect(challengeSection.querySelector('.challenge-facts')).toBeNull()
+  })
+
+  it('places participation before Evaluation and Timeline logistics', () => {
+    render(<App />)
+
+    const challengeSection = screen.getByTestId('challenge-section')
+    const introduction = within(challengeSection).getByTestId(
+      'challenge-introduction',
+    )
+    const participationHeading = within(challengeSection).getByRole('heading', {
+      name: challenge.participation.title,
+      level: 3,
+    })
+    const participation = participationHeading.closest('section')
+    const logistics = within(challengeSection).getByTestId('challenge-logistics')
+
+    expect(participation).toHaveClass('challenge-participation')
+    expect(participation).toHaveAccessibleName(challenge.participation.title)
+    expect(participation).toHaveTextContent(challenge.participation.eyebrow)
+    expect(participation).toHaveTextContent(challenge.participation.description)
+    expect(introduction.compareDocumentPosition(participation as Node)).toBe(
+      Node.DOCUMENT_POSITION_FOLLOWING,
+    )
+    expect((participation as Node).compareDocumentPosition(logistics)).toBe(
+      Node.DOCUMENT_POSITION_FOLLOWING,
+    )
+    expect(logistics).toHaveClass('challenge-logistics')
+
+    const logisticsHeadings = within(logistics).getAllByRole('heading', { level: 3 })
+    expect(logisticsHeadings.map(({ textContent }) => textContent)).toEqual([
+      'Evaluation Format',
+      'Challenge timeline',
+    ])
 
     const stages = within(challengeSection).getAllByTestId('challenge-stage')
     expect(stages).toHaveLength(2)
@@ -335,25 +363,11 @@ describe('workshop landing page', () => {
     expect(finalRanking).toHaveTextContent(challenge.finalRanking.label)
     expect(finalRanking).toHaveTextContent(challenge.finalRanking.formula)
     expect(finalRanking).toHaveTextContent(challenge.finalRanking.note)
-  })
-
-  it('uses definition semantics for Challenge fact labels and values', () => {
-    render(<App />)
-
-    const facts = screen.getAllByTestId('challenge-fact')
-    const expectedFacts = [
-      { label: 'Real-world demonstrations', value: 'Thousands of hours' },
-      {
-        label: 'Complementary data sources',
-        value: 'Teleoperation + UMI',
-      },
-      { label: 'Real-robot evaluation', value: '4 household tasks' },
-    ]
-
-    expect(facts).toHaveLength(expectedFacts.length)
-    for (const [index, expectedFact] of expectedFacts.entries()) {
-      expect(facts[index].querySelector('dt')).toHaveTextContent(expectedFact.label)
-      expect(facts[index].querySelector('dd')).toHaveTextContent(expectedFact.value)
+    const milestones = within(logistics).getAllByTestId('challenge-milestone')
+    expect(milestones).toHaveLength(challenge.timeline.length)
+    for (const [index, milestone] of challenge.timeline.entries()) {
+      expect(milestones[index]).toHaveTextContent(milestone.label)
+      expect(milestones[index]).toHaveTextContent(milestone.date)
     }
   })
 
@@ -380,11 +394,9 @@ describe('workshop landing page', () => {
     expect(styleFor('.section--challenge-organizers').background).toBe(
       'var(--paper)',
     )
-    expect(styleFor('.challenge-facts').marginLeft).toBe('0px')
     expect(styleFor('.challenge-prize-pool').background).not.toBe(
       'var(--ink-950)',
     )
-    expectGridColumns('.challenge-facts', 3)
     expectGridColumns('.challenge-flow', 2)
     expectGridColumns('.challenge-task-grid', 2)
     expectGridColumns('.challenge-prize-grid', 3)
@@ -419,25 +431,6 @@ describe('workshop landing page', () => {
       ),
     ).toBe('var(--orange)')
     expect(styleFor('.challenge-sponsor a').color).toBe('var(--orange-deep)')
-    const titleLead = extractCssRule(
-      appStyles,
-      '.challenge-title__lead',
-    )
-    expect(titleLead.selectors).toEqual(
-      expect.arrayContaining([
-        '.challenge-title__lead',
-        '.challenge-title__highlight',
-      ]),
-    )
-    expect(titleLead.declarations).toContain('display: block;')
-    const titleHighlight = extractCssRules(
-      appStyles,
-      '.challenge-title__highlight',
-    ).at(-1)?.declarations
-    expect(titleHighlight).toContain('margin-top: 0.08em;')
-    expect(titleHighlight).toContain('color: var(--orange-deep);')
-    expect(titleHighlight).toContain('font-size: 0.92em;')
-    expect(titleHighlight).toContain('font-weight: 650;')
     const introduction = extractCssRule(
       appStyles,
       '.challenge-introduction',
@@ -461,9 +454,6 @@ describe('workshop landing page', () => {
     const mobileMedia = extractCssBlock(appStyles, '@media (max-width: 720px)')
     const compactMedia = extractCssBlock(appStyles, '@media (max-width: 480px)')
 
-    expect(extractCssRule(tabletMedia, '.challenge-facts').declarations).toContain(
-      'margin-left: 0;',
-    )
     const tabletTimeline = extractCssRule(
       tabletMedia,
       '.challenge-timeline > ol',
@@ -524,10 +514,9 @@ describe('workshop landing page', () => {
     expect(extractCssProperty(challengeInstitutionRule, 'font-size')).toBe('0.86rem')
     expect(challengeInstitutionRule).not.toContain('white-space: nowrap;')
 
-    const mobileStack = extractCssRule(mobileMedia, '.challenge-facts')
+    const mobileStack = extractCssRule(mobileMedia, '.challenge-flow')
     expect(mobileStack.selectors).toEqual(
       expect.arrayContaining([
-        '.challenge-facts',
         '.challenge-flow',
         '.challenge-task-grid',
         '.challenge-prize-grid',
@@ -557,19 +546,6 @@ describe('workshop landing page', () => {
       'border-top: 1px solid rgba(200, 88, 53, 0.22);',
     )
     expect(mobilePrizeSeparator).toContain('border-left: 0;')
-
-    const mobileFact = extractCssRule(
-      mobileMedia,
-      '.challenge-facts > div',
-    ).declarations
-    expect(mobileFact).toContain('border-right: 0;')
-    expect(mobileFact).toContain('border-bottom: 1px solid var(--line-light);')
-    expect(
-      extractCssRule(mobileMedia, '.challenge-facts > div + div').declarations,
-    ).toContain('border-left: 0;')
-    expect(
-      extractCssRule(mobileMedia, '.challenge-facts > div:last-child').declarations,
-    ).toContain('border-bottom: 0;')
 
     const mobileTimeline = extractCssRules(mobileMedia, '.challenge-timeline > ol')
       .map(({ declarations }) => declarations)
@@ -776,6 +752,9 @@ describe('workshop landing page', () => {
     const challengeSection = screen.getByTestId('challenge-section')
     const milestones = within(challengeSection).getAllByTestId('challenge-milestone')
     const resources = within(challengeSection).getAllByTestId('challenge-resource')
+    const participation = within(challengeSection)
+      .getByRole('heading', { name: challenge.participation.title })
+      .closest('section')
 
     expect(milestones).toHaveLength(5)
     for (const [index, expectedMilestone] of challenge.timeline.entries()) {
@@ -796,13 +775,20 @@ describe('workshop landing page', () => {
     }
     expect(challengeSection.textContent?.match(/11:59 PM AOE/g)).toHaveLength(3)
     expect(resources).toHaveLength(3)
+    expect(participation).toContainElement(resources[0])
+    expect(participation).toContainElement(resources[1])
+    expect(participation).toContainElement(resources[2])
     expect(resources[0]).toHaveAttribute('href', '/challenge/')
+    expect(resources[0]).toHaveClass('challenge-resource--primary')
+    expect(resources[0]).not.toHaveAttribute('target')
+    expect(resources[0]).not.toHaveAttribute('rel')
     expect(within(resources[0]).getByText('Open')).toBeInTheDocument()
     for (const resource of resources.slice(1)) {
       expect(within(resource).getByText('Coming Soon')).toBeInTheDocument()
       expect(resource.closest('a, button')).toBeNull()
       expect(resource).not.toHaveAttribute('tabindex')
     }
+    expect(challengeSection).not.toHaveTextContent(/[→↗]/)
   })
 
   it('turns an available Challenge resource into a safe external call to action', () => {
