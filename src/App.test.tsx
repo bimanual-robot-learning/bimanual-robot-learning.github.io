@@ -624,6 +624,12 @@ describe('workshop landing page', () => {
       color: 'var(--ink-950)',
       background: 'var(--cyan)',
     })
+    expectOwnedCssProperties(appStyles, '.challenge-resources b', {
+      color: 'var(--cyan)',
+    })
+    expectOwnedCssProperties(appStyles, '.challenge-resource--primary b', {
+      color: 'var(--ink-950)',
+    })
     expectOwnedCssProperties(appStyles, '.challenge-resources > a:focus-visible', {
       outline: '3px solid var(--orange)',
       'outline-offset': '3px',

@@ -1793,7 +1793,7 @@
   display: inline-flex;
   align-items: center;
   gap: 5px;
-  color: var(--cyan-deep);
+  color: var(--cyan);
   font-family: var(--font-mono);
   font-size: 0.66rem;
   font-weight: 700;
