@@ -101,7 +101,11 @@ describe('workshop landing page', () => {
     expect(challenge).not.toHaveProperty('eyebrow')
     expect(challenge).not.toHaveProperty('scoringNote')
     expect(challenge).not.toHaveProperty('prizePoolNote')
-    expect(challenge).not.toHaveProperty('title')
+    expect(challenge.title).toEqual({
+      lineOne: 'Real-World Household',
+      lineTwo: 'Bimanual Manipulation',
+      accent: 'Challenge',
+    })
     expect(challenge.titleLead).toBe('Towards Bimanual Intelligence:')
     expect(challenge.titleHighlight).toBe(
       'A Real-World Household Manipulation Challenge',
@@ -110,6 +114,25 @@ describe('workshop landing page', () => {
     expect(challenge.introduction).toBe(
       'This challenge focuses on real-world bimanual manipulation in household environments. Participants will train on thousands of hours of real-robot teleoperation and UMI data spanning diverse household tasks, with the freedom to design their own data mixtures and training strategies.',
     )
+    expect(challenge.introductionSegments).toEqual([
+      {
+        text: 'This challenge focuses on real-world bimanual manipulation in household environments. Participants train on ',
+        emphasis: false,
+      },
+      { text: 'thousands of hours', emphasis: true },
+      { text: ' of real-robot ', emphasis: false },
+      { text: 'teleoperation and UMI data', emphasis: true },
+      {
+        text: ' spanning diverse household tasks, with the freedom to design their own data mixtures and training strategies.',
+        emphasis: false,
+      },
+    ])
+    expect(challenge.participation).toEqual({
+      eyebrow: 'Get started',
+      title: 'Participate in the Challenge',
+      description:
+        'The full rules, dataset documentation, submission instructions, and leaderboard will live on the challenge website.',
+    })
     expect(challenge.facts).toEqual([
       { value: 'Thousands of hours', label: 'Real-world demonstrations' },
       { value: 'Teleoperation + UMI', label: 'Complementary data sources' },
@@ -197,6 +220,11 @@ describe('workshop landing page', () => {
     ])
     expect(challenge.timeline.filter(({ time }) => time)).toHaveLength(3)
     expect(challenge.resources).toEqual([
+      {
+        label: 'Explore Challenge Details',
+        status: 'available',
+        url: '/challenge/',
+      },
       { label: 'Dataset', status: 'coming-soon' },
       { label: 'Evaluation Portal', status: 'coming-soon' },
     ])
@@ -742,7 +770,7 @@ describe('workshop landing page', () => {
     expect(prizePool.querySelector('.challenge-prize-pool__grid')).not.toBeInTheDocument()
   })
 
-  it('renders five Challenge milestones and two non-interactive resource states', () => {
+  it('renders five Challenge milestones and the configured resource states', () => {
     render(<App />)
 
     const challengeSection = screen.getByTestId('challenge-section')
@@ -767,8 +795,10 @@ describe('workshop landing page', () => {
       }
     }
     expect(challengeSection.textContent?.match(/11:59 PM AOE/g)).toHaveLength(3)
-    expect(resources).toHaveLength(2)
-    for (const resource of resources) {
+    expect(resources).toHaveLength(3)
+    expect(resources[0]).toHaveAttribute('href', '/challenge/')
+    expect(within(resources[0]).getByText('Open')).toBeInTheDocument()
+    for (const resource of resources.slice(1)) {
       expect(within(resource).getByText('Coming Soon')).toBeInTheDocument()
       expect(resource.closest('a, button')).toBeNull()
       expect(resource).not.toHaveAttribute('tabindex')

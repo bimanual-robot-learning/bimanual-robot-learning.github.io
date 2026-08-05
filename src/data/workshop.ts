@@ -33,6 +33,23 @@ export interface ChallengeFact {
   label: string
 }
 
+export interface ChallengeTitle {
+  lineOne: string
+  lineTwo: string
+  accent: 'Challenge'
+}
+
+export interface ChallengeIntroductionSegment {
+  text: string
+  emphasis: boolean
+}
+
+export interface ChallengeParticipation {
+  eyebrow: string
+  title: string
+  description: string
+}
+
 export interface ChallengeStage {
   step: string
   title: string
@@ -75,10 +92,13 @@ export type ChallengeResource =
     }
 
 export interface ChallengeInfo {
+  title: ChallengeTitle
   titleLead: string
   titleHighlight: string
   sponsorLine: string
   introduction: string
+  introductionSegments: ChallengeIntroductionSegment[]
+  participation: ChallengeParticipation
   finalRanking: ChallengeFinalRanking
   facts: ChallengeFact[]
   stages: ChallengeStage[]
@@ -147,11 +167,35 @@ export const workshopMeta: WorkshopMeta = {
 }
 
 export const challenge: ChallengeInfo = {
+  title: {
+    lineOne: 'Real-World Household',
+    lineTwo: 'Bimanual Manipulation',
+    accent: 'Challenge',
+  },
   titleLead: 'Towards Bimanual Intelligence:',
   titleHighlight: 'A Real-World Household Manipulation Challenge',
   sponsorLine: 'Designed and sponsored by',
   introduction:
     'This challenge focuses on real-world bimanual manipulation in household environments. Participants will train on thousands of hours of real-robot teleoperation and UMI data spanning diverse household tasks, with the freedom to design their own data mixtures and training strategies.',
+  introductionSegments: [
+    {
+      text: 'This challenge focuses on real-world bimanual manipulation in household environments. Participants train on ',
+      emphasis: false,
+    },
+    { text: 'thousands of hours', emphasis: true },
+    { text: ' of real-robot ', emphasis: false },
+    { text: 'teleoperation and UMI data', emphasis: true },
+    {
+      text: ' spanning diverse household tasks, with the freedom to design their own data mixtures and training strategies.',
+      emphasis: false,
+    },
+  ],
+  participation: {
+    eyebrow: 'Get started',
+    title: 'Participate in the Challenge',
+    description:
+      'The full rules, dataset documentation, submission instructions, and leaderboard will live on the challenge website.',
+  },
   finalRanking: {
     label: 'Final Ranking',
     formula: 'Online evaluation score + final real-robot evaluation score',
@@ -251,6 +295,11 @@ export const challenge: ChallengeInfo = {
     },
   ],
   resources: [
+    {
+      label: 'Explore Challenge Details',
+      status: 'available',
+      url: '/challenge/',
+    },
     { label: 'Dataset', status: 'coming-soon' },
     { label: 'Evaluation Portal', status: 'coming-soon' },
   ],
