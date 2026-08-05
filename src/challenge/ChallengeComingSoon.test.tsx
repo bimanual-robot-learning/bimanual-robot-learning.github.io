@@ -74,6 +74,14 @@ describe('ChallengeComingSoon', () => {
       challengeStyles,
       '.challenge-coming-soon__subtitle',
     )
+    const sponsorRule = extractCssBlock(
+      challengeStyles,
+      '.challenge-coming-soon__sponsor',
+    )
+    const sponsorDividerRule = extractCssBlock(
+      challengeStyles,
+      '.challenge-coming-soon__sponsor::before',
+    )
     const reducedMotionRules = extractCssBlock(
       challengeStyles,
       '@media (prefers-reduced-motion: reduce)',
@@ -90,6 +98,11 @@ describe('ChallengeComingSoon', () => {
     )
     expect(subtitleRule).toContain(
       'font: 500 clamp(1.5rem, 3.2vw, 2.25rem)/1.25 var(--font-display);',
+    )
+    expect(sponsorRule).toContain('display: flex;')
+    expect(sponsorDividerRule).toContain('width: 26px;')
+    expect(sponsorDividerRule).toContain(
+      'background: rgba(82, 216, 230, 0.42);',
     )
     expect(mobileHeadingRule).toContain(
       'font-size: clamp(2.6rem, 12vw, 3.5rem);',

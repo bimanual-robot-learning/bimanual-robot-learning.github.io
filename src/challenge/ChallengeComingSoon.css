@@ -52,10 +52,23 @@
 }
 
 .challenge-coming-soon__sponsor {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 11px;
   margin: 26px auto 0;
   color: var(--slate-light-readable);
   font: 500 0.86rem/1.5 var(--font-mono);
-  letter-spacing: 0.04em;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+}
+
+.challenge-coming-soon__sponsor::before,
+.challenge-coming-soon__sponsor::after {
+  width: 26px;
+  height: 1px;
+  background: rgba(82, 216, 230, 0.42);
+  content: '';
 }
 
 .challenge-coming-soon__sponsor strong {
@@ -111,6 +124,16 @@
   .challenge-coming-soon__eyebrow {
     margin-bottom: 22px;
     font-size: 0.76rem;
+  }
+
+  .challenge-coming-soon__sponsor {
+    gap: 8px;
+    font-size: 0.76rem;
+  }
+
+  .challenge-coming-soon__sponsor::before,
+  .challenge-coming-soon__sponsor::after {
+    width: 16px;
   }
 
   .challenge-coming-soon__status {
