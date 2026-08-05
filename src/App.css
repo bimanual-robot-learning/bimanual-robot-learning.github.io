@@ -2114,6 +2114,11 @@
     gap: 15px;
   }
 
+  .challenge-title__line-one,
+  .challenge-title__line-two {
+    white-space: normal;
+  }
+
   .challenge-organizer-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
@@ -2297,6 +2302,33 @@
     gap: 6px;
   }
 
+  .challenge-participation__header,
+  .challenge-resources,
+  .challenge-logistics {
+    grid-template-columns: 1fr;
+  }
+
+  .challenge-participation__header {
+    align-items: start;
+    gap: 10px;
+  }
+
+  .challenge-participation__header > p:last-child {
+    grid-column: 1;
+    grid-row: auto;
+  }
+
+  .challenge-timeline li {
+    grid-template-columns: 1fr;
+  }
+
+  .challenge-timeline li p {
+    grid-column: 1;
+    grid-row: auto;
+    text-align: left;
+    white-space: normal;
+  }
+
   .challenge-task-grid,
   .challenge-prize-grid,
   .challenge-organizer-grid {
@@ -2436,6 +2468,9 @@
     gap: 15px;
   }
 
+  .challenge-participation,
+  .challenge-evaluation,
+  .challenge-timeline,
   .challenge-prize-pool {
     padding: 26px 22px;
   }

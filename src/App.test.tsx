@@ -462,9 +462,26 @@ describe('workshop landing page', () => {
     stylesheet.remove()
   })
 
-  it('keeps unrelated Challenge grids responsive without stale logistics rules', () => {
+  it('adapts the Challenge summary across tablet and mobile viewports', () => {
+    const tabletMedia = extractCssBlock(appStyles, '@media (max-width: 920px)')
     const mobileMedia = extractCssBlock(appStyles, '@media (max-width: 720px)')
     const compactMedia = extractCssBlock(appStyles, '@media (max-width: 480px)')
+
+    for (const selector of [
+      '.challenge-title__line-one',
+      '.challenge-title__line-two',
+    ]) {
+      expect(extractCssProperty(
+        extractCssRule(tabletMedia, selector).declarations,
+        'white-space',
+      )).toBe('normal')
+    }
+
+    for (const media of [tabletMedia, mobileMedia, compactMedia]) {
+      for (const rule of findCssRules(media, '.challenge-title__accent')) {
+        expect(rule.declarations).not.toMatch(/font-(?:size|weight)\s*:/)
+      }
+    }
 
     expect(
       extractCssRule(
@@ -494,6 +511,45 @@ describe('workshop landing page', () => {
       ]),
     )
     expect(mobileStack.declarations).toContain('grid-template-columns: 1fr;')
+
+    for (const selector of [
+      '.challenge-participation__header',
+      '.challenge-resources',
+      '.challenge-logistics',
+    ]) {
+      expect(extractCssProperty(
+        extractCssRule(mobileMedia, selector).declarations,
+        'grid-template-columns',
+      )).toBe('1fr')
+    }
+    const mobileParticipationHeader =
+      extractCssRules(mobileMedia, '.challenge-participation__header').at(-1)
+        ?.declarations ?? ''
+    expect(extractCssProperty(mobileParticipationHeader, 'align-items')).toBe(
+      'start',
+    )
+    expect(extractCssProperty(mobileParticipationHeader, 'gap')).toBe('10px')
+    expect(extractCssProperty(
+      extractCssRule(mobileMedia, '.challenge-participation__header > p:last-child')
+        .declarations,
+      'grid-column',
+    )).toBe('1')
+
+    const mobileTimelineItem = extractCssRule(
+      mobileMedia,
+      '.challenge-timeline li',
+    ).declarations
+    expect(extractCssProperty(mobileTimelineItem, 'grid-template-columns')).toBe(
+      '1fr',
+    )
+    const mobileTimelineDate = extractCssRule(
+      mobileMedia,
+      '.challenge-timeline li p',
+    ).declarations
+    expect(extractCssProperty(mobileTimelineDate, 'grid-column')).toBe('1')
+    expect(extractCssProperty(mobileTimelineDate, 'grid-row')).toBe('auto')
+    expect(extractCssProperty(mobileTimelineDate, 'text-align')).toBe('left')
+    expect(extractCssProperty(mobileTimelineDate, 'white-space')).toBe('normal')
 
     const mobilePrizeSeparator = extractCssRule(
       mobileMedia,
@@ -531,6 +587,21 @@ describe('workshop landing page', () => {
     expect(compactSponsor).toContain('align-items: flex-start;')
     expect(compactSponsor).toContain('flex-direction: column;')
     expect(compactSponsor).toContain('gap: 3px;')
+    const compactChallengePanel = extractCssRule(
+      compactMedia,
+      '.challenge-participation',
+    )
+    expect(compactChallengePanel.selectors).toEqual(
+      expect.arrayContaining([
+        '.challenge-participation',
+        '.challenge-evaluation',
+        '.challenge-timeline',
+        '.challenge-prize-pool',
+      ]),
+    )
+    expect(extractCssProperty(compactChallengePanel.declarations, 'padding')).toBe(
+      '26px 22px',
+    )
     expect(appStyles).not.toContain('.challenge-block')
   })
 
