@@ -477,6 +477,13 @@ describe('workshop landing page', () => {
       )).toBe('normal')
     }
 
+    const tabletResources = extractCssRule(tabletMedia, '.challenge-resources')
+    expect(tabletResources.selectors).toEqual(['.challenge-resources'])
+    expect(extractCssProperty(
+      tabletResources.declarations,
+      'grid-template-columns',
+    )).toBe('1fr')
+
     for (const media of [tabletMedia, mobileMedia, compactMedia]) {
       for (const rule of findCssRules(media, '.challenge-title__accent')) {
         expect(rule.declarations).not.toMatch(/font-(?:size|weight)\s*:/)
@@ -514,7 +521,6 @@ describe('workshop landing page', () => {
 
     for (const selector of [
       '.challenge-participation__header',
-      '.challenge-resources',
       '.challenge-logistics',
     ]) {
       expect(extractCssProperty(
