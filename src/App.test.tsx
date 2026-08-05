@@ -362,7 +362,7 @@ describe('workshop landing page', () => {
     expectGridColumns('.challenge-prize-grid', 3)
     expectGridColumns('.challenge-timeline > ol', 5)
     expectGridColumns('.challenge-resources', 2)
-    expectGridColumns('.challenge-organizer-grid', 4)
+    expectGridColumns('.challenge-organizer-grid', 2)
     expect(styleFor('.challenge-prize-grid').gap).toBe('0px')
     expect(
       extractCssProperty(
@@ -483,6 +483,18 @@ describe('workshop landing page', () => {
         '.person-card--challenge-organizer .person-card__media',
       ).declarations,
     ).toContain('aspect-ratio: 1;')
+    expect(
+      extractCssProperty(
+        extractCssRule(appStyles, '.person-card--challenge-organizer').declarations,
+        'grid-template-columns',
+      ),
+    ).toBe('104px minmax(0, 1fr)')
+    const challengeInstitutionRule = extractCssRule(
+      appStyles,
+      '.person-card__copy p',
+    ).declarations
+    expect(extractCssProperty(challengeInstitutionRule, 'font-size')).toBe('0.86rem')
+    expect(challengeInstitutionRule).not.toContain('white-space: nowrap;')
 
     const mobileStack = extractCssRule(mobileMedia, '.challenge-facts')
     expect(mobileStack.selectors).toEqual(
@@ -882,9 +894,7 @@ describe('workshop landing page', () => {
           level: 3,
         }),
       ).toBeInTheDocument()
-      expect(card.querySelector('.person-card__copy p')).toHaveTextContent(
-        expectedOrganizer.institution,
-      )
+      expect(within(card).getByText(expectedOrganizer.institution)).toBeVisible()
       expect(within(card).getByRole('img')).toHaveAttribute(
         'src',
         expectedOrganizer.image,
