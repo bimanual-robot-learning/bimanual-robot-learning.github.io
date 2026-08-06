@@ -343,13 +343,13 @@ export const challengeVideos: ChallengeVideo[] = [
 export const challengeOrganizers: Person[] = [
   {
     name: 'Kai Li',
-    institution: 'PrimeBot',
+    institution: '启元机器人',
     image: '/images/challenge-organizers/kai-li.jpg',
     imageAlt: 'Portrait of challenge organizer Kai Li',
   },
   {
     name: 'Ran Cheng',
-    institution: 'PrimeBot',
+    institution: '启元机器人',
     image: '/images/challenge-organizers/ran-cheng.jpg',
     imageAlt: 'Portrait of challenge organizer Ran Cheng',
   },
@@ -361,7 +361,7 @@ export const challengeOrganizers: Person[] = [
   },
   {
     name: 'Hao Dong',
-    institution: 'PrimeBot · Peking University',
+    institution: '启元机器人 · Peking University',
     image: '/images/organizers/hao-dong.jpg',
     imageAlt: 'Portrait of challenge organizer Hao Dong',
   },
@@ -543,7 +543,7 @@ export const organizers: Person[] = [
   },
   {
     name: 'Hao Dong',
-    institution: 'Peking University · PrimeBot',
+    institution: 'Peking University · 启元机器人',
     image: '/images/organizers/hao-dong.jpg',
     imageAlt: 'Portrait of workshop organizer Hao Dong',
   },
