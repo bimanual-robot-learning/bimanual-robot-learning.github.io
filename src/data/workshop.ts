@@ -182,8 +182,10 @@ export const challenge: ChallengeInfo = {
   },
   sponsorLine: 'Designed and sponsored by',
   introductionSegments: [
+    { text: 'This ', emphasis: false },
+    { text: 'challenge', emphasis: true },
     {
-      text: 'This challenge focuses on real-world bimanual manipulation in household environments. Participants train on ',
+      text: ' focuses on real-world bimanual manipulation in household environments. Participants train on ',
       emphasis: false,
     },
     { text: 'thousands of hours', emphasis: true },
@@ -222,23 +224,19 @@ export const challenge: ChallengeInfo = {
   tasks: [
     {
       title: 'Open the Washer Door',
-      description:
-        'Use the gripper to fully open the washing machine door.',
+      description: 'Fully open the door with the gripper.',
     },
     {
       title: 'Put Clothing in the Washer',
-      description:
-        'Put two pieces of clothing into the washing machine.',
+      description: 'Put two pieces of clothing into the washer.',
     },
     {
       title: 'Close the Washer Door',
-      description:
-        'Use the gripper to close the washing machine door securely.',
+      description: 'Close the door securely with the gripper.',
     },
     {
       title: 'Fold Clothing',
-      description:
-        'Unfold an item of clothing and fold it neatly.',
+      description: 'Unfold the clothing and fold it neatly.',
     },
   ],
   prizePoolTotal: 'USD 2,000',

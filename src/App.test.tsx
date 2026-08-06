@@ -130,8 +130,10 @@ describe('workshop landing page', () => {
     expect(challenge.sponsorLine).toBe('Designed and sponsored by')
     expect(challenge).not.toHaveProperty('introduction')
     expect(challenge.introductionSegments).toEqual([
+      { text: 'This ', emphasis: false },
+      { text: 'challenge', emphasis: true },
       {
-        text: 'This challenge focuses on real-world bimanual manipulation in household environments. Participants train on ',
+        text: ' focuses on real-world bimanual manipulation in household environments. Participants train on ',
         emphasis: false,
       },
       { text: 'thousands of hours', emphasis: true },
@@ -171,19 +173,19 @@ describe('workshop landing page', () => {
     expect(challenge.tasks).toEqual([
       {
         title: 'Open the Washer Door',
-        description: 'Use the gripper to fully open the washing machine door.',
+        description: 'Fully open the door with the gripper.',
       },
       {
         title: 'Put Clothing in the Washer',
-        description: 'Put two pieces of clothing into the washing machine.',
+        description: 'Put two pieces of clothing into the washer.',
       },
       {
         title: 'Close the Washer Door',
-        description: 'Use the gripper to close the washing machine door securely.',
+        description: 'Close the door securely with the gripper.',
       },
       {
         title: 'Fold Clothing',
-        description: 'Unfold an item of clothing and fold it neatly.',
+        description: 'Unfold the clothing and fold it neatly.',
       },
     ])
     expect(challenge.prizePoolTotal).toBe('USD 2,000')
@@ -493,7 +495,8 @@ describe('workshop landing page', () => {
       'challenge-introduction',
     )
     expect(introduction).toHaveClass('challenge-introduction')
-    expect(introduction.querySelectorAll('strong')).toHaveLength(2)
+    expect(introduction.querySelectorAll('strong')).toHaveLength(3)
+    expect(within(introduction).getByText('challenge')).toBeVisible()
     expect(within(introduction).getByText('thousands of hours')).toBeVisible()
     expect(within(introduction).getByText('teleoperation and UMI data')).toBeVisible()
     expect(within(challengeSection).queryByTestId('challenge-fact')).toBeNull()
