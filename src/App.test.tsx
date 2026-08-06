@@ -359,10 +359,13 @@ describe('workshop landing page', () => {
       name: 'Training Data Examples',
     })
     const buttons = within(gallery).getAllByRole('button')
+    const selectionSequence = [1, 2, 3, 4, 0].map(
+      (index) => challengeVideos[index],
+    )
 
     expect(buttons[0]).toHaveAttribute('aria-pressed', 'true')
 
-    for (const target of challengeVideos.slice(1)) {
+    for (const target of selectionSequence) {
       const targetButton = within(gallery).getByRole('button', {
         name: `${target.title}, ${target.sourceLabel}, ${target.durationLabel}`,
       })
