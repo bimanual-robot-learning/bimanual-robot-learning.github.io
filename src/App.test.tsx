@@ -4,7 +4,12 @@ import { describe, expect, it } from 'vitest'
 import App from './App'
 import appStyles from './App.css?raw'
 import indexStyles from './index.css?raw'
-import { challenge, challengeOrganizers, workshopMeta } from './data/workshop'
+import {
+  challenge,
+  challengeOrganizers,
+  challengeVideos,
+  workshopMeta,
+} from './data/workshop'
 import type { ChallengeResource } from './data/workshop'
 import viteConfigSource from '../vite.config.ts?raw'
 import challengeHtml from '../challenge/index.html?raw'
@@ -238,6 +243,58 @@ describe('workshop landing page', () => {
       { name: 'Ran Cheng', institution: 'PrimeBot' },
       { name: 'Yan Shen', institution: 'Peking University' },
       { name: 'Hao Dong', institution: 'PrimeBot · Peking University' },
+    ])
+  })
+
+  it('stores the approved Challenge training-data videos in order', () => {
+    expect(challengeVideos).toEqual([
+      {
+        id: 'fold-clothing-teleoperation',
+        title: 'Fold Clothing',
+        sourceLabel: 'Real-robot teleoperation',
+        durationLabel: '00:36',
+        src: '/videos/challenge/fold-clothing-teleoperation.mp4',
+        poster: '/images/challenge-videos/fold-clothing-teleoperation.webp',
+        format: 'landscape',
+      },
+      {
+        id: 'washer-retrieve-clothing-teleoperation',
+        title: 'Open Washer Door → Retrieve Clothing → Close Washer Door',
+        sourceLabel: 'Real-robot teleoperation',
+        durationLabel: '00:40',
+        src: '/videos/challenge/washer-retrieve-clothing-teleoperation.mp4',
+        poster:
+          '/images/challenge-videos/washer-retrieve-clothing-teleoperation.webp',
+        format: 'landscape',
+      },
+      {
+        id: 'washer-put-clothing-teleoperation',
+        title: 'Open Washer Door → Put Clothing In → Close Washer Door',
+        sourceLabel: 'Real-robot teleoperation',
+        durationLabel: '00:52',
+        src: '/videos/challenge/washer-put-clothing-teleoperation.mp4',
+        poster:
+          '/images/challenge-videos/washer-put-clothing-teleoperation.webp',
+        format: 'landscape',
+      },
+      {
+        id: 'fold-clothing-umi-left',
+        title: 'Fold Clothing · Left View',
+        sourceLabel: 'UMI demonstration',
+        durationLabel: '00:24',
+        src: '/videos/challenge/fold-clothing-umi-left.mp4',
+        poster: '/images/challenge-videos/fold-clothing-umi-left.webp',
+        format: 'square',
+      },
+      {
+        id: 'fold-clothing-umi-right',
+        title: 'Fold Clothing · Right View',
+        sourceLabel: 'UMI demonstration',
+        durationLabel: '00:24',
+        src: '/videos/challenge/fold-clothing-umi-right.mp4',
+        poster: '/images/challenge-videos/fold-clothing-umi-right.webp',
+        format: 'square',
+      },
     ])
   })
 

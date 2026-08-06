@@ -74,6 +74,16 @@ export interface ChallengeMilestone {
   time?: string
 }
 
+export interface ChallengeVideo {
+  id: string
+  title: string
+  sourceLabel: 'Real-robot teleoperation' | 'UMI demonstration'
+  durationLabel: string
+  src: `/videos/challenge/${string}.mp4`
+  poster: `/images/challenge-videos/${string}.webp`
+  format: 'landscape' | 'square'
+}
+
 export type ChallengeResource =
   | {
       label: string
@@ -285,6 +295,55 @@ export const challenge: ChallengeInfo = {
     { label: 'Evaluation Portal', status: 'coming-soon' },
   ],
 }
+
+export const challengeVideos: ChallengeVideo[] = [
+  {
+    id: 'fold-clothing-teleoperation',
+    title: 'Fold Clothing',
+    sourceLabel: 'Real-robot teleoperation',
+    durationLabel: '00:36',
+    src: '/videos/challenge/fold-clothing-teleoperation.mp4',
+    poster: '/images/challenge-videos/fold-clothing-teleoperation.webp',
+    format: 'landscape',
+  },
+  {
+    id: 'washer-retrieve-clothing-teleoperation',
+    title: 'Open Washer Door → Retrieve Clothing → Close Washer Door',
+    sourceLabel: 'Real-robot teleoperation',
+    durationLabel: '00:40',
+    src: '/videos/challenge/washer-retrieve-clothing-teleoperation.mp4',
+    poster:
+      '/images/challenge-videos/washer-retrieve-clothing-teleoperation.webp',
+    format: 'landscape',
+  },
+  {
+    id: 'washer-put-clothing-teleoperation',
+    title: 'Open Washer Door → Put Clothing In → Close Washer Door',
+    sourceLabel: 'Real-robot teleoperation',
+    durationLabel: '00:52',
+    src: '/videos/challenge/washer-put-clothing-teleoperation.mp4',
+    poster: '/images/challenge-videos/washer-put-clothing-teleoperation.webp',
+    format: 'landscape',
+  },
+  {
+    id: 'fold-clothing-umi-left',
+    title: 'Fold Clothing · Left View',
+    sourceLabel: 'UMI demonstration',
+    durationLabel: '00:24',
+    src: '/videos/challenge/fold-clothing-umi-left.mp4',
+    poster: '/images/challenge-videos/fold-clothing-umi-left.webp',
+    format: 'square',
+  },
+  {
+    id: 'fold-clothing-umi-right',
+    title: 'Fold Clothing · Right View',
+    sourceLabel: 'UMI demonstration',
+    durationLabel: '00:24',
+    src: '/videos/challenge/fold-clothing-umi-right.mp4',
+    poster: '/images/challenge-videos/fold-clothing-umi-right.webp',
+    format: 'square',
+  },
+]
 
 export const challengeOrganizers: Person[] = [
   {
