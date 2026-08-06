@@ -369,6 +369,7 @@ describe('workshop landing page', () => {
 
     await user.click(targetButton)
 
+    expect(targetButton).toHaveFocus()
     const video = within(gallery).getByLabelText(`${target.title} video`)
     expect(targetButton).toHaveAttribute('aria-pressed', 'true')
     expect(video.querySelector('source')).toHaveAttribute('src', target.src)
@@ -387,10 +388,18 @@ describe('workshop landing page', () => {
     const gallery = screen.getByRole('region', {
       name: 'Training Data Examples',
     })
-    const buttons = within(gallery).getAllByRole('button')
+    const playlist = within(gallery).getByLabelText(
+      'Training data video playlist',
+    )
+    const buttons = within(playlist).getAllByRole('button')
 
     expect(buttons).toHaveLength(challengeVideos.length)
     for (const [index, button] of buttons.entries()) {
+      const video = challengeVideos[index]
+
+      expect(button).toHaveAccessibleName(
+        `${video.title}, ${video.sourceLabel}, ${video.durationLabel}`,
+      )
       expect(button).toHaveAttribute('type', 'button')
       expect(button).toHaveAttribute(
         'aria-pressed',
