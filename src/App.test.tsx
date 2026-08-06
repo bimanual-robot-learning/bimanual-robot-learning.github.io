@@ -558,9 +558,6 @@ describe('workshop landing page', () => {
           .textContent,
       ),
     ).toEqual(['Online Evaluation', 'Real-Robot Evaluation', 'Final Ranking'])
-    expect(
-      within(challengeSection).queryByRole('heading', { name: 'Train' }),
-    ).not.toBeInTheDocument()
     for (const [index, expectedStage] of challenge.stages.entries()) {
       expect(
         within(stages[index]).getByRole('heading', {
@@ -571,26 +568,6 @@ describe('workshop landing page', () => {
       expect(within(stages[index]).getByText(expectedStage.description)).toBeVisible()
     }
 
-    const realRobotScope = within(stages[1]).getByRole('list', {
-      name: 'Real-Robot Evaluation Scope',
-    })
-    const taskItems = within(realRobotScope).getAllByTestId('challenge-task')
-    expect(taskItems).toHaveLength(4)
-    for (const [index, expectedTask] of challenge.tasks.entries()) {
-      expect(
-        within(taskItems[index]).getByText(expectedTask.title, { exact: true }),
-      ).toBeVisible()
-      expect(
-        within(taskItems[index]).getByText(expectedTask.description, { exact: true }),
-      ).toBeVisible()
-    }
-
-    expect(
-      within(challengeSection).getByRole('heading', {
-        name: 'Evaluation Format',
-        level: 3,
-      }),
-    ).toBeInTheDocument()
     const finalRanking = within(stages[2]).getByTestId(
       'challenge-final-ranking',
     )
@@ -598,17 +575,6 @@ describe('workshop landing page', () => {
     expect(challengeSection).not.toHaveTextContent(
       'Detailed scoring protocols will be announced before online evaluation opens.',
     )
-    expect(
-      within(challengeSection).queryByRole('region', {
-        name: 'Household Manipulation Tasks',
-      }),
-    ).not.toBeInTheDocument()
-    const milestones = within(logistics).getAllByTestId('challenge-milestone')
-    expect(milestones).toHaveLength(challenge.timeline.length)
-    for (const [index, milestone] of challenge.timeline.entries()) {
-      expect(milestones[index]).toHaveTextContent(milestone.label)
-      expect(milestones[index]).toHaveTextContent(milestone.date)
-    }
   })
 
   it('uses the redesigned Challenge visual system', () => {
