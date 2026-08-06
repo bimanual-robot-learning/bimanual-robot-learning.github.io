@@ -604,9 +604,16 @@ expectOwnedCssProperties(appStyles, '.challenge-final-ranking strong', {
 })
 ```
 
-Add these checks to `adapts the Challenge summary across tablet and mobile viewports` after `tabletMedia` is created:
+Add these checks to `adapts the Challenge summary across tablet and mobile viewports` after `intermediateMedia` and `tabletMedia` are created:
 
 ```tsx
+expectOwnedCssProperties(
+  intermediateMedia,
+  '.challenge-final-ranking strong',
+  {
+    'white-space': 'normal',
+  },
+)
 expectOwnedCssProperties(tabletMedia, '.challenge-video-gallery__layout', {
   'grid-template-columns': '1fr',
 })
@@ -786,7 +793,7 @@ Insert the following block after `.challenge-resources` styles and before `.chal
 }
 ```
 
-- [ ] **Step 5: Compact the ranking formula and add the 920 px stack rules**
+- [ ] **Step 5: Compact the ranking formula and add the intermediate-wrap and 920 px stack rules**
 
 Replace the font-size declaration in `.challenge-final-ranking strong` and add `white-space`:
 
@@ -800,6 +807,16 @@ Replace the font-size declaration in `.challenge-final-ranking strong` and add `
   font-weight: 650;
   letter-spacing: -0.03em;
   white-space: nowrap;
+}
+```
+
+Add the overflow-safety override while the logistics layout remains two-column:
+
+```css
+@media (min-width: 921px) and (max-width: 1199px) {
+  .challenge-final-ranking strong {
+    white-space: normal;
+  }
 }
 ```
 
@@ -915,9 +932,11 @@ Open the homepage Challenge section and confirm:
 - the final-ranking formula fits on one line;
 - no horizontal overflow exists.
 
-- [ ] **Step 5: Verify 768 × 1000 and 390 × 844**
+- [ ] **Step 5: Verify 1000 × 1000, 768 × 1000, and 390 × 844**
 
-At both viewports confirm:
+At 1000 × 1000, confirm the logistics panels remain in two columns and the ranking formula wraps without overlapping the Timeline panel or introducing horizontal overflow.
+
+At 768 × 1000 and 390 × 844, confirm:
 
 - player stacks above a single-column playlist;
 - all long washer titles wrap without clipping;

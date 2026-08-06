@@ -358,32 +358,40 @@ describe('workshop landing page', () => {
     const gallery = screen.getByRole('region', {
       name: 'Training Data Examples',
     })
-    const target = challengeVideos[3]
     const buttons = within(gallery).getAllByRole('button')
-    const targetButton = within(gallery).getByRole('button', {
-      name: `${target.title}, ${target.sourceLabel}, ${target.durationLabel}`,
-    })
-    const initialPlayer = within(gallery).getByLabelText(
-      `${challengeVideos[0].title} video`,
-    )
 
     expect(buttons[0]).toHaveAttribute('aria-pressed', 'true')
-    expect(targetButton).toHaveAttribute('aria-pressed', 'false')
 
-    await user.click(targetButton)
+    for (const target of challengeVideos.slice(1)) {
+      const targetButton = within(gallery).getByRole('button', {
+        name: `${target.title}, ${target.sourceLabel}, ${target.durationLabel}`,
+      })
+      const currentPlayer = within(gallery).getByLabelText(/ video$/)
 
-    expect(targetButton).toHaveFocus()
-    const player = within(gallery).getByLabelText(`${target.title} video`)
-    expect(player).not.toBe(initialPlayer)
-    expect(targetButton).toHaveAttribute('aria-pressed', 'true')
-    expect(player.querySelector('source')).toHaveAttribute('src', target.src)
-    expect(player).toHaveAttribute('poster', target.poster)
-    expect(player).not.toHaveAttribute('autoplay')
+      expect(targetButton).toHaveAttribute('aria-pressed', 'false')
 
-    const caption = within(gallery).getByTestId('challenge-video-caption')
-    expect(caption).toHaveTextContent(target.title)
-    expect(caption).toHaveTextContent(target.sourceLabel)
-    expect(caption).toHaveTextContent(target.durationLabel)
+      await user.click(targetButton)
+
+      expect(targetButton).toHaveFocus()
+      expect(targetButton).toHaveAttribute('aria-pressed', 'true')
+      expect(
+        within(gallery)
+          .getAllByRole('button')
+          .filter((button) => button.getAttribute('aria-pressed') === 'true'),
+      ).toHaveLength(1)
+
+      const player = within(gallery).getByLabelText(`${target.title} video`)
+      expect(player).not.toBe(currentPlayer)
+      expect(player.querySelector('source')).toHaveAttribute('src', target.src)
+      expect(player).toHaveAttribute('poster', target.poster)
+      expect(player).toHaveAttribute('data-format', target.format)
+      expect(player).not.toHaveAttribute('autoplay')
+
+      const caption = within(gallery).getByTestId('challenge-video-caption')
+      expect(caption).toHaveTextContent(target.title)
+      expect(caption).toHaveTextContent(target.sourceLabel)
+      expect(caption).toHaveTextContent(target.durationLabel)
+    }
   })
 
   it('uses semantic playlist buttons and decorative thumbnails', () => {

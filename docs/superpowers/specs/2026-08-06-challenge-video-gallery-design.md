@@ -143,16 +143,18 @@ No modal, carousel library, custom playback controls, autoplay observer, or sync
 
 ## Final Ranking Typography
 
-As part of the same visual update, reduce the `Online evaluation score + final real-robot evaluation score.` formula to a compact display size so it fits on one line in the desktop Evaluation panel.
+As part of the same visual update, reduce the `Online evaluation score + final real-robot evaluation score.` formula to a compact display size so it fits on one line in the wide desktop Evaluation panel.
 
-- Desktop: use `font-size: clamp(1rem, 1.25vw, 1.15rem)`, moderate display weight, and `white-space: nowrap` while the two-column logistics layout is active.
-- At the existing 920 px logistics stack breakpoint, restore `white-space: normal` before the text could overflow.
+- At 1200 px and wider, use `font-size: clamp(1rem, 1.25vw, 1.15rem)`, moderate display weight, and `white-space: nowrap`.
+- From 921–1199 px, keep the logistics layout in two columns but restore `white-space: normal` so the formula can wrap if needed rather than overflow its panel.
+- At 920 px and below, retain normal wrapping as the logistics layout stacks.
 - The `Final ranking` label remains above the formula.
 - The explanatory note remains unchanged.
 
 ## Responsive Behavior
 
 - 1440 px: player and playlist use two columns; fixed 16:9 canvas; Evaluation formula remains one line.
+- 1000 px: logistics remain in two columns; the Evaluation formula may wrap without overlapping the Timeline panel or causing horizontal overflow.
 - 768 px: player stacks above playlist; playlist rows use the available width; no video title or metadata clips.
 - 390 px: player, metadata, and playlist form one column; long sequence titles wrap; native controls remain usable; Evaluation formula wraps normally.
 - The page must not gain horizontal overflow at any tested width.
@@ -173,4 +175,4 @@ Automated tests should verify:
 - all local video and poster paths exist;
 - the standalone `/challenge/` page remains unchanged.
 
-Visual acceptance at 1440 × 1000, 768 × 1000, and 390 × 844 should confirm player stability, poster quality, title wrapping, native-control usability, active/focus states, and zero horizontal overflow.
+Visual acceptance at 1440 × 1000, 1000 × 1000, 768 × 1000, and 390 × 844 should confirm player stability, poster quality, title wrapping, native-control usability, active/focus states, and zero horizontal overflow. At 1000 × 1000, also confirm the two-column logistics panels remain separate while the ranking formula wraps without overlap.
