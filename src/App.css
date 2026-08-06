@@ -1356,7 +1356,6 @@
 }
 
 .challenge-evaluation > .eyebrow,
-.challenge-tasks > .eyebrow,
 .challenge-timeline > .eyebrow {
   color: var(--cyan-deep);
 }
@@ -1641,7 +1640,6 @@
 }
 
 .challenge-evaluation > h3,
-.challenge-tasks > h3,
 .challenge-timeline > h3 {
   max-width: 760px;
   margin: 0 0 28px;
@@ -1667,32 +1665,26 @@
   list-style: none;
 }
 
-.challenge-flow li {
+.challenge-flow > li {
   display: grid;
   min-width: 0;
   padding: 18px 0;
   align-items: start;
+  color: var(--slate-readable);
   background: transparent;
   border: 0;
   border-radius: 0;
+  font-size: 0.94rem;
+  font-weight: 500;
   grid-template-columns: 40px minmax(0, 1fr);
   column-gap: 12px;
 }
 
-.challenge-task-grid article {
-  min-width: 0;
-  padding: 24px;
-  background: rgba(82, 216, 230, 0.06);
-  border: 1px solid rgba(27, 132, 153, 0.17);
-  border-radius: 6px;
-}
-
-.challenge-flow li + li {
+.challenge-flow > li + li {
   border-top: 1px solid rgba(27, 132, 153, 0.18);
 }
 
-.challenge-flow li > span,
-.challenge-task-grid article > span,
+.challenge-flow > li > span,
 .challenge-timeline li > span {
   display: block;
   margin-bottom: 23px;
@@ -1703,14 +1695,13 @@
   letter-spacing: 0.1em;
 }
 
-.challenge-flow li > span {
+.challenge-flow > li > span {
   margin-bottom: 0;
   padding-top: 3px;
   grid-row: 1 / span 2;
 }
 
-.challenge-flow h4,
-.challenge-task-grid h4 {
+.challenge-flow > li > h4 {
   margin: 0 0 10px;
   color: var(--ink-950);
   font-family: var(--font-display);
@@ -1718,67 +1709,72 @@
   font-weight: 650;
   letter-spacing: -0.025em;
   line-height: 1.2;
-}
-
-.challenge-flow p,
-.challenge-task-grid p {
-  margin: 0;
-  color: var(--slate-readable);
-  font-size: 0.94rem;
-  font-weight: 500;
-  line-height: 1.62;
-}
-
-.challenge-flow h4,
-.challenge-flow p {
   grid-column: 2;
 }
 
-.challenge-final-ranking {
-  padding: 20px 0 0;
-  margin: 20px 0 0;
-  color: var(--ink-800);
-  font-size: 0.95rem;
-  line-height: 1.6;
+.challenge-flow > li > p {
+  margin: 0;
+  line-height: 1.62;
+  grid-column: 2;
 }
 
-.challenge-final-ranking .eyebrow {
-  margin: 0 0 8px;
+.challenge-evaluation-scope {
+  margin-top: 18px;
+  grid-column: 2;
+}
+
+.challenge-evaluation-scope h5 {
+  margin: 0;
   color: var(--cyan-deep);
+  font-family: var(--font-mono);
+  font-size: .68rem;
+  font-weight: 650;
+  letter-spacing: .08em;
+  line-height: 1.4;
+  text-transform: uppercase;
 }
 
-.challenge-final-ranking strong {
+.challenge-evaluation-scope ul {
+  display: grid;
+  padding: 0;
+  margin: 12px 0 0;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0 18px;
+  list-style: none;
+}
+
+.challenge-evaluation-scope li {
+  min-width: 0;
+  padding: 12px 0;
+  border-top: 1px solid rgba(27, 132, 153, .18);
+}
+
+.challenge-evaluation-scope strong {
   display: block;
-  max-width: 880px;
+  margin-bottom: 5px;
+  color: var(--ink-950);
+  font-family: var(--font-display);
+  font-size: .92rem;
+  font-weight: 650;
+  letter-spacing: -.015em;
+  line-height: 1.3;
+}
+
+.challenge-evaluation-scope li p {
+  margin: 0;
+  color: var(--slate-readable);
+  font-size: .82rem;
+  font-weight: 500;
+  line-height: 1.5;
+}
+
+.challenge-ranking-formula {
   color: var(--ink-950);
   font-family: var(--font-display);
   font-size: clamp(1rem, 1.25vw, 1.15rem);
   font-weight: 650;
-  letter-spacing: -0.03em;
+  letter-spacing: -.03em;
   white-space: nowrap;
-}
-
-.challenge-final-ranking > p:last-child {
-  margin: 10px 0 0;
-  color: var(--slate-readable);
-}
-
-.challenge-tasks {
-  margin-bottom: 32px;
-}
-
-.challenge-tasks > .eyebrow {
-  margin: 0 0 8px;
-}
-
-.challenge-task-grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 14px;
-}
-
-.challenge-task-grid article > span {
-  margin-bottom: 18px;
 }
 
 .challenge-prize-pool {
@@ -2134,7 +2130,7 @@
 }
 
 @media (min-width: 921px) and (max-width: 1199px) {
-  .challenge-final-ranking strong {
+  .challenge-ranking-formula {
     white-space: normal;
   }
 }
@@ -2308,7 +2304,11 @@
     grid-row: auto;
   }
 
-  .challenge-final-ranking strong {
+  .challenge-evaluation-scope ul {
+    grid-template-columns: 1fr;
+  }
+
+  .challenge-ranking-formula {
     white-space: normal;
   }
 
@@ -2521,7 +2521,6 @@
     white-space: normal;
   }
 
-  .challenge-task-grid,
   .challenge-prize-grid,
   .challenge-organizer-grid {
     grid-template-columns: 1fr;
