@@ -592,6 +592,15 @@ describe('workshop landing page', () => {
     expectGridColumns('.challenge-logistics', 2)
     expectGridColumns('.challenge-task-grid', 2)
     expectGridColumns('.challenge-prize-grid', 3)
+    expect(styleFor('.challenge-video-gallery__layout').display).toBe('grid')
+    expect(
+      styleFor('.challenge-video-gallery__layout').gridTemplateColumns.replace(
+        /\s+/g,
+        '',
+      ),
+    ).toBe('minmax(0,1.55fr)minmax(320px,0.85fr)')
+    expect(styleFor('.challenge-video-feature video').aspectRatio).toBe('16 / 9')
+    expect(styleFor('.challenge-video-feature video').objectFit).toBe('contain')
     expect(styleFor('.challenge-flow').display).toBe('grid')
     expect(styleFor('.challenge-flow').gridTemplateColumns).toBe('1fr')
     expect(styleFor('.challenge-timeline > ol').display).toBe('grid')
@@ -661,6 +670,14 @@ describe('workshop landing page', () => {
       tabletResources.declarations,
       'grid-template-columns',
     )).toBe('1fr')
+    expect(extractCssProperty(
+      extractCssRule(tabletMedia, '.challenge-video-gallery__layout').declarations,
+      'grid-template-columns',
+    )).toBe('1fr')
+    expect(extractCssProperty(
+      extractCssRule(tabletMedia, '.challenge-final-ranking strong').declarations,
+      'white-space',
+    )).toBe('normal')
 
     for (const media of [tabletMedia, mobileMedia, compactMedia]) {
       for (const rule of findCssRules(media, '.challenge-title__accent')) {
@@ -888,6 +905,34 @@ describe('workshop landing page', () => {
     expectOwnedCssProperties(appStyles, '.challenge-resources > a:focus-visible', {
       outline: '3px solid var(--orange)',
       'outline-offset': '3px',
+    })
+  })
+
+  it('owns the training gallery and compact ranking formula styles', () => {
+    expectOwnedCssProperties(appStyles, '.challenge-video-gallery__layout', {
+      display: 'grid',
+      'grid-template-columns': 'minmax(0, 1.55fr) minmax(320px, 0.85fr)',
+      gap: '16px',
+      'align-items': 'start',
+    })
+    expectOwnedCssProperties(appStyles, '.challenge-video-feature video', {
+      display: 'block',
+      width: '100%',
+      'aspect-ratio': '16 / 9',
+      background: 'var(--ink-950)',
+      'object-fit': 'contain',
+    })
+    expectOwnedCssProperties(
+      appStyles,
+      '.challenge-video-playlist button:focus-visible',
+      {
+        outline: '3px solid var(--cyan-deep)',
+        'outline-offset': '3px',
+      },
+    )
+    expectOwnedCssProperties(appStyles, '.challenge-final-ranking strong', {
+      'font-size': 'clamp(1rem, 1.25vw, 1.15rem)',
+      'white-space': 'nowrap',
     })
   })
 

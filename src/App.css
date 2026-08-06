@@ -1448,6 +1448,161 @@
   grid-row: 1 / span 2;
 }
 
+.challenge-video-gallery {
+  margin-bottom: 32px;
+}
+
+.challenge-video-gallery__header {
+  display: grid;
+  margin-bottom: 20px;
+  align-items: end;
+  grid-template-columns: minmax(0, 0.9fr) minmax(320px, 1.1fr);
+  gap: 28px;
+}
+
+.challenge-video-gallery__header .eyebrow {
+  margin: 0 0 8px;
+  color: var(--cyan-deep);
+  grid-column: 1;
+}
+
+.challenge-video-gallery__header h3 {
+  margin: 0;
+  color: var(--ink-950);
+  font-family: var(--font-display);
+  font-size: clamp(1.8rem, 3.2vw, 2.65rem);
+  font-weight: 600;
+  letter-spacing: -0.045em;
+  line-height: 1.08;
+  grid-column: 1;
+}
+
+.challenge-video-gallery__header > p:last-child {
+  margin: 0;
+  color: var(--slate-readable);
+  font-size: 0.94rem;
+  font-weight: 500;
+  line-height: 1.62;
+  grid-column: 2;
+  grid-row: 1 / span 2;
+}
+
+.challenge-video-gallery__layout {
+  display: grid;
+  align-items: start;
+  grid-template-columns: minmax(0, 1.55fr) minmax(320px, 0.85fr);
+  gap: 16px;
+}
+
+.challenge-video-feature {
+  overflow: hidden;
+  margin: 0;
+  color: var(--white);
+  background: var(--ink-950);
+  border: 1px solid rgba(82, 216, 230, 0.2);
+  border-radius: 8px;
+}
+
+.challenge-video-feature video {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  background: var(--ink-950);
+  object-fit: contain;
+}
+
+.challenge-video-feature__caption {
+  padding: 18px 20px 20px;
+}
+
+.challenge-video-feature__caption h4 {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: clamp(1.12rem, 1.7vw, 1.35rem);
+  font-weight: 650;
+  letter-spacing: -0.025em;
+  line-height: 1.28;
+}
+
+.challenge-video-feature__caption p,
+.challenge-video-playlist small {
+  display: flex;
+  margin: 7px 0 0;
+  justify-content: space-between;
+  gap: 12px;
+  color: rgba(231, 241, 244, 0.68);
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  line-height: 1.45;
+}
+
+.challenge-video-playlist {
+  display: grid;
+  gap: 8px;
+}
+
+.challenge-video-playlist button {
+  display: grid;
+  min-width: 0;
+  padding: 8px;
+  color: var(--ink-950);
+  background: rgba(82, 216, 230, 0.045);
+  border: 1px solid rgba(27, 132, 153, 0.17);
+  border-radius: 6px;
+  grid-template-columns: 112px minmax(0, 1fr);
+  gap: 12px;
+  text-align: left;
+  cursor: pointer;
+}
+
+.challenge-video-playlist button[aria-pressed='true'] {
+  background: rgba(82, 216, 230, 0.13);
+  border-color: var(--cyan-deep);
+  box-shadow: inset 4px 0 0 var(--cyan-deep);
+}
+
+.challenge-video-playlist button:hover {
+  border-color: rgba(27, 132, 153, 0.48);
+}
+
+.challenge-video-playlist button:focus-visible {
+  outline: 3px solid var(--cyan-deep);
+  outline-offset: 3px;
+}
+
+.challenge-video-playlist img {
+  display: block;
+  width: 112px;
+  aspect-ratio: 16 / 9;
+  background: var(--ink-950);
+  border-radius: 4px;
+  object-fit: cover;
+}
+
+.challenge-video-playlist__copy {
+  display: flex;
+  min-width: 0;
+  padding: 3px 2px 2px 0;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.challenge-video-playlist__copy strong {
+  font-family: var(--font-display);
+  font-size: 0.88rem;
+  font-weight: 650;
+  letter-spacing: -0.015em;
+  line-height: 1.3;
+}
+
+.challenge-video-playlist small {
+  margin-top: 8px;
+  color: var(--slate-readable);
+  font-size: 0.61rem;
+}
+
 .challenge-logistics {
   display: grid;
   margin-bottom: 32px;
@@ -1589,9 +1744,10 @@
   max-width: 880px;
   color: var(--ink-950);
   font-family: var(--font-display);
-  font-size: clamp(1.25rem, 2vw, 1.65rem);
+  font-size: clamp(1rem, 1.25vw, 1.15rem);
   font-weight: 650;
   letter-spacing: -0.03em;
+  white-space: nowrap;
 }
 
 .challenge-final-ranking > p:last-child {
@@ -2123,6 +2279,25 @@
     grid-template-columns: 1fr;
   }
 
+  .challenge-video-gallery__header,
+  .challenge-video-gallery__layout {
+    grid-template-columns: 1fr;
+  }
+
+  .challenge-video-gallery__header {
+    align-items: start;
+    gap: 10px;
+  }
+
+  .challenge-video-gallery__header > p:last-child {
+    grid-column: 1;
+    grid-row: auto;
+  }
+
+  .challenge-final-ranking strong {
+    white-space: normal;
+  }
+
   .challenge-organizer-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
@@ -2367,6 +2542,18 @@
 }
 
 @media (max-width: 480px) {
+  .challenge-video-feature__caption {
+    padding: 16px;
+  }
+
+  .challenge-video-playlist button {
+    grid-template-columns: 96px minmax(0, 1fr);
+  }
+
+  .challenge-video-playlist img {
+    width: 96px;
+  }
+
   .brand > span:last-child {
     font-size: 0.68rem;
   }
