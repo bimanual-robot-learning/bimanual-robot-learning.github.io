@@ -244,10 +244,10 @@ describe('workshop landing page', () => {
     expect(
       challengeOrganizers.map(({ name, institution }) => ({ name, institution })),
     ).toEqual([
-      { name: 'Kai Li', institution: 'PrimeBot' },
-      { name: 'Ran Cheng', institution: 'PrimeBot' },
+      { name: 'Kai Li', institution: '启元机器人' },
+      { name: 'Ran Cheng', institution: '启元机器人' },
       { name: 'Yan Shen', institution: 'Peking University' },
-      { name: 'Hao Dong', institution: 'PrimeBot · Peking University' },
+      { name: 'Hao Dong', institution: '启元机器人 · Peking University' },
     ])
   })
 
@@ -600,6 +600,9 @@ describe('workshop landing page', () => {
     expect(styleFor('.section--challenge-organizers').background).toBe(
       'var(--paper)',
     )
+    expectOwnedCssProperties(appStyles, '.section--organizers', {
+      'border-top': '1px solid var(--line-light)',
+    })
     expect(styleFor('.challenge-prize-pool').background).not.toBe(
       'var(--ink-950)',
     )
@@ -1242,13 +1245,13 @@ describe('workshop landing page', () => {
     const expectedOrganizers = [
       {
         name: 'Kai Li',
-        institution: 'PrimeBot',
+        institution: '启元机器人',
         image: '/images/challenge-organizers/kai-li.jpg',
         imageAlt: 'Portrait of challenge organizer Kai Li',
       },
       {
         name: 'Ran Cheng',
-        institution: 'PrimeBot',
+        institution: '启元机器人',
         image: '/images/challenge-organizers/ran-cheng.jpg',
         imageAlt: 'Portrait of challenge organizer Ran Cheng',
       },
@@ -1260,7 +1263,7 @@ describe('workshop landing page', () => {
       },
       {
         name: 'Hao Dong',
-        institution: 'PrimeBot · Peking University',
+        institution: '启元机器人 · Peking University',
         image: '/images/organizers/hao-dong.jpg',
         imageAlt: 'Portrait of challenge organizer Hao Dong',
       },
@@ -1582,7 +1585,7 @@ describe('workshop landing page', () => {
 
     expect(card).toBeDefined()
     expect(
-      within(card as HTMLElement).getByText('Peking University · PrimeBot'),
+      within(card as HTMLElement).getByText('Peking University · 启元机器人'),
     ).toBeInTheDocument()
   })
 

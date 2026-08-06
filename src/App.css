@@ -2016,6 +2016,7 @@
   background:
     linear-gradient(rgba(8, 25, 43, 0.035) 1px, transparent 1px),
     var(--paper);
+  border-top: 1px solid var(--line-light);
   background-size: 100% 68px;
 }
 
