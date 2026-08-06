@@ -1,13 +1,32 @@
+/// <reference types="node" />
+
+import { existsSync } from 'node:fs'
+import { resolve } from 'node:path'
 import { render, screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { describe, expect, it } from 'vitest'
 import App from './App'
 import appStyles from './App.css?raw'
 import indexStyles from './index.css?raw'
-import { challenge, challengeOrganizers, workshopMeta } from './data/workshop'
+import {
+  challenge,
+  challengeOrganizers,
+  challengeVideos,
+  workshopMeta,
+} from './data/workshop'
+import type { ChallengeResource } from './data/workshop'
 import viteConfigSource from '../vite.config.ts?raw'
 import challengeHtml from '../challenge/index.html?raw'
 import sitemapXml from '../public/sitemap.xml?raw'
+
+const protocolRelativeResource: ChallengeResource = {
+  label: 'Invalid CDN resource',
+  status: 'available',
+  // @ts-expect-error Protocol-relative URLs must not be accepted as internal links.
+  url: '//cdn.example.com/challenge',
+  external: false,
+}
+void protocolRelativeResource
 
 const findClosingBrace = (source: string, openingBrace: number) => {
   let depth = 1
@@ -67,6 +86,19 @@ const extractCssProperty = (declarations: string, property: string) => {
   return matches.at(-1)?.[1].trim()
 }
 
+const expectOwnedCssProperties = (
+  source: string,
+  selector: string,
+  properties: Record<string, string>,
+) => {
+  const rule = extractCssRules(source, selector).at(-1)
+
+  expect(rule?.selectors).toEqual([selector])
+  for (const [property, value] of Object.entries(properties)) {
+    expect(extractCssProperty(rule?.declarations ?? '', property)).toBe(value)
+  }
+}
+
 describe('workshop landing page', () => {
   it('configures a directly addressable Challenge page', () => {
     expect(viteConfigSource).toContain(
@@ -88,18 +120,37 @@ describe('workshop landing page', () => {
     expect(challenge).not.toHaveProperty('eyebrow')
     expect(challenge).not.toHaveProperty('scoringNote')
     expect(challenge).not.toHaveProperty('prizePoolNote')
-    expect(challenge.title).toBe(
-      'Towards Bimanual Intelligence: A Real-World Household Manipulation Challenge',
-    )
+    expect(challenge.title).toEqual({
+      lineOne: 'Real-World Household',
+      lineTwo: 'Bimanual Manipulation',
+      accent: 'Challenge',
+    })
+    expect(challenge).not.toHaveProperty('titleLead')
+    expect(challenge).not.toHaveProperty('titleHighlight')
     expect(challenge.sponsorLine).toBe('Designed and sponsored by')
-    expect(challenge.introduction).toBe(
-      'This challenge focuses on real-world bimanual manipulation in household environments. Participants will train on thousands of hours of real-robot teleoperation and UMI data spanning diverse household tasks, with the freedom to design their own data mixtures and training strategies.',
-    )
-    expect(challenge.facts).toEqual([
-      { value: 'Thousands of hours', label: 'Real-world demonstrations' },
-      { value: 'Teleoperation + UMI', label: 'Complementary data sources' },
-      { value: '4 household tasks', label: 'Real-robot evaluation' },
+    expect(challenge).not.toHaveProperty('introduction')
+    expect(challenge.introductionSegments).toEqual([
+      { text: 'This ', emphasis: false },
+      { text: 'challenge', emphasis: true },
+      {
+        text: ' focuses on real-world bimanual manipulation in household environments. Participants train on ',
+        emphasis: false,
+      },
+      { text: 'thousands of hours', emphasis: true },
+      { text: ' of real-robot ', emphasis: false },
+      { text: 'teleoperation and UMI data', emphasis: true },
+      {
+        text: ' spanning diverse household tasks, with the freedom to design their own data mixtures and training strategies.',
+        emphasis: false,
+      },
     ])
+    expect(challenge.participation).toEqual({
+      eyebrow: 'Get started',
+      title: 'Participate in the Challenge',
+      description:
+        'The full rules, dataset documentation, submission instructions, and leaderboard will live on the challenge website.',
+    })
+    expect(challenge).not.toHaveProperty('facts')
     expect(challenge.stages).toEqual([
       {
         step: '01',
@@ -115,26 +166,25 @@ describe('workshop landing page', () => {
     ])
     expect(challenge.finalRanking).toEqual({
       label: 'Final Ranking',
-      formula: 'Online evaluation score + final real-robot evaluation score',
-      note:
-        'Detailed scoring protocols will be announced before online evaluation opens.',
+      formula: 'Online evaluation score + final real-robot evaluation score.',
     })
+    expect(challenge.finalRanking).not.toHaveProperty('note')
     expect(challenge.tasks).toEqual([
       {
         title: 'Open the Washer Door',
-        description: 'Use the gripper to fully open the washing machine door.',
+        description: 'Fully open the door with the gripper.',
       },
       {
         title: 'Put Clothing in the Washer',
-        description: 'Put two pieces of clothing into the washing machine.',
+        description: 'Put two pieces of clothing into the washer.',
       },
       {
         title: 'Close the Washer Door',
-        description: 'Use the gripper to close the washing machine door securely.',
+        description: 'Close the door securely with the gripper.',
       },
       {
         title: 'Fold Clothing',
-        description: 'Unfold an item of clothing and fold it neatly.',
+        description: 'Unfold the clothing and fold it neatly.',
       },
     ])
     expect(challenge.prizePoolTotal).toBe('USD 2,000')
@@ -182,18 +232,199 @@ describe('workshop landing page', () => {
     ])
     expect(challenge.timeline.filter(({ time }) => time)).toHaveLength(3)
     expect(challenge.resources).toEqual([
+      {
+        label: 'Explore Challenge Details',
+        status: 'available',
+        url: '/challenge/',
+        external: false,
+      },
       { label: 'Dataset', status: 'coming-soon' },
       { label: 'Evaluation Portal', status: 'coming-soon' },
     ])
-    expect(challengeOrganizers.map(({ name }) => name)).toEqual([
-      'Kai Li',
-      'Ran Cheng',
-      'Yan Shen',
-      'Hao Dong',
-    ])
     expect(
-      challengeOrganizers.every(({ institution }) => institution === undefined),
-    ).toBe(true)
+      challengeOrganizers.map(({ name, institution }) => ({ name, institution })),
+    ).toEqual([
+      { name: 'Kai Li', institution: 'PrimeBot' },
+      { name: 'Ran Cheng', institution: 'PrimeBot' },
+      { name: 'Yan Shen', institution: 'Peking University' },
+      { name: 'Hao Dong', institution: 'PrimeBot · Peking University' },
+    ])
+  })
+
+  it('stores the approved Challenge training-data videos in order', () => {
+    expect(challengeVideos).toEqual([
+      {
+        id: 'fold-clothing-teleoperation',
+        title: 'Fold Clothing',
+        sourceLabel: 'Real-robot teleoperation',
+        durationLabel: '00:36',
+        src: '/videos/challenge/fold-clothing-teleoperation.mp4',
+        poster: '/images/challenge-videos/fold-clothing-teleoperation.webp',
+        format: 'landscape',
+      },
+      {
+        id: 'washer-retrieve-clothing-teleoperation',
+        title: 'Open Washer Door → Retrieve Clothing → Close Washer Door',
+        sourceLabel: 'Real-robot teleoperation',
+        durationLabel: '00:40',
+        src: '/videos/challenge/washer-retrieve-clothing-teleoperation.mp4',
+        poster:
+          '/images/challenge-videos/washer-retrieve-clothing-teleoperation.webp',
+        format: 'landscape',
+      },
+      {
+        id: 'washer-put-clothing-teleoperation',
+        title: 'Open Washer Door → Put Clothing In → Close Washer Door',
+        sourceLabel: 'Real-robot teleoperation',
+        durationLabel: '00:52',
+        src: '/videos/challenge/washer-put-clothing-teleoperation.mp4',
+        poster:
+          '/images/challenge-videos/washer-put-clothing-teleoperation.webp',
+        format: 'landscape',
+      },
+      {
+        id: 'fold-clothing-umi-left',
+        title: 'Fold Clothing · Left View',
+        sourceLabel: 'UMI demonstration',
+        durationLabel: '00:24',
+        src: '/videos/challenge/fold-clothing-umi-left.mp4',
+        poster: '/images/challenge-videos/fold-clothing-umi-left.webp',
+        format: 'square',
+      },
+      {
+        id: 'fold-clothing-umi-right',
+        title: 'Fold Clothing · Right View',
+        sourceLabel: 'UMI demonstration',
+        durationLabel: '00:24',
+        src: '/videos/challenge/fold-clothing-umi-right.mp4',
+        poster: '/images/challenge-videos/fold-clothing-umi-right.webp',
+        format: 'square',
+      },
+    ])
+  })
+
+  it('ships every Challenge video and poster as a local asset', () => {
+    for (const video of challengeVideos) {
+      expect(existsSync(resolve(process.cwd(), 'public', video.src.slice(1)))).toBe(
+        true,
+      )
+      expect(
+        existsSync(resolve(process.cwd(), 'public', video.poster.slice(1))),
+      ).toBe(true)
+    }
+  })
+
+  it('renders the first Challenge training video without autoplay', () => {
+    render(<App />)
+
+    const gallery = screen.getByRole('region', {
+      name: 'Training Data Examples',
+    })
+    const selected = challengeVideos[0]
+    const video = within(gallery).getByLabelText(`${selected.title} video`)
+
+    expect(within(gallery).getByText('Real-world data')).toBeVisible()
+    expect(
+      within(gallery).getByRole('heading', {
+        name: 'Training Data Examples',
+        level: 3,
+      }),
+    ).toBeVisible()
+    expect(
+      within(gallery).getByText(
+        'A glimpse of the real-robot teleoperation and UMI demonstrations available to challenge participants.',
+        { exact: true },
+      ),
+    ).toBeVisible()
+    expect(video).toHaveAttribute('controls')
+    expect(video).toHaveAttribute('playsinline')
+    expect(video).toHaveAttribute('preload', 'metadata')
+    expect(video).not.toHaveAttribute('autoplay')
+    expect(video).not.toHaveAttribute('loop')
+    expect(video).toHaveAttribute('poster', selected.poster)
+    expect(video).toHaveAttribute('data-format', selected.format)
+    expect(video.querySelector('source')).toHaveAttribute('src', selected.src)
+    expect(video.querySelector('source')).toHaveAttribute('type', 'video/mp4')
+
+    const caption = within(gallery).getByTestId('challenge-video-caption')
+    expect(caption).toHaveTextContent(selected.title)
+    expect(caption).toHaveTextContent(selected.sourceLabel)
+    expect(caption).toHaveTextContent(selected.durationLabel)
+  })
+
+  it('switches the featured Challenge video without starting playback', async () => {
+    const user = userEvent.setup()
+    render(<App />)
+
+    const gallery = screen.getByRole('region', {
+      name: 'Training Data Examples',
+    })
+    const buttons = within(gallery).getAllByRole('button')
+    const selectionSequence = [1, 2, 3, 4, 0].map(
+      (index) => challengeVideos[index],
+    )
+
+    expect(buttons[0]).toHaveAttribute('aria-pressed', 'true')
+
+    for (const target of selectionSequence) {
+      const targetButton = within(gallery).getByRole('button', {
+        name: `${target.title}, ${target.sourceLabel}, ${target.durationLabel}`,
+      })
+      const currentPlayer = within(gallery).getByLabelText(/ video$/)
+
+      expect(targetButton).toHaveAttribute('aria-pressed', 'false')
+
+      await user.click(targetButton)
+
+      expect(targetButton).toHaveFocus()
+      expect(targetButton).toHaveAttribute('aria-pressed', 'true')
+      expect(
+        within(gallery)
+          .getAllByRole('button')
+          .filter((button) => button.getAttribute('aria-pressed') === 'true'),
+      ).toHaveLength(1)
+
+      const player = within(gallery).getByLabelText(`${target.title} video`)
+      expect(player).not.toBe(currentPlayer)
+      expect(player.querySelector('source')).toHaveAttribute('src', target.src)
+      expect(player).toHaveAttribute('poster', target.poster)
+      expect(player).toHaveAttribute('data-format', target.format)
+      expect(player).not.toHaveAttribute('autoplay')
+
+      const caption = within(gallery).getByTestId('challenge-video-caption')
+      expect(caption).toHaveTextContent(target.title)
+      expect(caption).toHaveTextContent(target.sourceLabel)
+      expect(caption).toHaveTextContent(target.durationLabel)
+    }
+  })
+
+  it('uses semantic playlist buttons and decorative thumbnails', () => {
+    render(<App />)
+
+    const gallery = screen.getByRole('region', {
+      name: 'Training Data Examples',
+    })
+    const playlist = within(gallery).getByRole('group', {
+      name: 'Training data video playlist',
+    })
+    const buttons = within(playlist).getAllByRole('button')
+
+    expect(buttons).toHaveLength(challengeVideos.length)
+    for (const [index, button] of buttons.entries()) {
+      const video = challengeVideos[index]
+
+      expect(button).toHaveAccessibleName(
+        `${video.title}, ${video.sourceLabel}, ${video.durationLabel}`,
+      )
+      expect(button).toHaveAttribute('type', 'button')
+      expect(button).toHaveAttribute(
+        'aria-pressed',
+        index === 0 ? 'true' : 'false',
+      )
+      const thumbnail = button.querySelector('img')
+      expect(thumbnail).toHaveAttribute('alt', '')
+      expect(thumbnail).toHaveAttribute('data-format', video.format)
+    }
   })
 
   it('renders the workshop identity and every primary section', () => {
@@ -211,7 +442,7 @@ describe('workshop landing page', () => {
       'Workshop Schedule',
       'Invited Speakers',
       'Call for Papers',
-      'Towards Bimanual Intelligence: A Real-World Household Manipulation Challenge',
+      'Real-World Household Bimanual Manipulation Challenge',
       'Workshop Organizers',
     ]) {
       expect(screen.getByRole('heading', { name: section })).toBeInTheDocument()
@@ -238,30 +469,95 @@ describe('workshop landing page', () => {
     )
   })
 
-  it('renders the redesigned Challenge introduction and evaluation', () => {
+  it('renders the Challenge title and segmented introduction', () => {
     render(<App />)
 
     const challengeSection = screen.getByTestId('challenge-section')
+    const challengeHeading = within(challengeSection).getByRole('heading', {
+      name: 'Real-World Household Bimanual Manipulation Challenge',
+      level: 2,
+    })
+    const lineOne = challengeHeading.querySelector('.challenge-title__line-one')
+    const lineTwo = challengeHeading.querySelector('.challenge-title__line-two')
+    const accent = challengeHeading.querySelector('.challenge-title__accent')
 
-    expect(
-      within(challengeSection).getByRole('heading', {
-        name: challenge.title,
-        level: 2,
-      }),
-    ).toBeInTheDocument()
-    expect(
-      within(challengeSection).queryByText('Challenge Track · IROS 2026'),
-    ).not.toBeInTheDocument()
-    expect(within(challengeSection).getByText(challenge.introduction)).toHaveClass(
+    expect(challengeSection.querySelectorAll('h2')).toHaveLength(1)
+    expect(lineOne).toHaveTextContent('Real-World Household')
+    expect(lineTwo).toHaveTextContent('Bimanual Manipulation Challenge')
+    expect(accent).toHaveTextContent('Challenge')
+    expect(challengeHeading.querySelector('.challenge-title__lead')).toBeNull()
+    expect(challengeHeading.querySelector('.challenge-title__highlight')).toBeNull()
+    expect(within(challengeSection).getByText('05 / Workshop Challenge')).toBeVisible()
+    expect(challengeSection).not.toHaveTextContent('Towards Bimanual Intelligence:')
+
+    const introduction = within(challengeSection).getByTestId(
       'challenge-introduction',
     )
-    expect(within(challengeSection).getAllByTestId('challenge-fact')).toHaveLength(3)
+    expect(introduction).toHaveClass('challenge-introduction')
+    expect(introduction.querySelectorAll('strong')).toHaveLength(3)
+    expect(within(introduction).getByText('challenge')).toBeVisible()
+    expect(within(introduction).getByText('thousands of hours')).toBeVisible()
+    expect(within(introduction).getByText('teleoperation and UMI data')).toBeVisible()
+    expect(within(challengeSection).queryByTestId('challenge-fact')).toBeNull()
+    expect(challengeSection.querySelector('.challenge-facts')).toBeNull()
+  })
 
-    const stages = within(challengeSection).getAllByTestId('challenge-stage')
-    expect(stages).toHaveLength(2)
+  it('places participation, videos, prizes, and logistics in sequence', () => {
+    render(<App />)
+
+    const challengeSection = screen.getByTestId('challenge-section')
+    const introduction = within(challengeSection).getByTestId(
+      'challenge-introduction',
+    )
+    const participationHeading = within(challengeSection).getByRole('heading', {
+      name: challenge.participation.title,
+      level: 3,
+    })
+    const participation = participationHeading.closest('section')
+    const gallery = within(challengeSection).getByTestId(
+      'challenge-video-gallery',
+    )
+    const prizePool = within(challengeSection).getByTestId('challenge-prize-pool')
+    const logistics = within(challengeSection).getByTestId('challenge-logistics')
+
+    expect(participation).toHaveClass('challenge-participation')
+    expect(participation?.querySelector('header')).toHaveClass(
+      'challenge-participation__header',
+    )
+    expect(participation).toHaveAccessibleName(challenge.participation.title)
+    expect(participation).toHaveTextContent(challenge.participation.eyebrow)
+    expect(participation).toHaveTextContent(challenge.participation.description)
+    expect(introduction.compareDocumentPosition(participation as Node)).toBe(
+      Node.DOCUMENT_POSITION_FOLLOWING,
+    )
+    expect((participation as Node).compareDocumentPosition(gallery)).toBe(
+      Node.DOCUMENT_POSITION_FOLLOWING,
+    )
+    expect(gallery.compareDocumentPosition(prizePool)).toBe(
+      Node.DOCUMENT_POSITION_FOLLOWING,
+    )
+    expect(prizePool.compareDocumentPosition(logistics)).toBe(
+      Node.DOCUMENT_POSITION_FOLLOWING,
+    )
+    expect(logistics).toHaveClass('challenge-logistics')
+
+    const logisticsHeadings = within(logistics).getAllByRole('heading', { level: 3 })
+    expect(logisticsHeadings.map(({ textContent }) => textContent)).toEqual([
+      'Evaluation Format',
+      'Challenge Timeline',
+    ])
+
+    const evaluation = within(challengeSection).getByRole('region', {
+      name: 'Evaluation Format',
+    })
+    const stages = within(evaluation).getAllByTestId('challenge-stage')
+    expect(stages).toHaveLength(3)
     expect(
-      within(challengeSection).queryByRole('heading', { name: 'Train' }),
-    ).not.toBeInTheDocument()
+      Array.from(evaluation.querySelectorAll(':scope > .challenge-flow > li')).map(
+        (stage) => within(stage as HTMLElement).getByRole('heading', { level: 4 })
+          .textContent,
+      ),
+    ).toEqual(['Online Evaluation', 'Real-Robot Evaluation', 'Final Ranking'])
     for (const [index, expectedStage] of challenge.stages.entries()) {
       expect(
         within(stages[index]).getByRole('heading', {
@@ -272,38 +568,13 @@ describe('workshop landing page', () => {
       expect(within(stages[index]).getByText(expectedStage.description)).toBeVisible()
     }
 
-    expect(
-      within(challengeSection).getByRole('heading', {
-        name: 'Evaluation Format',
-        level: 3,
-      }),
-    ).toBeInTheDocument()
-    const finalRanking = within(challengeSection).getByTestId(
+    const finalRanking = within(stages[2]).getByTestId(
       'challenge-final-ranking',
     )
-    expect(finalRanking).toHaveTextContent(challenge.finalRanking.label)
-    expect(finalRanking).toHaveTextContent(challenge.finalRanking.formula)
-    expect(finalRanking).toHaveTextContent(challenge.finalRanking.note)
-  })
-
-  it('uses definition semantics for Challenge fact labels and values', () => {
-    render(<App />)
-
-    const facts = screen.getAllByTestId('challenge-fact')
-    const expectedFacts = [
-      { label: 'Real-world demonstrations', value: 'Thousands of hours' },
-      {
-        label: 'Complementary data sources',
-        value: 'Teleoperation + UMI',
-      },
-      { label: 'Real-robot evaluation', value: '4 household tasks' },
-    ]
-
-    expect(facts).toHaveLength(expectedFacts.length)
-    for (const [index, expectedFact] of expectedFacts.entries()) {
-      expect(facts[index].querySelector('dt')).toHaveTextContent(expectedFact.label)
-      expect(facts[index].querySelector('dd')).toHaveTextContent(expectedFact.value)
-    }
+    expect(finalRanking.textContent).toBe(challenge.finalRanking.formula)
+    expect(challengeSection).not.toHaveTextContent(
+      'Detailed scoring protocols will be announced before online evaluation opens.',
+    )
   })
 
   it('uses the redesigned Challenge visual system', () => {
@@ -329,17 +600,31 @@ describe('workshop landing page', () => {
     expect(styleFor('.section--challenge-organizers').background).toBe(
       'var(--paper)',
     )
-    expect(styleFor('.challenge-facts').marginLeft).toBe('0px')
     expect(styleFor('.challenge-prize-pool').background).not.toBe(
       'var(--ink-950)',
     )
-    expectGridColumns('.challenge-facts', 3)
-    expectGridColumns('.challenge-flow', 2)
-    expectGridColumns('.challenge-task-grid', 2)
+    expectGridColumns('.challenge-logistics', 2)
     expectGridColumns('.challenge-prize-grid', 3)
-    expectGridColumns('.challenge-timeline > ol', 5)
-    expectGridColumns('.challenge-resources', 2)
-    expectGridColumns('.challenge-organizer-grid', 4)
+    expect(styleFor('.challenge-video-gallery__layout').display).toBe('grid')
+    expect(
+      styleFor('.challenge-video-gallery__layout').gridTemplateColumns.replace(
+        /\s+/g,
+        '',
+      ),
+    ).toBe('minmax(0,1.55fr)minmax(320px,0.85fr)')
+    expect(styleFor('.challenge-video-feature video').aspectRatio).toBe('16 / 9')
+    expect(styleFor('.challenge-video-feature video').objectFit).toBe('contain')
+    expect(styleFor('.challenge-flow').display).toBe('grid')
+    expect(styleFor('.challenge-flow').gridTemplateColumns).toBe('1fr')
+    expect(styleFor('.challenge-evaluation-scope').gridColumn).toBe('2')
+    expectGridColumns('.challenge-evaluation-scope ul', 2)
+    expect(extractCssProperty(
+      extractCssRule(appStyles, '.challenge-ranking-formula').declarations,
+      'font-size',
+    )).toBe('clamp(1rem, 1.25vw, 1.15rem)')
+    expect(styleFor('.challenge-timeline > ol').display).toBe('grid')
+    expect(styleFor('.challenge-timeline > ol').gridTemplateColumns).toBe('1fr')
+    expectGridColumns('.challenge-organizer-grid', 2)
     expect(styleFor('.challenge-prize-grid').gap).toBe('0px')
     expect(
       extractCssProperty(
@@ -350,14 +635,12 @@ describe('workshop landing page', () => {
         'background',
       ),
     ).toBe('transparent')
-    expect(styleFor('.challenge-evaluation').background).toBe(
-      'rgba(82, 216, 230, 0.08)',
-    )
-    const finalRanking = extractCssRule(
-      appStyles,
-      '.challenge-final-ranking',
-    ).declarations
-    expect(finalRanking).not.toMatch(/border-(?:top|bottom)\s*:/)
+    expect(styleFor('.challenge-participation').background).toBe('var(--ink-950)')
+    expect(styleFor('.challenge-resource--primary').background).toBe('var(--cyan)')
+    expect(styleFor('.challenge-evaluation').background).toBe('rgba(82, 216, 230, 0.08)')
+    expect(styleFor('.challenge-timeline').background).toBe('rgba(82, 216, 230, 0.08)')
+    expect(appStyles).not.toContain('.challenge-task-grid')
+    expect(appStyles).not.toContain('.challenge-tasks')
     expect(
       extractCssProperty(
         extractCssRule(
@@ -368,91 +651,121 @@ describe('workshop landing page', () => {
       ),
     ).toBe('var(--orange)')
     expect(styleFor('.challenge-sponsor a').color).toBe('var(--orange-deep)')
+    const introduction = extractCssRule(
+      appStyles,
+      '.challenge-introduction',
+    ).declarations
+    expect(introduction).toContain('max-width: 1060px;')
+    expect(introduction).toContain('border-left: 4px solid var(--cyan-deep);')
+    expect(introduction).toContain(
+      'font-size: clamp(1.08rem, 1.4vw, 1.18rem);',
+    )
+    expect(introduction).toContain('font-weight: 500;')
+    expect(introduction).toContain('line-height: 1.72;')
     stylesheet.remove()
   })
 
-  it('adapts the redesigned Challenge at tablet and mobile widths', () => {
-    const narrowDesktopMedia = extractCssBlock(
-      appStyles,
-      '@media (max-width: 1120px)',
-    )
+  it('adapts the Challenge summary across tablet and mobile viewports', () => {
     const tabletMedia = extractCssBlock(appStyles, '@media (max-width: 920px)')
     const mobileMedia = extractCssBlock(appStyles, '@media (max-width: 720px)')
     const compactMedia = extractCssBlock(appStyles, '@media (max-width: 480px)')
 
-    expect(extractCssRule(tabletMedia, '.challenge-facts').declarations).toContain(
-      'margin-left: 0;',
-    )
-    const tabletTimeline = extractCssRule(
-      tabletMedia,
-      '.challenge-timeline > ol',
-    ).declarations
-    expect(tabletTimeline).toContain(
-      'grid-template-columns: repeat(3, minmax(0, 1fr));',
-    )
-    expect(tabletTimeline).toContain('row-gap: 24px;')
-    const tabletFourthMilestone = extractCssRule(
-      tabletMedia,
-      '.challenge-timeline li:nth-child(4)',
-    ).declarations
-    expect(tabletFourthMilestone).toContain('padding-left: 0;')
-    expect(tabletFourthMilestone).toContain('border-left: 0;')
-    for (const [selector, expectedColumns] of [
-      ['.challenge-flow', 'repeat(2, minmax(0, 1fr))'],
-      ['.challenge-task-grid', 'repeat(2, minmax(0, 1fr))'],
-      ['.challenge-prize-grid', 'repeat(3, minmax(0, 1fr))'],
-      ['.challenge-organizer-grid', 'repeat(2, minmax(0, 1fr))'],
-    ] as const) {
-      const baseColumns = extractCssProperty(
-        extractCssRule(appStyles, selector).declarations,
-        'grid-template-columns',
-      )
-      const narrowDesktopColumns = findCssRules(narrowDesktopMedia, selector)
-        .map(({ declarations }) =>
-          extractCssProperty(declarations, 'grid-template-columns'),
-        )
-        .filter((value): value is string => value !== undefined)
-        .at(-1)
-      const tabletColumns = findCssRules(tabletMedia, selector)
-        .map(({ declarations }) =>
-          extractCssProperty(declarations, 'grid-template-columns'),
-        )
-        .filter((value): value is string => value !== undefined)
-        .at(-1)
-
-      expect(tabletColumns ?? narrowDesktopColumns ?? baseColumns).toBe(
-        expectedColumns,
-      )
+    for (const selector of [
+      '.challenge-title__line-one',
+      '.challenge-title__line-two',
+    ]) {
+      expect(extractCssProperty(
+        extractCssRule(tabletMedia, selector).declarations,
+        'white-space',
+      )).toBe('normal')
     }
+
+    const tabletResources = extractCssRule(tabletMedia, '.challenge-resources')
+    expect(tabletResources.selectors).toEqual(['.challenge-resources'])
+    expect(extractCssProperty(
+      tabletResources.declarations,
+      'grid-template-columns',
+    )).toBe('1fr')
+    expect(extractCssProperty(
+      extractCssRule(tabletMedia, '.challenge-video-gallery__layout').declarations,
+      'grid-template-columns',
+    )).toBe('1fr')
+    expect(extractCssProperty(
+      extractCssRule(tabletMedia, '.challenge-evaluation-scope ul').declarations,
+      'grid-template-columns',
+    )).toBe('1fr')
+
+    for (const media of [tabletMedia, mobileMedia, compactMedia]) {
+      for (const rule of findCssRules(media, '.challenge-title__accent')) {
+        expect(rule.declarations).not.toMatch(/font-(?:size|weight)\s*:/)
+      }
+    }
+
     expect(
       extractCssRule(
         appStyles,
         '.person-card--challenge-organizer .person-card__media',
       ).declarations,
     ).toContain('aspect-ratio: 1;')
+    expect(
+      extractCssProperty(
+        extractCssRule(appStyles, '.person-card--challenge-organizer').declarations,
+        'grid-template-columns',
+      ),
+    ).toBe('104px minmax(0, 1fr)')
+    const challengeInstitutionRule = extractCssRule(
+      appStyles,
+      '.person-card__copy p',
+    ).declarations
+    expect(extractCssProperty(challengeInstitutionRule, 'font-size')).toBe('0.86rem')
+    expect(challengeInstitutionRule).not.toContain('white-space: nowrap;')
 
-    const mobileStack = extractCssRule(mobileMedia, '.challenge-facts')
+    const mobileStack = extractCssRule(mobileMedia, '.challenge-prize-grid')
     expect(mobileStack.selectors).toEqual(
       expect.arrayContaining([
-        '.challenge-facts',
-        '.challenge-flow',
-        '.challenge-task-grid',
         '.challenge-prize-grid',
-        '.challenge-timeline > ol',
-        '.challenge-resources',
         '.challenge-organizer-grid',
       ]),
     )
     expect(mobileStack.declarations).toContain('grid-template-columns: 1fr;')
 
-    const mobileFlowArrow = extractCssRule(
+    for (const selector of [
+      '.challenge-participation__header',
+      '.challenge-logistics',
+    ]) {
+      expect(extractCssProperty(
+        extractCssRule(mobileMedia, selector).declarations,
+        'grid-template-columns',
+      )).toBe('1fr')
+    }
+    const mobileParticipationHeader =
+      extractCssRules(mobileMedia, '.challenge-participation__header').at(-1)
+        ?.declarations ?? ''
+    expect(extractCssProperty(mobileParticipationHeader, 'align-items')).toBe(
+      'start',
+    )
+    expect(extractCssProperty(mobileParticipationHeader, 'gap')).toBe('10px')
+    expect(extractCssProperty(
+      extractCssRule(mobileMedia, '.challenge-participation__header > p:last-child')
+        .declarations,
+      'grid-column',
+    )).toBe('1')
+
+    const mobileTimelineItem = extractCssRule(
       mobileMedia,
-      '.challenge-flow li + li::before',
+      '.challenge-timeline li',
     ).declarations
-    expect(mobileFlowArrow).toContain('top: -24px;')
-    expect(mobileFlowArrow).toContain('left: 50%;')
-    expect(mobileFlowArrow).toContain("content: '↓';")
-    expect(mobileFlowArrow).toContain('transform: translateX(-50%);')
+    expect(extractCssProperty(mobileTimelineItem, 'grid-template-columns')).toBe(
+      '1fr',
+    )
+    const mobileTimelineDate = extractCssRule(
+      mobileMedia,
+      '.challenge-timeline li p',
+    ).declarations
+    expect(extractCssProperty(mobileTimelineDate, 'grid-column')).toBe('1')
+    expect(extractCssProperty(mobileTimelineDate, 'grid-row')).toBe('auto')
+    expect(extractCssProperty(mobileTimelineDate, 'text-align')).toBe('left')
+    expect(extractCssProperty(mobileTimelineDate, 'white-space')).toBe('normal')
 
     const mobilePrizeSeparator = extractCssRule(
       mobileMedia,
@@ -463,69 +776,19 @@ describe('workshop landing page', () => {
     )
     expect(mobilePrizeSeparator).toContain('border-left: 0;')
 
-    const mobileFact = extractCssRule(
-      mobileMedia,
-      '.challenge-facts > div',
-    ).declarations
-    expect(mobileFact).toContain('border-right: 0;')
-    expect(mobileFact).toContain('border-bottom: 1px solid var(--line-light);')
-    expect(
-      extractCssRule(mobileMedia, '.challenge-facts > div + div').declarations,
-    ).toContain('border-left: 0;')
-    expect(
-      extractCssRule(mobileMedia, '.challenge-facts > div:last-child').declarations,
-    ).toContain('border-bottom: 0;')
-
-    const mobileTimeline = extractCssRules(mobileMedia, '.challenge-timeline > ol')
-      .map(({ declarations }) => declarations)
-      .join('\n')
-    expect(mobileTimeline).toContain('gap: 0;')
-    const mobileMilestoneRule = extractCssRule(
-      mobileMedia,
-      '.challenge-timeline li',
-    )
-    expect(mobileMilestoneRule.selectors).toContain(
-      '.challenge-timeline li:nth-child(4)',
-    )
-    const mobileMilestone = mobileMilestoneRule.declarations
-    expect(mobileMilestone).toContain('padding: 18px 0;')
-    expect(mobileMilestone).toContain(
-      'grid-template-columns: 38px minmax(0, 1fr);',
-    )
-    expect(mobileMilestone).toContain('grid-template-rows: auto auto;')
-    expect(mobileMilestone).toContain('border-top: 1px solid var(--line-light);')
-    expect(mobileMilestone).toContain('border-left: 0;')
-    expect(mobileMilestone).toContain('gap: 12px;')
-    const mobileFirstMilestone = extractCssRule(
-      mobileMedia,
-      '.challenge-timeline li:first-child',
-    ).declarations
-    expect(mobileFirstMilestone).toContain('padding-top: 0;')
-    expect(mobileFirstMilestone).toContain('border-top: 0;')
-    expect(
-      extractCssRules(mobileMedia, '.challenge-timeline h4')
-        .map(({ declarations }) => declarations)
-        .join('\n'),
-    ).toContain('min-height: 0;')
     expect(
       extractCssRule(mobileMedia, '.person-card--challenge-organizer').declarations,
     ).toContain('grid-template-columns: 112px minmax(0, 1fr);')
 
-    const compactPanels = extractCssRule(compactMedia, '.challenge-evaluation')
-    expect(compactPanels.selectors).toEqual(
-      expect.arrayContaining([
-        '.challenge-evaluation',
-        '.challenge-timeline',
-        '.challenge-prize-pool',
-      ]),
-    )
-    expect(compactPanels.declarations).toContain('padding: 26px 22px;')
     expect(
       extractCssRule(compactMedia, '.challenge-heading h2').declarations,
     ).toContain('font-size: 2.5rem;')
-    expect(
-      extractCssRule(compactMedia, '.challenge-introduction').declarations,
-    ).toContain('padding-left: 18px;')
+    const compactIntroduction = extractCssRule(
+      compactMedia,
+      '.challenge-introduction',
+    ).declarations
+    expect(compactIntroduction).toContain('padding-left: 18px;')
+    expect(compactIntroduction).toContain('font-size: 1.06rem;')
     const mobilePrizeHeader = extractCssRule(
       mobileMedia,
       '.challenge-prize-pool > header',
@@ -540,14 +803,257 @@ describe('workshop landing page', () => {
     expect(compactSponsor).toContain('align-items: flex-start;')
     expect(compactSponsor).toContain('flex-direction: column;')
     expect(compactSponsor).toContain('gap: 3px;')
-    const compactResources = extractCssRule(
+    const compactChallengePanel = extractCssRule(
       compactMedia,
-      '.challenge-resources > div',
-    ).declarations
-    expect(compactResources).toContain('align-items: flex-start;')
-    expect(compactResources).toContain('flex-direction: column;')
-    expect(compactResources).toContain('gap: 5px;')
+      '.challenge-participation',
+    )
+    expect(compactChallengePanel.selectors).toEqual(
+      expect.arrayContaining([
+        '.challenge-participation',
+        '.challenge-evaluation',
+        '.challenge-timeline',
+        '.challenge-prize-pool',
+      ]),
+    )
+    expect(extractCssProperty(compactChallengePanel.declarations, 'padding')).toBe(
+      '26px 22px',
+    )
+    expect(extractCssProperty(
+      extractCssRule(compactMedia, '.challenge-video-playlist button').declarations,
+      'grid-template-columns',
+    )).toBe('96px minmax(0, 1fr)')
+    expect(extractCssProperty(
+      extractCssRule(compactMedia, '.challenge-video-playlist img').declarations,
+      'width',
+    )).toBe('96px')
     expect(appStyles).not.toContain('.challenge-block')
+  })
+
+  it('gives the Challenge title equal-scale lines with color-only accent emphasis', () => {
+    expectOwnedCssProperties(appStyles, '.challenge-title__line-one', {
+      display: 'block',
+      'white-space': 'nowrap',
+    })
+    expectOwnedCssProperties(appStyles, '.challenge-title__line-two', {
+      display: 'block',
+      'white-space': 'nowrap',
+    })
+    expectOwnedCssProperties(appStyles, '.challenge-title__accent', {
+      color: 'var(--orange-deep)',
+    })
+    for (const selector of [
+      '.challenge-title__line-one',
+      '.challenge-title__line-two',
+    ]) {
+      expect(extractCssRule(appStyles, selector).declarations).not.toMatch(/color\s*:/)
+    }
+    const accent = extractCssRule(appStyles, '.challenge-title__accent').declarations
+    expect(accent).not.toMatch(
+      /(?:font-size|font-weight|line-height|margin(?:-[a-z]+)?)\s*:/,
+    )
+    expect(appStyles).not.toContain('.challenge-title__lead')
+    expect(appStyles).not.toContain('.challenge-title__highlight')
+  })
+
+  it('uses restrained ink emphasis in the Challenge introduction', () => {
+    expectOwnedCssProperties(appStyles, '.challenge-introduction strong', {
+      color: 'var(--ink-950)',
+      'font-weight': '750',
+    })
+  })
+
+  it('owns the dark participation hierarchy and resource grid', () => {
+    expectOwnedCssProperties(appStyles, '.challenge-participation', {
+      padding: 'clamp(24px, 3vw, 30px)',
+      'margin-bottom': '32px',
+      color: 'var(--white)',
+      background: 'var(--ink-950)',
+      border: '1px solid rgba(82, 216, 230, 0.16)',
+      'border-radius': '8px',
+    })
+    expectOwnedCssProperties(appStyles, '.challenge-participation__header', {
+      display: 'grid',
+      'margin-bottom': '18px',
+      'grid-template-columns': 'minmax(0, 0.9fr) minmax(320px, 1.1fr)',
+      'align-items': 'end',
+      gap: '28px',
+    })
+    expectOwnedCssProperties(appStyles, '.challenge-participation__header .eyebrow', {
+      margin: '0 0 6px',
+      color: 'var(--cyan)',
+    })
+    expectOwnedCssProperties(appStyles, '.challenge-participation__header h3', {
+      margin: '0',
+      color: 'var(--white)',
+      'font-family': 'var(--font-display)',
+      'font-size': 'clamp(1.55rem, 2.4vw, 2rem)',
+      'font-weight': '650',
+      'letter-spacing': '-0.035em',
+    })
+    expectOwnedCssProperties(appStyles, '.challenge-participation__header > p', {
+      margin: '0',
+      color: 'rgba(231, 241, 244, 0.72)',
+      'font-size': '0.86rem',
+      'line-height': '1.55',
+    })
+    expectOwnedCssProperties(appStyles, '.challenge-resources', {
+      margin: '0',
+      padding: '0',
+      border: '0',
+      'grid-template-columns': 'minmax(0, 1.35fr) repeat(2, minmax(0, 1fr))',
+      gap: '12px',
+    })
+    for (const selector of [
+      '.challenge-resources > div',
+      '.challenge-resources > a',
+    ]) {
+      const rule = extractCssRule(appStyles, selector)
+      expect(extractCssProperty(rule.declarations, 'background')).toBe(
+        'rgba(255, 255, 255, 0.055)',
+      )
+      expect(extractCssProperty(rule.declarations, 'border')).toBe(
+        '1px solid rgba(82, 216, 230, 0.22)',
+      )
+    }
+    expectOwnedCssProperties(appStyles, '.challenge-resource--primary', {
+      color: 'var(--ink-950)',
+      background: 'var(--cyan)',
+    })
+    expectOwnedCssProperties(appStyles, '.challenge-resources b', {
+      color: 'var(--cyan)',
+    })
+    expectOwnedCssProperties(appStyles, '.challenge-resource--primary b', {
+      color: 'var(--ink-950)',
+    })
+    expectOwnedCssProperties(appStyles, '.challenge-resources > a:focus-visible', {
+      outline: '3px solid var(--orange)',
+      'outline-offset': '3px',
+    })
+  })
+
+  it('owns the training gallery and compact evaluation scope styles', () => {
+    expectOwnedCssProperties(appStyles, '.challenge-video-gallery__layout', {
+      display: 'grid',
+      'grid-template-columns': 'minmax(0, 1.55fr) minmax(320px, 0.85fr)',
+      gap: '16px',
+      'align-items': 'start',
+    })
+    expectOwnedCssProperties(appStyles, '.challenge-video-feature video', {
+      display: 'block',
+      width: '100%',
+      'aspect-ratio': '16 / 9',
+      background: 'var(--ink-950)',
+      'object-fit': 'contain',
+    })
+    expectOwnedCssProperties(
+      appStyles,
+      '.challenge-video-playlist button:focus-visible',
+      {
+        outline: '3px solid var(--cyan-deep)',
+        'outline-offset': '3px',
+      },
+    )
+    expectOwnedCssProperties(
+      appStyles,
+      ".challenge-video-playlist button[aria-pressed='true']:hover",
+      {
+        'border-color': 'var(--cyan-deep)',
+      },
+    )
+    expectOwnedCssProperties(appStyles, '.challenge-video-playlist img', {
+      'object-fit': 'cover',
+    })
+    expectOwnedCssProperties(
+      appStyles,
+      ".challenge-video-playlist img[data-format='square']",
+      {
+        'object-fit': 'contain',
+      },
+    )
+    expectOwnedCssProperties(appStyles, '.challenge-evaluation-scope', {
+      'grid-column': '2',
+      'margin-top': '18px',
+    })
+    expectOwnedCssProperties(appStyles, '.challenge-evaluation-scope ul', {
+      display: 'grid',
+      padding: '0',
+      margin: '12px 0 0',
+      'grid-template-columns': 'repeat(2, minmax(0, 1fr))',
+      gap: '0 18px',
+      'list-style': 'none',
+    })
+    expectOwnedCssProperties(appStyles, '.challenge-ranking-formula', {
+      'font-size': 'clamp(1rem, 1.25vw, 1.15rem)',
+      'white-space': 'normal',
+    })
+  })
+
+  it('owns matching logistics panels with text-led evaluation and timeline rows', () => {
+    expectOwnedCssProperties(appStyles, '.challenge-logistics', {
+      display: 'grid',
+      'grid-template-columns': 'repeat(2, minmax(0, 1fr))',
+      gap: '16px',
+      'margin-bottom': '32px',
+    })
+    for (const selector of ['.challenge-evaluation', '.challenge-timeline']) {
+      expectOwnedCssProperties(appStyles, selector, {
+        padding: 'clamp(24px, 3vw, 30px)',
+        margin: '0',
+        background: 'rgba(82, 216, 230, 0.08)',
+        border: '1px solid rgba(27, 132, 153, 0.2)',
+        'border-radius': '7px',
+      })
+    }
+    expectOwnedCssProperties(appStyles, '.challenge-flow', {
+      'grid-template-columns': '1fr',
+      gap: '0',
+    })
+    expectOwnedCssProperties(appStyles, '.challenge-flow > li', {
+      display: 'grid',
+      background: 'transparent',
+      border: '0',
+      'border-radius': '0',
+    })
+    expectOwnedCssProperties(appStyles, '.challenge-flow > li + li', {
+      'border-top': '1px solid rgba(27, 132, 153, 0.18)',
+    })
+    expectOwnedCssProperties(appStyles, '.challenge-flow > li > span', {
+      'margin-bottom': '0',
+      'padding-top': '3px',
+      'grid-row': '1 / span 2',
+    })
+    expectOwnedCssProperties(appStyles, '.challenge-flow > li > h4', {
+      'grid-column': '2',
+    })
+    expectOwnedCssProperties(appStyles, '.challenge-flow > li > p', {
+      'grid-column': '2',
+    })
+    expectOwnedCssProperties(appStyles, '.challenge-timeline > ol', {
+      'grid-template-columns': '1fr',
+    })
+    expectOwnedCssProperties(appStyles, '.challenge-timeline li', {
+      display: 'grid',
+      'grid-template-columns': 'minmax(0, 1fr) auto',
+      'grid-template-rows': 'auto auto',
+      gap: '3px 18px',
+      'border-top': '1px solid rgba(27, 132, 153, 0.18)',
+    })
+    expectOwnedCssProperties(appStyles, '.challenge-timeline li > span', {
+      display: 'none',
+    })
+    expectOwnedCssProperties(appStyles, '.challenge-timeline li p', {
+      'grid-column': '2',
+      'grid-row': '1 / span 2',
+      'align-self': 'center',
+      'text-align': 'right',
+    })
+    expect(appStyles).not.toContain('.challenge-facts')
+    expect(findCssRules(appStyles, '.challenge-flow li')).toHaveLength(0)
+    expect(findCssRules(appStyles, '.challenge-flow li + li')).toHaveLength(0)
+    render(<App />)
+    for (const task of screen.getAllByTestId('challenge-task')) {
+      expect(task.matches('.challenge-flow > li')).toBe(false)
+    }
   })
 
   it('hides decorative Challenge sequence numerals from assistive technology', () => {
@@ -555,43 +1061,39 @@ describe('workshop landing page', () => {
 
     const sequenceCards = [
       ...screen.getAllByTestId('challenge-stage'),
-      ...screen.getAllByTestId('challenge-task'),
       ...screen.getAllByTestId('challenge-milestone'),
     ]
 
-    expect(sequenceCards).toHaveLength(11)
+    expect(sequenceCards).toHaveLength(8)
     for (const card of sequenceCards) {
       expect(card.querySelector(':scope > span')).toHaveAttribute('aria-hidden', 'true')
     }
+    for (const task of screen.getAllByTestId('challenge-task')) {
+      expect(task.querySelector(':scope > span')).not.toBeInTheDocument()
+    }
   })
 
-  it('renders the complete Household Manipulation Tasks scope in order', () => {
+  it('nests the complete real-robot evaluation scope inside Step 02', () => {
     render(<App />)
 
-    const tasksHeading = screen.getByRole('heading', {
-      name: 'Household Manipulation Tasks',
-      level: 3,
+    const evaluation = screen.getByRole('region', { name: 'Evaluation Format' })
+    const realRobotStage = within(evaluation).getAllByTestId('challenge-stage')[1]
+    const taskList = within(realRobotStage).getByRole('list', {
+      name: 'Real-Robot Evaluation Scope',
     })
-    const tasksSection = tasksHeading.closest('section')
-
-    expect(tasksSection).toHaveClass('challenge-tasks')
-    expect(tasksSection).not.toHaveClass('challenge-block')
-
-    const taskCards = within(tasksSection as HTMLElement).getAllByTestId(
-      'challenge-task',
-    )
-    expect(taskCards).toHaveLength(challenge.tasks.length)
+    const taskItems = within(taskList).getAllByTestId('challenge-task')
+    expect(taskItems).toHaveLength(challenge.tasks.length)
     for (const [index, expectedTask] of challenge.tasks.entries()) {
       expect(
-        within(taskCards[index]).getByRole('heading', {
-          name: expectedTask.title,
-          level: 4,
-        }),
-      ).toBeInTheDocument()
+        within(taskItems[index]).getByText(expectedTask.title, { exact: true }),
+      ).toBeVisible()
       expect(
-        within(taskCards[index]).getByText(expectedTask.description, { exact: true }),
+        within(taskItems[index]).getByText(expectedTask.description, { exact: true }),
       ).toBeVisible()
     }
+    expect(
+      screen.queryByRole('region', { name: 'Household Manipulation Tasks' }),
+    ).not.toBeInTheDocument()
   })
 
   it('features the complete Challenge Prize Pool without multiplier notation', () => {
@@ -625,12 +1127,15 @@ describe('workshop landing page', () => {
     expect(prizePool.querySelector('.challenge-prize-pool__grid')).not.toBeInTheDocument()
   })
 
-  it('renders five Challenge milestones and two non-interactive resource states', () => {
+  it('renders five Challenge milestones and the configured resource states', () => {
     render(<App />)
 
     const challengeSection = screen.getByTestId('challenge-section')
     const milestones = within(challengeSection).getAllByTestId('challenge-milestone')
     const resources = within(challengeSection).getAllByTestId('challenge-resource')
+    const participation = within(challengeSection)
+      .getByRole('heading', { name: challenge.participation.title })
+      .closest('section')
 
     expect(milestones).toHaveLength(5)
     for (const [index, expectedMilestone] of challenge.timeline.entries()) {
@@ -650,33 +1155,52 @@ describe('workshop landing page', () => {
       }
     }
     expect(challengeSection.textContent?.match(/11:59 PM AOE/g)).toHaveLength(3)
-    expect(resources).toHaveLength(2)
-    for (const resource of resources) {
+    expect(resources).toHaveLength(3)
+    expect(participation).toContainElement(resources[0])
+    expect(participation).toContainElement(resources[1])
+    expect(participation).toContainElement(resources[2])
+    expect(resources[0]).toHaveAttribute('href', '/challenge/')
+    expect(resources[0]).toHaveClass('challenge-resource--primary')
+    expect(resources[0]).not.toHaveAttribute('target')
+    expect(resources[0]).not.toHaveAttribute('rel')
+    expect(within(resources[0]).getByText('Open')).toBeInTheDocument()
+    for (const resource of resources.slice(1)) {
       expect(within(resource).getByText('Coming Soon')).toBeInTheDocument()
       expect(resource.closest('a, button')).toBeNull()
       expect(resource).not.toHaveAttribute('tabindex')
+    }
+    for (const resource of resources) {
+      expect(resource).not.toHaveTextContent(/[→↗]/)
     }
   })
 
   it('turns an available Challenge resource into a safe external call to action', () => {
     const originalResources = [...challenge.resources]
     challenge.resources.splice(
-      0,
-      challenge.resources.length,
+      1,
+      1,
       {
         label: 'Dataset',
         status: 'available',
         url: 'https://huggingface.co/datasets/example/household-challenge',
-      } as never,
-      originalResources[1],
+        external: true,
+      },
     )
 
     try {
       render(<App />)
 
       const challengeSection = screen.getByTestId('challenge-section')
+      const resources = within(challengeSection).getAllByTestId('challenge-resource')
       const datasetLink = within(challengeSection).getByRole('link', { name: /Dataset/i })
 
+      expect(resources).toHaveLength(3)
+      expect(
+        within(challengeSection).getByRole('link', {
+          name: /Explore Challenge Details/i,
+        }),
+      ).toBeInTheDocument()
+      expect(within(challengeSection).getByText('Evaluation Portal')).toBeInTheDocument()
       expect(datasetLink).toHaveAttribute(
         'href',
         'https://huggingface.co/datasets/example/household-challenge',
@@ -718,21 +1242,25 @@ describe('workshop landing page', () => {
     const expectedOrganizers = [
       {
         name: 'Kai Li',
+        institution: 'PrimeBot',
         image: '/images/challenge-organizers/kai-li.jpg',
         imageAlt: 'Portrait of challenge organizer Kai Li',
       },
       {
         name: 'Ran Cheng',
+        institution: 'PrimeBot',
         image: '/images/challenge-organizers/ran-cheng.jpg',
         imageAlt: 'Portrait of challenge organizer Ran Cheng',
       },
       {
         name: 'Yan Shen',
+        institution: 'Peking University',
         image: '/images/organizers/yan-shen.jpg',
         imageAlt: 'Portrait of challenge organizer Yan Shen',
       },
       {
         name: 'Hao Dong',
+        institution: 'PrimeBot · Peking University',
         image: '/images/organizers/hao-dong.jpg',
         imageAlt: 'Portrait of challenge organizer Hao Dong',
       },
@@ -773,7 +1301,7 @@ describe('workshop landing page', () => {
           level: 3,
         }),
       ).toBeInTheDocument()
-      expect(card.querySelector('.person-card__copy p')).toBeNull()
+      expect(within(card).getByText(expectedOrganizer.institution)).toBeVisible()
       expect(within(card).getByRole('img')).toHaveAttribute(
         'src',
         expectedOrganizer.image,

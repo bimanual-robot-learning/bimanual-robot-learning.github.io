@@ -28,9 +28,21 @@ export interface Person {
   imageAlt: string
 }
 
-export interface ChallengeFact {
-  value: string
-  label: string
+export interface ChallengeTitle {
+  lineOne: string
+  lineTwo: string
+  accent: 'Challenge'
+}
+
+export interface ChallengeIntroductionSegment {
+  text: string
+  emphasis: boolean
+}
+
+export interface ChallengeParticipation {
+  eyebrow: string
+  title: string
+  description: string
 }
 
 export interface ChallengeStage {
@@ -53,13 +65,22 @@ export interface ChallengePrize {
 export interface ChallengeFinalRanking {
   label: 'Final Ranking'
   formula: string
-  note: string
 }
 
 export interface ChallengeMilestone {
   label: string
   date: string
   time?: string
+}
+
+export interface ChallengeVideo {
+  id: string
+  title: string
+  sourceLabel: 'Real-robot teleoperation' | 'UMI demonstration'
+  durationLabel: string
+  src: `/videos/challenge/${string}.mp4`
+  poster: `/images/challenge-videos/${string}.webp`
+  format: 'landscape' | 'square'
 }
 
 export type ChallengeResource =
@@ -71,15 +92,22 @@ export type ChallengeResource =
   | {
       label: string
       status: 'available'
-      url: string
+      url: '/challenge/'
+      external: false
+    }
+  | {
+      label: string
+      status: 'available'
+      url: `http://${string}` | `https://${string}`
+      external: true
     }
 
 export interface ChallengeInfo {
-  title: string
+  title: ChallengeTitle
   sponsorLine: string
-  introduction: string
+  introductionSegments: ChallengeIntroductionSegment[]
+  participation: ChallengeParticipation
   finalRanking: ChallengeFinalRanking
-  facts: ChallengeFact[]
   stages: ChallengeStage[]
   tasks: ChallengeTask[]
   prizePoolTotal: string
@@ -146,31 +174,37 @@ export const workshopMeta: WorkshopMeta = {
 }
 
 export const challenge: ChallengeInfo = {
-  title:
-    'Towards Bimanual Intelligence: A Real-World Household Manipulation Challenge',
-  sponsorLine: 'Designed and sponsored by',
-  introduction:
-    'This challenge focuses on real-world bimanual manipulation in household environments. Participants will train on thousands of hours of real-robot teleoperation and UMI data spanning diverse household tasks, with the freedom to design their own data mixtures and training strategies.',
-  finalRanking: {
-    label: 'Final Ranking',
-    formula: 'Online evaluation score + final real-robot evaluation score',
-    note:
-      'Detailed scoring protocols will be announced before online evaluation opens.',
+  title: {
+    lineOne: 'Real-World Household',
+    lineTwo: 'Bimanual Manipulation',
+    accent: 'Challenge',
   },
-  facts: [
+  sponsorLine: 'Designed and sponsored by',
+  introductionSegments: [
+    { text: 'This ', emphasis: false },
+    { text: 'challenge', emphasis: true },
     {
-      value: 'Thousands of hours',
-      label: 'Real-world demonstrations',
+      text: ' focuses on real-world bimanual manipulation in household environments. Participants train on ',
+      emphasis: false,
     },
+    { text: 'thousands of hours', emphasis: true },
+    { text: ' of real-robot ', emphasis: false },
+    { text: 'teleoperation and UMI data', emphasis: true },
     {
-      value: 'Teleoperation + UMI',
-      label: 'Complementary data sources',
-    },
-    {
-      value: '4 household tasks',
-      label: 'Real-robot evaluation',
+      text: ' spanning diverse household tasks, with the freedom to design their own data mixtures and training strategies.',
+      emphasis: false,
     },
   ],
+  participation: {
+    eyebrow: 'Get started',
+    title: 'Participate in the Challenge',
+    description:
+      'The full rules, dataset documentation, submission instructions, and leaderboard will live on the challenge website.',
+  },
+  finalRanking: {
+    label: 'Final Ranking',
+    formula: 'Online evaluation score + final real-robot evaluation score.',
+  },
   stages: [
     {
       step: '01',
@@ -187,23 +221,19 @@ export const challenge: ChallengeInfo = {
   tasks: [
     {
       title: 'Open the Washer Door',
-      description:
-        'Use the gripper to fully open the washing machine door.',
+      description: 'Fully open the door with the gripper.',
     },
     {
       title: 'Put Clothing in the Washer',
-      description:
-        'Put two pieces of clothing into the washing machine.',
+      description: 'Put two pieces of clothing into the washer.',
     },
     {
       title: 'Close the Washer Door',
-      description:
-        'Use the gripper to close the washing machine door securely.',
+      description: 'Close the door securely with the gripper.',
     },
     {
       title: 'Fold Clothing',
-      description:
-        'Unfold an item of clothing and fold it neatly.',
+      description: 'Unfold the clothing and fold it neatly.',
     },
   ],
   prizePoolTotal: 'USD 2,000',
@@ -250,29 +280,88 @@ export const challenge: ChallengeInfo = {
     },
   ],
   resources: [
+    {
+      label: 'Explore Challenge Details',
+      status: 'available',
+      url: '/challenge/',
+      external: false,
+    },
     { label: 'Dataset', status: 'coming-soon' },
     { label: 'Evaluation Portal', status: 'coming-soon' },
   ],
 }
 
+export const challengeVideos: ChallengeVideo[] = [
+  {
+    id: 'fold-clothing-teleoperation',
+    title: 'Fold Clothing',
+    sourceLabel: 'Real-robot teleoperation',
+    durationLabel: '00:36',
+    src: '/videos/challenge/fold-clothing-teleoperation.mp4',
+    poster: '/images/challenge-videos/fold-clothing-teleoperation.webp',
+    format: 'landscape',
+  },
+  {
+    id: 'washer-retrieve-clothing-teleoperation',
+    title: 'Open Washer Door → Retrieve Clothing → Close Washer Door',
+    sourceLabel: 'Real-robot teleoperation',
+    durationLabel: '00:40',
+    src: '/videos/challenge/washer-retrieve-clothing-teleoperation.mp4',
+    poster:
+      '/images/challenge-videos/washer-retrieve-clothing-teleoperation.webp',
+    format: 'landscape',
+  },
+  {
+    id: 'washer-put-clothing-teleoperation',
+    title: 'Open Washer Door → Put Clothing In → Close Washer Door',
+    sourceLabel: 'Real-robot teleoperation',
+    durationLabel: '00:52',
+    src: '/videos/challenge/washer-put-clothing-teleoperation.mp4',
+    poster: '/images/challenge-videos/washer-put-clothing-teleoperation.webp',
+    format: 'landscape',
+  },
+  {
+    id: 'fold-clothing-umi-left',
+    title: 'Fold Clothing · Left View',
+    sourceLabel: 'UMI demonstration',
+    durationLabel: '00:24',
+    src: '/videos/challenge/fold-clothing-umi-left.mp4',
+    poster: '/images/challenge-videos/fold-clothing-umi-left.webp',
+    format: 'square',
+  },
+  {
+    id: 'fold-clothing-umi-right',
+    title: 'Fold Clothing · Right View',
+    sourceLabel: 'UMI demonstration',
+    durationLabel: '00:24',
+    src: '/videos/challenge/fold-clothing-umi-right.mp4',
+    poster: '/images/challenge-videos/fold-clothing-umi-right.webp',
+    format: 'square',
+  },
+]
+
 export const challengeOrganizers: Person[] = [
   {
     name: 'Kai Li',
+    institution: 'PrimeBot',
     image: '/images/challenge-organizers/kai-li.jpg',
     imageAlt: 'Portrait of challenge organizer Kai Li',
   },
   {
     name: 'Ran Cheng',
+    institution: 'PrimeBot',
     image: '/images/challenge-organizers/ran-cheng.jpg',
     imageAlt: 'Portrait of challenge organizer Ran Cheng',
   },
   {
     name: 'Yan Shen',
+    institution: 'Peking University',
     image: '/images/organizers/yan-shen.jpg',
     imageAlt: 'Portrait of challenge organizer Yan Shen',
   },
   {
     name: 'Hao Dong',
+    institution: 'PrimeBot · Peking University',
     image: '/images/organizers/hao-dong.jpg',
     imageAlt: 'Portrait of challenge organizer Hao Dong',
   },
