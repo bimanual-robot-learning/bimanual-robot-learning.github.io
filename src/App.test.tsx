@@ -409,7 +409,9 @@ describe('workshop landing page', () => {
         'aria-pressed',
         index === 0 ? 'true' : 'false',
       )
-      expect(button.querySelector('img')).toHaveAttribute('alt', '')
+      const thumbnail = button.querySelector('img')
+      expect(thumbnail).toHaveAttribute('alt', '')
+      expect(thumbnail).toHaveAttribute('data-format', video.format)
     }
   })
 
@@ -650,6 +652,10 @@ describe('workshop landing page', () => {
   })
 
   it('adapts the Challenge summary across tablet and mobile viewports', () => {
+    const intermediateMedia = extractCssBlock(
+      appStyles,
+      '@media (min-width: 921px) and (max-width: 1199px)',
+    )
     const tabletMedia = extractCssBlock(appStyles, '@media (max-width: 920px)')
     const mobileMedia = extractCssBlock(appStyles, '@media (max-width: 720px)')
     const compactMedia = extractCssBlock(appStyles, '@media (max-width: 480px)')
@@ -676,6 +682,11 @@ describe('workshop landing page', () => {
     )).toBe('1fr')
     expect(extractCssProperty(
       extractCssRule(tabletMedia, '.challenge-final-ranking strong').declarations,
+      'white-space',
+    )).toBe('normal')
+    expect(extractCssProperty(
+      extractCssRule(intermediateMedia, '.challenge-final-ranking strong')
+        .declarations,
       'white-space',
     )).toBe('normal')
 
@@ -803,6 +814,14 @@ describe('workshop landing page', () => {
     expect(extractCssProperty(compactChallengePanel.declarations, 'padding')).toBe(
       '26px 22px',
     )
+    expect(extractCssProperty(
+      extractCssRule(compactMedia, '.challenge-video-playlist button').declarations,
+      'grid-template-columns',
+    )).toBe('96px minmax(0, 1fr)')
+    expect(extractCssProperty(
+      extractCssRule(compactMedia, '.challenge-video-playlist img').declarations,
+      'width',
+    )).toBe('96px')
     expect(appStyles).not.toContain('.challenge-block')
   })
 
@@ -928,6 +947,23 @@ describe('workshop landing page', () => {
       {
         outline: '3px solid var(--cyan-deep)',
         'outline-offset': '3px',
+      },
+    )
+    expectOwnedCssProperties(
+      appStyles,
+      ".challenge-video-playlist button[aria-pressed='true']:hover",
+      {
+        'border-color': 'var(--cyan-deep)',
+      },
+    )
+    expectOwnedCssProperties(appStyles, '.challenge-video-playlist img', {
+      'object-fit': 'cover',
+    })
+    expectOwnedCssProperties(
+      appStyles,
+      ".challenge-video-playlist img[data-format='square']",
+      {
+        'object-fit': 'contain',
       },
     )
     expectOwnedCssProperties(appStyles, '.challenge-final-ranking strong', {

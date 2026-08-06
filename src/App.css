@@ -1567,6 +1567,10 @@
   border-color: rgba(27, 132, 153, 0.48);
 }
 
+.challenge-video-playlist button[aria-pressed='true']:hover {
+  border-color: var(--cyan-deep);
+}
+
 .challenge-video-playlist button:focus-visible {
   outline: 3px solid var(--cyan-deep);
   outline-offset: 3px;
@@ -1579,6 +1583,10 @@
   background: var(--ink-950);
   border-radius: 4px;
   object-fit: cover;
+}
+
+.challenge-video-playlist img[data-format='square'] {
+  object-fit: contain;
 }
 
 .challenge-video-playlist__copy {
@@ -2122,6 +2130,12 @@
   to {
     opacity: 1;
     transform: scale(1);
+  }
+}
+
+@media (min-width: 921px) and (max-width: 1199px) {
+  .challenge-final-ranking strong {
+    white-space: normal;
   }
 }
 

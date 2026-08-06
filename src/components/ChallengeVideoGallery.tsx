@@ -62,7 +62,7 @@ function ChallengeVideoGallery() {
                 onClick={() => setSelectedId(video.id)}
                 type="button"
               >
-                <img alt="" src={video.poster} />
+                <img alt="" data-format={video.format} src={video.poster} />
                 <span className="challenge-video-playlist__copy">
                   <strong>{video.title}</strong>
                   <small>
