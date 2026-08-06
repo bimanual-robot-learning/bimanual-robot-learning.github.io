@@ -1774,7 +1774,7 @@
   font-size: clamp(1rem, 1.25vw, 1.15rem);
   font-weight: 650;
   letter-spacing: -.03em;
-  white-space: nowrap;
+  white-space: normal;
 }
 
 .challenge-prize-pool {
@@ -2129,12 +2129,6 @@
   }
 }
 
-@media (min-width: 921px) and (max-width: 1199px) {
-  .challenge-ranking-formula {
-    white-space: normal;
-  }
-}
-
 @media (max-width: 1120px) {
   .nav-links {
     gap: 17px;
@@ -2306,10 +2300,6 @@
 
   .challenge-evaluation-scope ul {
     grid-template-columns: 1fr;
-  }
-
-  .challenge-ranking-formula {
-    white-space: normal;
   }
 
   .challenge-organizer-grid {

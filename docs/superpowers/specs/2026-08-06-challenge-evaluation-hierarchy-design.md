@@ -95,8 +95,7 @@ The structure remains configuration-driven without introducing a new component o
 - The three main steps retain their numbered flow styling and thin separators.
 - The task scope is visually subordinate to `02 Real-Robot Evaluation` through smaller type, reduced spacing, and hairline separators.
 - `03 Final Ranking` uses the same main-step title scale as Steps 01 and 02; its formula uses the existing compact formula typography.
-- At 1200 px and above, the formula remains on one line when space permits.
-- At narrower widths, the formula wraps naturally without overlap.
+- The formula uses normal wrapping at every width, remaining on one line when it fits and wrapping naturally without overlap when space narrows.
 - The prize-pool appearance is unchanged; only its location changes.
 
 ## Accessibility
@@ -110,8 +109,8 @@ The structure remains configuration-driven without introducing a new component o
 
 ## Responsive Acceptance
 
-- 1440 px: Prize Pool spans the full content width before Logistics; Evaluation and Timeline remain equal columns; task scope is 2 × 2; the ranking formula is one line.
-- 1000 px: Evaluation and Timeline remain two columns; task scope may remain 2 × 2; task copy and ranking formula may wrap but cannot overlap or clip.
+- 1440 px: Prize Pool spans the full content width before Logistics; Evaluation and Timeline remain equal columns; task scope is 2 × 2; the ranking formula is one line because it fits naturally.
+- 1200 px and 1000 px: Evaluation and Timeline remain two columns; task scope may remain 2 × 2; task copy and ranking formula wrap as needed without overlap, clipping, or horizontal overflow.
 - 768 px: task scope becomes one column; all four items remain readable inside the Evaluation panel; no horizontal overflow.
 - 390 px: Evaluation and Timeline stack; the three steps and four nested tasks read in one continuous vertical sequence.
 
@@ -129,4 +128,4 @@ Automated tests verify:
 - desktop task scope uses two columns and the 920 px rule switches it to one column;
 - all existing prize amounts, timeline dates, video interactions, and standalone `/challenge/` assertions continue to pass.
 
-Visual QA at 1440 × 1000, 1000 × 1000, 768 × 1000, and 390 × 844 confirms hierarchy, balanced panel heights, readable task wrapping, unchanged prize styling, and zero horizontal overflow.
+Visual QA at 1440 × 1000, 1200 × 1000, 1000 × 1000, 768 × 1000, and 390 × 844 confirms hierarchy, balanced panel heights, readable task and formula wrapping, unchanged prize styling, and zero horizontal overflow.

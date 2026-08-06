@@ -666,10 +666,6 @@ describe('workshop landing page', () => {
   })
 
   it('adapts the Challenge summary across tablet and mobile viewports', () => {
-    const intermediateMedia = extractCssBlock(
-      appStyles,
-      '@media (min-width: 921px) and (max-width: 1199px)',
-    )
     const tabletMedia = extractCssBlock(appStyles, '@media (max-width: 920px)')
     const mobileMedia = extractCssBlock(appStyles, '@media (max-width: 720px)')
     const compactMedia = extractCssBlock(appStyles, '@media (max-width: 480px)')
@@ -694,15 +690,6 @@ describe('workshop landing page', () => {
       extractCssRule(tabletMedia, '.challenge-video-gallery__layout').declarations,
       'grid-template-columns',
     )).toBe('1fr')
-    expect(extractCssProperty(
-      extractCssRule(tabletMedia, '.challenge-ranking-formula').declarations,
-      'white-space',
-    )).toBe('normal')
-    expect(extractCssProperty(
-      extractCssRule(intermediateMedia, '.challenge-ranking-formula')
-        .declarations,
-      'white-space',
-    )).toBe('normal')
     expect(extractCssProperty(
       extractCssRule(tabletMedia, '.challenge-evaluation-scope ul').declarations,
       'grid-template-columns',
@@ -997,7 +984,7 @@ describe('workshop landing page', () => {
     })
     expectOwnedCssProperties(appStyles, '.challenge-ranking-formula', {
       'font-size': 'clamp(1rem, 1.25vw, 1.15rem)',
-      'white-space': 'nowrap',
+      'white-space': 'normal',
     })
   })
 
@@ -1061,7 +1048,8 @@ describe('workshop landing page', () => {
       'text-align': 'right',
     })
     expect(appStyles).not.toContain('.challenge-facts')
-    expect(appStyles).not.toContain('.challenge-flow li')
+    expect(findCssRules(appStyles, '.challenge-flow li')).toHaveLength(0)
+    expect(findCssRules(appStyles, '.challenge-flow li + li')).toHaveLength(0)
     render(<App />)
     for (const task of screen.getAllByTestId('challenge-task')) {
       expect(task.matches('.challenge-flow > li')).toBe(false)

@@ -297,9 +297,10 @@ Replace the remaining rule-level and responsive assertions for `.challenge-task-
 ```tsx
 expectGridColumns('.challenge-evaluation-scope ul', 2)
 expect(styleFor('.challenge-evaluation-scope').gridColumn).toBe('2')
-expect(styleFor('.challenge-ranking-formula').fontSize).toBe(
-  'clamp(1rem, 1.25vw, 1.15rem)',
-)
+expect(extractCssProperty(
+  extractCssRule(appStyles, '.challenge-ranking-formula').declarations,
+  'font-size',
+)).toBe('clamp(1rem, 1.25vw, 1.15rem)')
 expect(appStyles).not.toContain('.challenge-task-grid')
 expect(appStyles).not.toContain('.challenge-tasks')
 ```
@@ -321,8 +322,11 @@ expectOwnedCssProperties(appStyles, '.challenge-evaluation-scope ul', {
 })
 expectOwnedCssProperties(appStyles, '.challenge-ranking-formula', {
   'font-size': 'clamp(1rem, 1.25vw, 1.15rem)',
-  'white-space': 'nowrap',
+  'white-space': 'normal',
 })
+
+expect(findCssRules(appStyles, '.challenge-flow li')).toHaveLength(0)
+expect(findCssRules(appStyles, '.challenge-flow li + li')).toHaveLength(0)
 ```
 
 In the 920 px responsive test add:
@@ -331,12 +335,9 @@ In the 920 px responsive test add:
 expectOwnedCssProperties(tabletMedia, '.challenge-evaluation-scope ul', {
   'grid-template-columns': '1fr',
 })
-expectOwnedCssProperties(tabletMedia, '.challenge-ranking-formula', {
-  'white-space': 'normal',
-})
 ```
 
-In the 921–1199 px block replace the old final-ranking selector assertion with `.challenge-ranking-formula { white-space: normal; }`.
+Do not add breakpoint-specific formula wrapping assertions; the base rule owns normal wrapping at every width.
 
 - [ ] **Step 2: Run the visual-system tests and confirm RED**
 
@@ -419,23 +420,13 @@ Update any grouped selectors that currently include `.challenge-task-grid` or ta
   font-size: clamp(1rem, 1.25vw, 1.15rem);
   font-weight: 650;
   letter-spacing: -0.03em;
-  white-space: nowrap;
+  white-space: normal;
 }
 ```
 
 Delete `.challenge-final-ranking`, `.challenge-tasks`, and `.challenge-task-grid` rules that no longer have markup. Remove those obsolete selectors from grouped rules.
 
-- [ ] **Step 5: Add responsive formula and task-scope rules**
-
-Change the intermediate rule to:
-
-```css
-@media (min-width: 921px) and (max-width: 1199px) {
-  .challenge-ranking-formula {
-    white-space: normal;
-  }
-}
-```
+- [ ] **Step 5: Add the responsive task-scope rule**
 
 Inside `@media (max-width: 920px)` add:
 
@@ -443,13 +434,9 @@ Inside `@media (max-width: 920px)` add:
 .challenge-evaluation-scope ul {
   grid-template-columns: 1fr;
 }
-
-.challenge-ranking-formula {
-  white-space: normal;
-}
 ```
 
-At 720 px and below, keep the existing Logistics one-column behavior. Do not add a new breakpoint or change Timeline styling.
+Keep formula wrapping in the base rule; do not add an intermediate formula media query or redundant tablet override. At 720 px and below, keep the existing Logistics one-column behavior. Do not add a new breakpoint or change Timeline styling.
 
 - [ ] **Step 6: Run focused and complete verification**
 
@@ -494,7 +481,7 @@ npm run preview -- --host 127.0.0.1 --port 4182
 
 Keep the preview alive for user review.
 
-- [ ] **Step 3: Verify 1440 × 1000 and 1000 × 1000**
+- [ ] **Step 3: Verify 1440 × 1000, 1200 × 1000, and 1000 × 1000**
 
 Confirm:
 
@@ -504,7 +491,7 @@ Confirm:
 - Evaluation has exactly three main numbered steps;
 - Step 02 contains the four task items in a 2 × 2 text list;
 - no standalone Household Manipulation Tasks section remains;
-- Step 03 formula is one line at 1440 and wraps safely without overlap at 1000;
+- Step 03 formula is one visual line at 1440 because it fits naturally, and wraps as needed without overlap or horizontal overflow at 1200 and 1000;
 - Evaluation and Timeline columns remain equal width and visually balanced;
 - no horizontal overflow, console error, or media regression.
 
