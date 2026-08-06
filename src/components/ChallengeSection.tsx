@@ -1,5 +1,6 @@
 import { ArrowUpRight } from 'lucide-react'
 import { challenge, sponsor } from '../data/workshop'
+import ChallengeVideoGallery from './ChallengeVideoGallery'
 
 function ChallengeSection() {
   return (
@@ -87,6 +88,8 @@ function ChallengeSection() {
             })}
           </div>
         </section>
+
+        <ChallengeVideoGallery />
 
         <div className="challenge-logistics" data-testid="challenge-logistics">
           <section

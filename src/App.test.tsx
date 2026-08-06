@@ -313,6 +313,93 @@ describe('workshop landing page', () => {
     }
   })
 
+  it('renders the first Challenge training video without autoplay', () => {
+    render(<App />)
+
+    const gallery = screen.getByRole('region', {
+      name: 'Training Data Examples',
+    })
+    const selected = challengeVideos[0]
+    const video = within(gallery).getByLabelText(`${selected.title} video`)
+
+    expect(within(gallery).getByText('Real-world data')).toBeVisible()
+    expect(
+      within(gallery).getByRole('heading', {
+        name: 'Training Data Examples',
+        level: 3,
+      }),
+    ).toBeVisible()
+    expect(
+      within(gallery).getByText(
+        'A glimpse of the real-robot teleoperation and UMI demonstrations available to challenge participants.',
+        { exact: true },
+      ),
+    ).toBeVisible()
+    expect(video).toHaveAttribute('controls')
+    expect(video).toHaveAttribute('playsinline')
+    expect(video).toHaveAttribute('preload', 'metadata')
+    expect(video).not.toHaveAttribute('autoplay')
+    expect(video).not.toHaveAttribute('loop')
+    expect(video).toHaveAttribute('poster', selected.poster)
+    expect(video).toHaveAttribute('data-format', selected.format)
+    expect(video.querySelector('source')).toHaveAttribute('src', selected.src)
+    expect(video.querySelector('source')).toHaveAttribute('type', 'video/mp4')
+
+    const caption = within(gallery).getByTestId('challenge-video-caption')
+    expect(caption).toHaveTextContent(selected.title)
+    expect(caption).toHaveTextContent(selected.sourceLabel)
+    expect(caption).toHaveTextContent(selected.durationLabel)
+  })
+
+  it('switches the featured Challenge video without starting playback', async () => {
+    const user = userEvent.setup()
+    render(<App />)
+
+    const gallery = screen.getByRole('region', {
+      name: 'Training Data Examples',
+    })
+    const target = challengeVideos[3]
+    const buttons = within(gallery).getAllByRole('button')
+    const targetButton = within(gallery).getByRole('button', {
+      name: `${target.title}, ${target.sourceLabel}, ${target.durationLabel}`,
+    })
+
+    expect(buttons[0]).toHaveAttribute('aria-pressed', 'true')
+    expect(targetButton).toHaveAttribute('aria-pressed', 'false')
+
+    await user.click(targetButton)
+
+    const video = within(gallery).getByLabelText(`${target.title} video`)
+    expect(targetButton).toHaveAttribute('aria-pressed', 'true')
+    expect(video.querySelector('source')).toHaveAttribute('src', target.src)
+    expect(video).toHaveAttribute('poster', target.poster)
+    expect(video).not.toHaveAttribute('autoplay')
+
+    const caption = within(gallery).getByTestId('challenge-video-caption')
+    expect(caption).toHaveTextContent(target.title)
+    expect(caption).toHaveTextContent(target.sourceLabel)
+    expect(caption).toHaveTextContent(target.durationLabel)
+  })
+
+  it('uses semantic playlist buttons and decorative thumbnails', () => {
+    render(<App />)
+
+    const gallery = screen.getByRole('region', {
+      name: 'Training Data Examples',
+    })
+    const buttons = within(gallery).getAllByRole('button')
+
+    expect(buttons).toHaveLength(challengeVideos.length)
+    for (const [index, button] of buttons.entries()) {
+      expect(button).toHaveAttribute('type', 'button')
+      expect(button).toHaveAttribute(
+        'aria-pressed',
+        index === 0 ? 'true' : 'false',
+      )
+      expect(button.querySelector('img')).toHaveAttribute('alt', '')
+    }
+  })
+
   it('renders the workshop identity and every primary section', () => {
     render(<App />)
 
@@ -954,7 +1041,9 @@ describe('workshop landing page', () => {
       expect(resource.closest('a, button')).toBeNull()
       expect(resource).not.toHaveAttribute('tabindex')
     }
-    expect(challengeSection).not.toHaveTextContent(/[→↗]/)
+    for (const resource of resources) {
+      expect(resource).not.toHaveTextContent(/[→↗]/)
+    }
   })
 
   it('turns an available Challenge resource into a safe external call to action', () => {
