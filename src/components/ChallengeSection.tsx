@@ -91,69 +91,6 @@ function ChallengeSection() {
 
         <ChallengeVideoGallery />
 
-        <div className="challenge-logistics" data-testid="challenge-logistics">
-          <section
-            className="challenge-evaluation"
-            aria-labelledby="evaluation-title"
-          >
-            <p className="eyebrow">How it works</p>
-            <h3 id="evaluation-title">Evaluation Format</h3>
-            <ol className="challenge-flow">
-              {challenge.stages.map((stage) => (
-                <li data-testid="challenge-stage" key={stage.step}>
-                  <span aria-hidden="true">{stage.step}</span>
-                  <h4>{stage.title}</h4>
-                  <p>{stage.description}</p>
-                </li>
-              ))}
-            </ol>
-            <div
-              className="challenge-final-ranking"
-              data-testid="challenge-final-ranking"
-            >
-              <p className="eyebrow">{challenge.finalRanking.label}</p>
-              <strong>{challenge.finalRanking.formula}</strong>
-              <p>{challenge.finalRanking.note}</p>
-            </div>
-          </section>
-
-          <section
-            className="challenge-timeline"
-            aria-labelledby="challenge-timeline-title"
-          >
-            <p className="eyebrow">Important dates</p>
-            <h3 id="challenge-timeline-title">Challenge Timeline</h3>
-            <ol>
-              {challenge.timeline.map((milestone, index) => (
-                <li data-testid="challenge-milestone" key={milestone.label}>
-                  <span aria-hidden="true">
-                    {String(index + 1).padStart(2, '0')}
-                  </span>
-                  <h4>{milestone.label}</h4>
-                  <p>
-                    {milestone.date}
-                    {milestone.time && <b>{` · ${milestone.time}`}</b>}
-                  </p>
-                </li>
-              ))}
-            </ol>
-          </section>
-        </div>
-
-        <section className="challenge-tasks" aria-labelledby="challenge-tasks-title">
-          <p className="eyebrow">Real-Robot Evaluation Scope</p>
-          <h3 id="challenge-tasks-title">Household Manipulation Tasks</h3>
-          <div className="challenge-task-grid">
-            {challenge.tasks.map((task, index) => (
-              <article data-testid="challenge-task" key={task.title}>
-                <span aria-hidden="true">{String(index + 1).padStart(2, '0')}</span>
-                <h4>{task.title}</h4>
-                <p>{task.description}</p>
-              </article>
-            ))}
-          </div>
-        </section>
-
         <section
           className="challenge-prize-pool"
           aria-labelledby="challenge-prize-title"
@@ -180,6 +117,75 @@ function ChallengeSection() {
             ))}
           </div>
         </section>
+
+        <div className="challenge-logistics" data-testid="challenge-logistics">
+          <section
+            className="challenge-evaluation"
+            aria-labelledby="evaluation-title"
+          >
+            <p className="eyebrow">How it works</p>
+            <h3 id="evaluation-title">Evaluation Format</h3>
+            <ol className="challenge-flow">
+              {challenge.stages.map((stage, index) => (
+                <li data-testid="challenge-stage" key={stage.step}>
+                  <span aria-hidden="true">{stage.step}</span>
+                  <h4>{stage.title}</h4>
+                  <p>{stage.description}</p>
+                  {index === 1 && (
+                    <div className="challenge-evaluation-scope">
+                      <h5 id="real-robot-evaluation-scope">
+                        Real-Robot Evaluation Scope
+                      </h5>
+                      <ul aria-labelledby="real-robot-evaluation-scope">
+                        {challenge.tasks.map((task) => (
+                          <li data-testid="challenge-task" key={task.title}>
+                            <strong>{task.title}</strong>
+                            <p>{task.description}</p>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+                </li>
+              ))}
+              <li
+                className="challenge-flow__ranking"
+                data-testid="challenge-stage"
+              >
+                <span aria-hidden="true">03</span>
+                <h4>{challenge.finalRanking.label}</h4>
+                <p
+                  className="challenge-ranking-formula"
+                  data-testid="challenge-final-ranking"
+                >
+                  {challenge.finalRanking.formula}
+                </p>
+              </li>
+            </ol>
+          </section>
+
+          <section
+            className="challenge-timeline"
+            aria-labelledby="challenge-timeline-title"
+          >
+            <p className="eyebrow">Important dates</p>
+            <h3 id="challenge-timeline-title">Challenge Timeline</h3>
+            <ol>
+              {challenge.timeline.map((milestone, index) => (
+                <li data-testid="challenge-milestone" key={milestone.label}>
+                  <span aria-hidden="true">
+                    {String(index + 1).padStart(2, '0')}
+                  </span>
+                  <h4>{milestone.label}</h4>
+                  <p>
+                    {milestone.date}
+                    {milestone.time && <b>{` · ${milestone.time}`}</b>}
+                  </p>
+                </li>
+              ))}
+            </ol>
+          </section>
+        </div>
 
       </div>
     </section>

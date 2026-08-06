@@ -165,11 +165,10 @@ describe('workshop landing page', () => {
       },
     ])
     expect(challenge.finalRanking).toEqual({
-      label: 'Final ranking',
+      label: 'Final Ranking',
       formula: 'Online evaluation score + final real-robot evaluation score.',
-      note:
-        'Detailed scoring protocols will be announced before online evaluation opens.',
     })
+    expect(challenge.finalRanking).not.toHaveProperty('note')
     expect(challenge.tasks).toEqual([
       {
         title: 'Open the Washer Door',
@@ -503,7 +502,7 @@ describe('workshop landing page', () => {
     expect(challengeSection.querySelector('.challenge-facts')).toBeNull()
   })
 
-  it('places participation, training videos, and logistics in sequence', () => {
+  it('places participation, videos, prizes, and logistics in sequence', () => {
     render(<App />)
 
     const challengeSection = screen.getByTestId('challenge-section')
@@ -518,6 +517,7 @@ describe('workshop landing page', () => {
     const gallery = within(challengeSection).getByTestId(
       'challenge-video-gallery',
     )
+    const prizePool = within(challengeSection).getByTestId('challenge-prize-pool')
     const logistics = within(challengeSection).getByTestId('challenge-logistics')
 
     expect(participation).toHaveClass('challenge-participation')
@@ -533,7 +533,10 @@ describe('workshop landing page', () => {
     expect((participation as Node).compareDocumentPosition(gallery)).toBe(
       Node.DOCUMENT_POSITION_FOLLOWING,
     )
-    expect(gallery.compareDocumentPosition(logistics)).toBe(
+    expect(gallery.compareDocumentPosition(prizePool)).toBe(
+      Node.DOCUMENT_POSITION_FOLLOWING,
+    )
+    expect(prizePool.compareDocumentPosition(logistics)).toBe(
       Node.DOCUMENT_POSITION_FOLLOWING,
     )
     expect(logistics).toHaveClass('challenge-logistics')
@@ -544,8 +547,17 @@ describe('workshop landing page', () => {
       'Challenge Timeline',
     ])
 
-    const stages = within(challengeSection).getAllByTestId('challenge-stage')
-    expect(stages).toHaveLength(2)
+    const evaluation = within(challengeSection).getByRole('region', {
+      name: 'Evaluation Format',
+    })
+    const stages = within(evaluation).getAllByTestId('challenge-stage')
+    expect(stages).toHaveLength(3)
+    expect(
+      Array.from(evaluation.querySelectorAll(':scope > .challenge-flow > li')).map(
+        (stage) => within(stage as HTMLElement).getByRole('heading', { level: 4 })
+          .textContent,
+      ),
+    ).toEqual(['Online Evaluation', 'Real-Robot Evaluation', 'Final Ranking'])
     expect(
       within(challengeSection).queryByRole('heading', { name: 'Train' }),
     ).not.toBeInTheDocument()
@@ -559,18 +571,38 @@ describe('workshop landing page', () => {
       expect(within(stages[index]).getByText(expectedStage.description)).toBeVisible()
     }
 
+    const realRobotScope = within(stages[1]).getByRole('list', {
+      name: 'Real-Robot Evaluation Scope',
+    })
+    const taskItems = within(realRobotScope).getAllByTestId('challenge-task')
+    expect(taskItems).toHaveLength(4)
+    for (const [index, expectedTask] of challenge.tasks.entries()) {
+      expect(
+        within(taskItems[index]).getByText(expectedTask.title, { exact: true }),
+      ).toBeVisible()
+      expect(
+        within(taskItems[index]).getByText(expectedTask.description, { exact: true }),
+      ).toBeVisible()
+    }
+
     expect(
       within(challengeSection).getByRole('heading', {
         name: 'Evaluation Format',
         level: 3,
       }),
     ).toBeInTheDocument()
-    const finalRanking = within(challengeSection).getByTestId(
+    const finalRanking = within(stages[2]).getByTestId(
       'challenge-final-ranking',
     )
-    expect(finalRanking).toHaveTextContent(challenge.finalRanking.label)
-    expect(finalRanking).toHaveTextContent(challenge.finalRanking.formula)
-    expect(finalRanking).toHaveTextContent(challenge.finalRanking.note)
+    expect(finalRanking.textContent).toBe(challenge.finalRanking.formula)
+    expect(challengeSection).not.toHaveTextContent(
+      'Detailed scoring protocols will be announced before online evaluation opens.',
+    )
+    expect(
+      within(challengeSection).queryByRole('region', {
+        name: 'Household Manipulation Tasks',
+      }),
+    ).not.toBeInTheDocument()
     const milestones = within(logistics).getAllByTestId('challenge-milestone')
     expect(milestones).toHaveLength(challenge.timeline.length)
     for (const [index, milestone] of challenge.timeline.entries()) {
@@ -606,7 +638,6 @@ describe('workshop landing page', () => {
       'var(--ink-950)',
     )
     expectGridColumns('.challenge-logistics', 2)
-    expectGridColumns('.challenge-task-grid', 2)
     expectGridColumns('.challenge-prize-grid', 3)
     expect(styleFor('.challenge-video-gallery__layout').display).toBe('grid')
     expect(
@@ -1043,43 +1074,39 @@ describe('workshop landing page', () => {
 
     const sequenceCards = [
       ...screen.getAllByTestId('challenge-stage'),
-      ...screen.getAllByTestId('challenge-task'),
       ...screen.getAllByTestId('challenge-milestone'),
     ]
 
-    expect(sequenceCards).toHaveLength(11)
+    expect(sequenceCards).toHaveLength(8)
     for (const card of sequenceCards) {
       expect(card.querySelector(':scope > span')).toHaveAttribute('aria-hidden', 'true')
     }
+    for (const task of screen.getAllByTestId('challenge-task')) {
+      expect(task.querySelector(':scope > span')).not.toBeInTheDocument()
+    }
   })
 
-  it('renders the complete Household Manipulation Tasks scope in order', () => {
+  it('nests the complete real-robot evaluation scope inside Step 02', () => {
     render(<App />)
 
-    const tasksHeading = screen.getByRole('heading', {
-      name: 'Household Manipulation Tasks',
-      level: 3,
+    const evaluation = screen.getByRole('region', { name: 'Evaluation Format' })
+    const realRobotStage = within(evaluation).getAllByTestId('challenge-stage')[1]
+    const taskList = within(realRobotStage).getByRole('list', {
+      name: 'Real-Robot Evaluation Scope',
     })
-    const tasksSection = tasksHeading.closest('section')
-
-    expect(tasksSection).toHaveClass('challenge-tasks')
-    expect(tasksSection).not.toHaveClass('challenge-block')
-
-    const taskCards = within(tasksSection as HTMLElement).getAllByTestId(
-      'challenge-task',
-    )
-    expect(taskCards).toHaveLength(challenge.tasks.length)
+    const taskItems = within(taskList).getAllByTestId('challenge-task')
+    expect(taskItems).toHaveLength(challenge.tasks.length)
     for (const [index, expectedTask] of challenge.tasks.entries()) {
       expect(
-        within(taskCards[index]).getByRole('heading', {
-          name: expectedTask.title,
-          level: 4,
-        }),
-      ).toBeInTheDocument()
+        within(taskItems[index]).getByText(expectedTask.title, { exact: true }),
+      ).toBeVisible()
       expect(
-        within(taskCards[index]).getByText(expectedTask.description, { exact: true }),
+        within(taskItems[index]).getByText(expectedTask.description, { exact: true }),
       ).toBeVisible()
     }
+    expect(
+      screen.queryByRole('region', { name: 'Household Manipulation Tasks' }),
+    ).not.toBeInTheDocument()
   })
 
   it('features the complete Challenge Prize Pool without multiplier notation', () => {
