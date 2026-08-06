@@ -1,3 +1,7 @@
+/// <reference types="node" />
+
+import { existsSync } from 'node:fs'
+import { resolve } from 'node:path'
 import { render, screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { describe, expect, it } from 'vitest'
@@ -296,6 +300,17 @@ describe('workshop landing page', () => {
         format: 'square',
       },
     ])
+  })
+
+  it('ships every Challenge video and poster as a local asset', () => {
+    for (const video of challengeVideos) {
+      expect(existsSync(resolve(process.cwd(), 'public', video.src.slice(1)))).toBe(
+        true,
+      )
+      expect(
+        existsSync(resolve(process.cwd(), 'public', video.poster.slice(1))),
+      ).toBe(true)
+    }
   })
 
   it('renders the workshop identity and every primary section', () => {
