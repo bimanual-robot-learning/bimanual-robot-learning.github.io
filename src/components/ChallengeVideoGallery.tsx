@@ -49,6 +49,7 @@ function ChallengeVideoGallery() {
         <div
           className="challenge-video-playlist"
           aria-label="Training data video playlist"
+          role="group"
         >
           {challengeVideos.map((video) => {
             const isActive = video.id === selectedVideo.id

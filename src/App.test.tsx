@@ -363,6 +363,9 @@ describe('workshop landing page', () => {
     const targetButton = within(gallery).getByRole('button', {
       name: `${target.title}, ${target.sourceLabel}, ${target.durationLabel}`,
     })
+    const initialPlayer = within(gallery).getByLabelText(
+      `${challengeVideos[0].title} video`,
+    )
 
     expect(buttons[0]).toHaveAttribute('aria-pressed', 'true')
     expect(targetButton).toHaveAttribute('aria-pressed', 'false')
@@ -370,11 +373,12 @@ describe('workshop landing page', () => {
     await user.click(targetButton)
 
     expect(targetButton).toHaveFocus()
-    const video = within(gallery).getByLabelText(`${target.title} video`)
+    const player = within(gallery).getByLabelText(`${target.title} video`)
+    expect(player).not.toBe(initialPlayer)
     expect(targetButton).toHaveAttribute('aria-pressed', 'true')
-    expect(video.querySelector('source')).toHaveAttribute('src', target.src)
-    expect(video).toHaveAttribute('poster', target.poster)
-    expect(video).not.toHaveAttribute('autoplay')
+    expect(player.querySelector('source')).toHaveAttribute('src', target.src)
+    expect(player).toHaveAttribute('poster', target.poster)
+    expect(player).not.toHaveAttribute('autoplay')
 
     const caption = within(gallery).getByTestId('challenge-video-caption')
     expect(caption).toHaveTextContent(target.title)
@@ -388,9 +392,9 @@ describe('workshop landing page', () => {
     const gallery = screen.getByRole('region', {
       name: 'Training Data Examples',
     })
-    const playlist = within(gallery).getByLabelText(
-      'Training data video playlist',
-    )
+    const playlist = within(gallery).getByRole('group', {
+      name: 'Training data video playlist',
+    })
     const buttons = within(playlist).getAllByRole('button')
 
     expect(buttons).toHaveLength(challengeVideos.length)
@@ -483,7 +487,7 @@ describe('workshop landing page', () => {
     expect(challengeSection.querySelector('.challenge-facts')).toBeNull()
   })
 
-  it('places participation before Evaluation and Timeline logistics', () => {
+  it('places participation, training videos, and logistics in sequence', () => {
     render(<App />)
 
     const challengeSection = screen.getByTestId('challenge-section')
@@ -495,6 +499,9 @@ describe('workshop landing page', () => {
       level: 3,
     })
     const participation = participationHeading.closest('section')
+    const gallery = within(challengeSection).getByTestId(
+      'challenge-video-gallery',
+    )
     const logistics = within(challengeSection).getByTestId('challenge-logistics')
 
     expect(participation).toHaveClass('challenge-participation')
@@ -507,7 +514,10 @@ describe('workshop landing page', () => {
     expect(introduction.compareDocumentPosition(participation as Node)).toBe(
       Node.DOCUMENT_POSITION_FOLLOWING,
     )
-    expect((participation as Node).compareDocumentPosition(logistics)).toBe(
+    expect((participation as Node).compareDocumentPosition(gallery)).toBe(
+      Node.DOCUMENT_POSITION_FOLLOWING,
+    )
+    expect(gallery.compareDocumentPosition(logistics)).toBe(
       Node.DOCUMENT_POSITION_FOLLOWING,
     )
     expect(logistics).toHaveClass('challenge-logistics')
