@@ -67,6 +67,15 @@ describe('ChallengeHub presentation', () => {
     )
   })
 
+  it('retains a scrollable touch-friendly navigation row on mobile', () => {
+    expect(hubStyles).toMatch(
+      /@media \(max-width: 760px\) \{[\s\S]*?\.challenge-hub__nav\s*\{[^}]*display:\s*flex;[^}]*overflow-x:\s*auto;/,
+    )
+    expect(hubStyles).toMatch(
+      /@media \(max-width: 760px\) \{[\s\S]*?\.challenge-hub__nav a\s*\{[^}]*min-height:\s*44px;/,
+    )
+  })
+
   it('ships the shared video gallery layout with the Challenge Hub', () => {
     expect(galleryStyles).toContain('.challenge-video-gallery__layout')
     expect(galleryStyles).toContain('.challenge-video-playlist button')

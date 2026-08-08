@@ -734,7 +734,10 @@
 @media (max-width: 760px) {
   .challenge-hub__header-inner {
     min-height: 64px;
-    gap: 14px;
+    padding-top: 6px;
+    padding-bottom: 4px;
+    flex-wrap: wrap;
+    gap: 0 14px;
   }
 
   .challenge-hub__brand {
@@ -743,7 +746,25 @@
   }
 
   .challenge-hub__nav {
-    display: none;
+    display: flex;
+    width: 100%;
+    min-width: 0;
+    padding: 4px 0 2px;
+    margin-left: 0;
+    order: 3;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    gap: 3px;
+    border-top: 1px solid rgba(183, 220, 230, 0.14);
+    scrollbar-width: thin;
+  }
+
+  .challenge-hub__nav a {
+    display: inline-flex;
+    min-height: 44px;
+    padding-inline: 10px;
+    flex: 0 0 auto;
+    align-items: center;
   }
 
   .challenge-hub__header-cta {
