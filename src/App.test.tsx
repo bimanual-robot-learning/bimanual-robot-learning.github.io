@@ -7,6 +7,7 @@ import userEvent from '@testing-library/user-event'
 import { describe, expect, it } from 'vitest'
 import App from './App'
 import appStyles from './App.css?raw'
+import ChallengeVideoGallery from './components/ChallengeVideoGallery'
 import indexStyles from './index.css?raw'
 import {
   challenge,
@@ -100,6 +101,26 @@ const expectOwnedCssProperties = (
 }
 
 describe('workshop landing page', () => {
+  it('accepts Challenge Hub copy without changing selected-video behavior', () => {
+    render(
+      <ChallengeVideoGallery
+        eyebrow="Task demonstrations"
+        title="See the challenge in action"
+        description="Real-world teleoperation and UMI demonstrations."
+      />,
+    )
+
+    expect(
+      screen.getByRole('heading', {
+        name: 'See the challenge in action',
+        level: 3,
+      }),
+    ).toBeVisible()
+    expect(screen.getByLabelText('Fold Clothing video')).not.toHaveAttribute(
+      'autoplay',
+    )
+  })
+
   it('configures a directly addressable Challenge page', () => {
     expect(viteConfigSource).toContain(
       "challenge: resolve(__dirname, 'challenge/index.html')",
