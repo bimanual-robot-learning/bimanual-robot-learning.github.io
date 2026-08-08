@@ -57,6 +57,15 @@ describe('ChallengeHub presentation', () => {
     expect(hubStyles).toContain('.challenge-hub a:focus-visible')
   })
 
+  it('keeps the brand touchable and the footer on a stable navy surface', () => {
+    expect(hubStyles).toMatch(
+      /\.challenge-hub__brand\s*\{[^}]*min-height:\s*44px;/,
+    )
+    expect(hubStyles).toMatch(
+      /\.challenge-hub__footer\s*\{[^}]*background:\s*var\(--ink-950\);/,
+    )
+  })
+
   it('publishes released Challenge Hub metadata', () => {
     expect(challengeHtml).toContain(
       '<title>Real-World Household Bimanual Manipulation Challenge | IROS 2026 Workshop</title>',

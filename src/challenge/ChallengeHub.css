@@ -18,7 +18,6 @@
 .challenge-hub__header-inner,
 .challenge-hub__section,
 .challenge-hub__fact-rail,
-.challenge-hub__footer,
 .challenge-hub__prizes,
 .challenge-hub__updates {
   width: min(1240px, calc(100% - 64px));
@@ -45,6 +44,7 @@
 }
 
 .challenge-hub__brand {
+  min-height: 44px;
   color: var(--paper);
   font: 600 0.78rem/1 var(--font-display);
   letter-spacing: 0.09em;
@@ -657,25 +657,17 @@
 
 .challenge-hub__footer {
   display: flex;
+  width: 100%;
   min-height: 116px;
-  padding: 26px 0;
+  padding: 26px max(32px, calc((100% - 1240px) / 2));
   align-items: center;
   justify-content: space-between;
   color: var(--slate-light-readable);
+  background: var(--ink-950);
   border-top: 1px solid var(--line-dark);
   font: 500 0.72rem/1.2 var(--font-mono);
   letter-spacing: 0.06em;
   text-transform: uppercase;
-}
-
-.challenge-hub__footer::before {
-  position: absolute;
-  right: 0;
-  left: 0;
-  z-index: -1;
-  height: 116px;
-  background: var(--ink-950);
-  content: '';
 }
 
 .challenge-hub__footer a {
@@ -696,7 +688,6 @@
   .challenge-hub__header-inner,
   .challenge-hub__section,
   .challenge-hub__fact-rail,
-  .challenge-hub__footer,
   .challenge-hub__prizes,
   .challenge-hub__updates {
     width: min(100% - 44px, 860px);
@@ -704,6 +695,10 @@
 
   .challenge-hub__nav {
     gap: 14px;
+  }
+
+  .challenge-hub__footer {
+    padding-inline: 22px;
   }
 
   .challenge-hub__hero {
@@ -862,10 +857,6 @@
     padding-block: 18px;
     flex-direction: column;
     align-items: stretch;
-  }
-
-  .challenge-hub__footer::before {
-    height: 100%;
   }
 
   .challenge-hub__footer a {
