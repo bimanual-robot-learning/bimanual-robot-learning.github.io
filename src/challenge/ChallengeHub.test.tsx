@@ -2,6 +2,7 @@ import { render, screen, within } from '@testing-library/react'
 import { describe, expect, it } from 'vitest'
 import challengeHtml from '../../challenge/index.html?raw'
 import { challenge, challengeOrganizers, challengeVideos } from '../data/workshop'
+import galleryStyles from '../components/ChallengeVideoGallery.css?raw'
 import hubStyles from './ChallengeHub.css?raw'
 import ChallengeHub from './ChallengeHub'
 
@@ -64,6 +65,13 @@ describe('ChallengeHub presentation', () => {
     expect(hubStyles).toMatch(
       /\.challenge-hub__footer\s*\{[^}]*background:\s*var\(--ink-950\);/,
     )
+  })
+
+  it('ships the shared video gallery layout with the Challenge Hub', () => {
+    expect(galleryStyles).toContain('.challenge-video-gallery__layout')
+    expect(galleryStyles).toContain('.challenge-video-playlist button')
+    expect(galleryStyles).toContain('@media (max-width: 920px)')
+    expect(galleryStyles).toContain('@media (max-width: 480px)')
   })
 
   it('publishes released Challenge Hub metadata', () => {

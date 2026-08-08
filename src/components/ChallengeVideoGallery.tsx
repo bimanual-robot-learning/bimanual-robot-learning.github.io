@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { challengeVideos } from '../data/workshop'
+import './ChallengeVideoGallery.css'
 
 interface ChallengeVideoGalleryProps {
   eyebrow?: string

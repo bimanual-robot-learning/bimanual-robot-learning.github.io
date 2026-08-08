@@ -8,6 +8,7 @@ import { describe, expect, it } from 'vitest'
 import App from './App'
 import appStyles from './App.css?raw'
 import ChallengeVideoGallery from './components/ChallengeVideoGallery'
+import galleryStyles from './components/ChallengeVideoGallery.css?raw'
 import indexStyles from './index.css?raw'
 import {
   challenge,
@@ -710,8 +711,12 @@ describe('workshop landing page', () => {
       tabletResources.declarations,
       'grid-template-columns',
     )).toBe('1fr')
+    const galleryTabletMedia = extractCssBlock(
+      galleryStyles,
+      '@media (max-width: 920px)',
+    )
     expect(extractCssProperty(
-      extractCssRule(tabletMedia, '.challenge-video-gallery__layout').declarations,
+      extractCssRule(galleryTabletMedia, '.challenge-video-gallery__layout').declarations,
       'grid-template-columns',
     )).toBe('1fr')
     expect(extractCssProperty(
@@ -842,12 +847,16 @@ describe('workshop landing page', () => {
     expect(extractCssProperty(compactChallengePanel.declarations, 'padding')).toBe(
       '26px 22px',
     )
+    const galleryCompactMedia = extractCssBlock(
+      galleryStyles,
+      '@media (max-width: 480px)',
+    )
     expect(extractCssProperty(
-      extractCssRule(compactMedia, '.challenge-video-playlist button').declarations,
+      extractCssRule(galleryCompactMedia, '.challenge-video-playlist button').declarations,
       'grid-template-columns',
     )).toBe('96px minmax(0, 1fr)')
     expect(extractCssProperty(
-      extractCssRule(compactMedia, '.challenge-video-playlist img').declarations,
+      extractCssRule(galleryCompactMedia, '.challenge-video-playlist img').declarations,
       'width',
     )).toBe('96px')
     expect(appStyles).not.toContain('.challenge-block')
@@ -956,13 +965,13 @@ describe('workshop landing page', () => {
   })
 
   it('owns the training gallery and compact evaluation scope styles', () => {
-    expectOwnedCssProperties(appStyles, '.challenge-video-gallery__layout', {
+    expectOwnedCssProperties(galleryStyles, '.challenge-video-gallery__layout', {
       display: 'grid',
       'grid-template-columns': 'minmax(0, 1.55fr) minmax(320px, 0.85fr)',
       gap: '16px',
       'align-items': 'start',
     })
-    expectOwnedCssProperties(appStyles, '.challenge-video-feature video', {
+    expectOwnedCssProperties(galleryStyles, '.challenge-video-feature video', {
       display: 'block',
       width: '100%',
       'aspect-ratio': '16 / 9',
@@ -970,7 +979,7 @@ describe('workshop landing page', () => {
       'object-fit': 'contain',
     })
     expectOwnedCssProperties(
-      appStyles,
+      galleryStyles,
       '.challenge-video-playlist button:focus-visible',
       {
         outline: '3px solid var(--cyan-deep)',
@@ -978,17 +987,17 @@ describe('workshop landing page', () => {
       },
     )
     expectOwnedCssProperties(
-      appStyles,
+      galleryStyles,
       ".challenge-video-playlist button[aria-pressed='true']:hover",
       {
         'border-color': 'var(--cyan-deep)',
       },
     )
-    expectOwnedCssProperties(appStyles, '.challenge-video-playlist img', {
+    expectOwnedCssProperties(galleryStyles, '.challenge-video-playlist img', {
       'object-fit': 'cover',
     })
     expectOwnedCssProperties(
-      appStyles,
+      galleryStyles,
       ".challenge-video-playlist img[data-format='square']",
       {
         'object-fit': 'contain',
