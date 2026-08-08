@@ -1,6 +1,8 @@
 import { render, screen, within } from '@testing-library/react'
 import { describe, expect, it } from 'vitest'
+import challengeHtml from '../../challenge/index.html?raw'
 import { challenge, challengeOrganizers, challengeVideos } from '../data/workshop'
+import hubStyles from './ChallengeHub.css?raw'
 import ChallengeHub from './ChallengeHub'
 
 describe('ChallengeHub', () => {
@@ -42,5 +44,26 @@ describe('ChallengeHub', () => {
     expect(within(gallery).getAllByRole('button')).toHaveLength(
       challengeVideos.length,
     )
+  })
+})
+
+describe('ChallengeHub presentation', () => {
+  it('defines responsive and reduced-motion-aware presentation', () => {
+    expect(hubStyles).toContain('.challenge-hub__header')
+    expect(hubStyles).toContain('.challenge-hub__hero')
+    expect(hubStyles).toContain('.challenge-hub__fact-rail')
+    expect(hubStyles).toContain('@media (max-width: 760px)')
+    expect(hubStyles).toContain('@media (prefers-reduced-motion: reduce)')
+    expect(hubStyles).toContain('.challenge-hub a:focus-visible')
+  })
+
+  it('publishes released Challenge Hub metadata', () => {
+    expect(challengeHtml).toContain(
+      '<title>Real-World Household Bimanual Manipulation Challenge | IROS 2026 Workshop</title>',
+    )
+    expect(challengeHtml).toContain(
+      'Train from real demonstrations and evaluate on real robots.',
+    )
+    expect(challengeHtml).not.toContain('Full challenge details are coming soon.')
   })
 })

@@ -126,7 +126,7 @@ describe('workshop landing page', () => {
       "challenge: resolve(__dirname, 'challenge/index.html')",
     )
     expect(challengeHtml).toContain(
-      '<title>Towards Bimanual Intelligence | IROS 2026 Challenge</title>',
+      '<title>Real-World Household Bimanual Manipulation Challenge | IROS 2026 Workshop</title>',
     )
     expect(challengeHtml).toContain(
       'https://bimanual-robot-learning.github.io/challenge/',
