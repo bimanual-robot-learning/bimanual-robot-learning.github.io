@@ -1,7 +1,19 @@
 import { useState } from 'react'
 import { challengeVideos } from '../data/workshop'
+import './ChallengeVideoGallery.css'
 
-function ChallengeVideoGallery() {
+interface ChallengeVideoGalleryProps {
+  eyebrow?: string
+  title?: string
+  description?: string
+}
+
+function ChallengeVideoGallery({
+  eyebrow = 'Real-world data',
+  title = 'Training Data Examples',
+  description =
+    'A glimpse of the real-robot teleoperation and UMI demonstrations available to challenge participants.',
+}: ChallengeVideoGalleryProps) {
   const [selectedId, setSelectedId] = useState(challengeVideos[0].id)
   const selectedVideo =
     challengeVideos.find((video) => video.id === selectedId) ?? challengeVideos[0]
@@ -13,12 +25,9 @@ function ChallengeVideoGallery() {
       data-testid="challenge-video-gallery"
     >
       <header className="challenge-video-gallery__header">
-        <p className="eyebrow">Real-world data</p>
-        <h3 id="challenge-video-gallery-title">Training Data Examples</h3>
-        <p>
-          A glimpse of the real-robot teleoperation and UMI demonstrations
-          available to challenge participants.
-        </p>
+        <p className="eyebrow">{eyebrow}</p>
+        <h3 id="challenge-video-gallery-title">{title}</h3>
+        <p>{description}</p>
       </header>
 
       <div className="challenge-video-gallery__layout">

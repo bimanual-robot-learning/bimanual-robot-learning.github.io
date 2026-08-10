@@ -89,7 +89,11 @@ function ChallengeSection() {
           </div>
         </section>
 
-        <ChallengeVideoGallery />
+        <ChallengeVideoGallery
+          eyebrow="Real-world data"
+          title="Training Data Examples"
+          description="A glimpse of the real-robot teleoperation and UMI demonstrations available to challenge participants."
+        />
 
         <section
           className="challenge-prize-pool"

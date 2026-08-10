@@ -7,6 +7,8 @@ import userEvent from '@testing-library/user-event'
 import { describe, expect, it } from 'vitest'
 import App from './App'
 import appStyles from './App.css?raw'
+import ChallengeVideoGallery from './components/ChallengeVideoGallery'
+import galleryStyles from './components/ChallengeVideoGallery.css?raw'
 import indexStyles from './index.css?raw'
 import {
   challenge,
@@ -100,12 +102,32 @@ const expectOwnedCssProperties = (
 }
 
 describe('workshop landing page', () => {
+  it('accepts Challenge Hub copy without changing selected-video behavior', () => {
+    render(
+      <ChallengeVideoGallery
+        eyebrow="Task demonstrations"
+        title="See the challenge in action"
+        description="Real-world teleoperation and UMI demonstrations."
+      />,
+    )
+
+    expect(
+      screen.getByRole('heading', {
+        name: 'See the challenge in action',
+        level: 3,
+      }),
+    ).toBeVisible()
+    expect(screen.getByLabelText('Fold Clothing video')).not.toHaveAttribute(
+      'autoplay',
+    )
+  })
+
   it('configures a directly addressable Challenge page', () => {
     expect(viteConfigSource).toContain(
       "challenge: resolve(__dirname, 'challenge/index.html')",
     )
     expect(challengeHtml).toContain(
-      '<title>Towards Bimanual Intelligence | IROS 2026 Challenge</title>',
+      '<title>Real-World Household Bimanual Manipulation Challenge | IROS 2026 Workshop</title>',
     )
     expect(challengeHtml).toContain(
       'https://bimanual-robot-learning.github.io/challenge/',
@@ -187,11 +209,11 @@ describe('workshop landing page', () => {
         description: 'Unfold the clothing and fold it neatly.',
       },
     ])
-    expect(challenge.prizePoolTotal).toBe('USD 2,000')
+    expect(challenge.prizePoolTotal).toBe('USD 3,000')
     expect(challenge.prizes).toEqual([
       {
         place: '1st Place',
-        amount: 'USD 1,000',
+        amount: 'USD 2,000',
         accent: 'primary',
       },
       {
@@ -689,8 +711,12 @@ describe('workshop landing page', () => {
       tabletResources.declarations,
       'grid-template-columns',
     )).toBe('1fr')
+    const galleryTabletMedia = extractCssBlock(
+      galleryStyles,
+      '@media (max-width: 920px)',
+    )
     expect(extractCssProperty(
-      extractCssRule(tabletMedia, '.challenge-video-gallery__layout').declarations,
+      extractCssRule(galleryTabletMedia, '.challenge-video-gallery__layout').declarations,
       'grid-template-columns',
     )).toBe('1fr')
     expect(extractCssProperty(
@@ -821,12 +847,16 @@ describe('workshop landing page', () => {
     expect(extractCssProperty(compactChallengePanel.declarations, 'padding')).toBe(
       '26px 22px',
     )
+    const galleryCompactMedia = extractCssBlock(
+      galleryStyles,
+      '@media (max-width: 480px)',
+    )
     expect(extractCssProperty(
-      extractCssRule(compactMedia, '.challenge-video-playlist button').declarations,
+      extractCssRule(galleryCompactMedia, '.challenge-video-playlist button').declarations,
       'grid-template-columns',
     )).toBe('96px minmax(0, 1fr)')
     expect(extractCssProperty(
-      extractCssRule(compactMedia, '.challenge-video-playlist img').declarations,
+      extractCssRule(galleryCompactMedia, '.challenge-video-playlist img').declarations,
       'width',
     )).toBe('96px')
     expect(appStyles).not.toContain('.challenge-block')
@@ -935,13 +965,13 @@ describe('workshop landing page', () => {
   })
 
   it('owns the training gallery and compact evaluation scope styles', () => {
-    expectOwnedCssProperties(appStyles, '.challenge-video-gallery__layout', {
+    expectOwnedCssProperties(galleryStyles, '.challenge-video-gallery__layout', {
       display: 'grid',
       'grid-template-columns': 'minmax(0, 1.55fr) minmax(320px, 0.85fr)',
       gap: '16px',
       'align-items': 'start',
     })
-    expectOwnedCssProperties(appStyles, '.challenge-video-feature video', {
+    expectOwnedCssProperties(galleryStyles, '.challenge-video-feature video', {
       display: 'block',
       width: '100%',
       'aspect-ratio': '16 / 9',
@@ -949,7 +979,7 @@ describe('workshop landing page', () => {
       'object-fit': 'contain',
     })
     expectOwnedCssProperties(
-      appStyles,
+      galleryStyles,
       '.challenge-video-playlist button:focus-visible',
       {
         outline: '3px solid var(--cyan-deep)',
@@ -957,17 +987,17 @@ describe('workshop landing page', () => {
       },
     )
     expectOwnedCssProperties(
-      appStyles,
+      galleryStyles,
       ".challenge-video-playlist button[aria-pressed='true']:hover",
       {
         'border-color': 'var(--cyan-deep)',
       },
     )
-    expectOwnedCssProperties(appStyles, '.challenge-video-playlist img', {
+    expectOwnedCssProperties(galleryStyles, '.challenge-video-playlist img', {
       'object-fit': 'cover',
     })
     expectOwnedCssProperties(
-      appStyles,
+      galleryStyles,
       ".challenge-video-playlist img[data-format='square']",
       {
         'object-fit': 'contain',
@@ -1111,7 +1141,7 @@ describe('workshop landing page', () => {
       }),
     ).toBeInTheDocument()
     expect(prizePool).toHaveAccessibleName('Challenge Prize Pool')
-    expect(within(prizePool).getByText('USD 2,000 Total', { exact: true })).toBeVisible()
+    expect(within(prizePool).getByText('USD 3,000 Total', { exact: true })).toBeVisible()
     expect(within(prizePool).queryByText(/One winning team/i)).not.toBeInTheDocument()
     const prizes = within(prizePool).getAllByTestId('challenge-prize')
     expect(prizes).toHaveLength(3)
@@ -1124,7 +1154,7 @@ describe('workshop landing page', () => {
       ).toBeInTheDocument()
       expect(within(prizes[index]).getByText(expectedPrize.amount)).toBeVisible()
     }
-    expect(within(prizePool).getAllByText('USD 1,000')).toHaveLength(1)
+    expect(within(prizePool).getAllByText('USD 2,000')).toHaveLength(1)
     expect(within(prizePool).getAllByText('USD 500')).toHaveLength(2)
     expect(prizePool).not.toHaveTextContent('×')
     expect(prizePool.querySelector('.challenge-prize-pool__grid')).not.toBeInTheDocument()

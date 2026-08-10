@@ -6,11 +6,11 @@ import '@fontsource/space-grotesk/500.css'
 import '@fontsource/space-grotesk/600.css'
 import '@fontsource/dm-mono/500.css'
 import '../index.css'
-import './ChallengeComingSoon.css'
-import ChallengeComingSoon from './ChallengeComingSoon'
+import './ChallengeHub.css'
+import ChallengeHub from './ChallengeHub'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <ChallengeComingSoon />
+    <ChallengeHub />
   </StrictMode>,
 )
