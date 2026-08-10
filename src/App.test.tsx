@@ -209,11 +209,11 @@ describe('workshop landing page', () => {
         description: 'Unfold the clothing and fold it neatly.',
       },
     ])
-    expect(challenge.prizePoolTotal).toBe('USD 2,000')
+    expect(challenge.prizePoolTotal).toBe('USD 3,000')
     expect(challenge.prizes).toEqual([
       {
         place: '1st Place',
-        amount: 'USD 1,000',
+        amount: 'USD 2,000',
         accent: 'primary',
       },
       {
@@ -1141,7 +1141,7 @@ describe('workshop landing page', () => {
       }),
     ).toBeInTheDocument()
     expect(prizePool).toHaveAccessibleName('Challenge Prize Pool')
-    expect(within(prizePool).getByText('USD 2,000 Total', { exact: true })).toBeVisible()
+    expect(within(prizePool).getByText('USD 3,000 Total', { exact: true })).toBeVisible()
     expect(within(prizePool).queryByText(/One winning team/i)).not.toBeInTheDocument()
     const prizes = within(prizePool).getAllByTestId('challenge-prize')
     expect(prizes).toHaveLength(3)
@@ -1154,7 +1154,7 @@ describe('workshop landing page', () => {
       ).toBeInTheDocument()
       expect(within(prizes[index]).getByText(expectedPrize.amount)).toBeVisible()
     }
-    expect(within(prizePool).getAllByText('USD 1,000')).toHaveLength(1)
+    expect(within(prizePool).getAllByText('USD 2,000')).toHaveLength(1)
     expect(within(prizePool).getAllByText('USD 500')).toHaveLength(2)
     expect(prizePool).not.toHaveTextContent('×')
     expect(prizePool.querySelector('.challenge-prize-pool__grid')).not.toBeInTheDocument()

@@ -28,7 +28,7 @@ export const challengeHub = {
     '12+ household tasks',
     'Teleoperation + UMI data',
     'Online + real-robot evaluation',
-    'USD 2,000 prize pool',
+    'USD 3,000 prize pool',
   ],
   overview: {
     eyebrow: 'About the challenge',

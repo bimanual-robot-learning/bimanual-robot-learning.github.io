@@ -10,7 +10,7 @@ describe('challengeHub content', () => {
       '12+ household tasks',
       'Teleoperation + UMI data',
       'Online + real-robot evaluation',
-      'USD 2,000 prize pool',
+      'USD 3,000 prize pool',
     ])
     expect(challengeHub.participationSteps).toHaveLength(3)
     expect(challengeHub.navigation.map(({ href }) => href)).toEqual([

@@ -236,11 +236,11 @@ export const challenge: ChallengeInfo = {
       description: 'Unfold the clothing and fold it neatly.',
     },
   ],
-  prizePoolTotal: 'USD 2,000',
+  prizePoolTotal: 'USD 3,000',
   prizes: [
     {
       place: '1st Place',
-      amount: 'USD 1,000',
+      amount: 'USD 2,000',
       accent: 'primary',
     },
     {
