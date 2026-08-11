@@ -82,6 +82,13 @@ describe('ChallengeHub presentation', () => {
     expect(hubStyles).toContain('.challenge-hub a:focus-visible')
   })
 
+  it('defines the refined hero, prize sponsor, and leaderboard styling hooks', () => {
+    expect(hubStyles).toContain('.challenge-hub__leaderboard-card')
+    expect(hubStyles).toContain('.challenge-hub__prize-sponsor')
+    expect(hubStyles).toContain('.challenge-hub__hero-title-line')
+    expect(hubStyles).toContain('@media (max-width: 760px)')
+  })
+
   it('keeps the brand touchable and the footer on a stable navy surface', () => {
     expect(hubStyles).toMatch(
       /\.challenge-hub__brand\s*\{[^}]*min-height:\s*44px;/,
