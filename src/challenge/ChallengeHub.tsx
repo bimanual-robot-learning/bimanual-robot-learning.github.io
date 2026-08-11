@@ -226,7 +226,7 @@ function ChallengeHub() {
             <h2 id="challenge-hub-prizes-title">
               {challenge.prizePoolTotal}
             </h2>
-            <p>
+            <p className="challenge-hub__prize-sponsor">
               Sponsored by{' '}
               <a href={sponsor.url} {...externalLinkProps}>
                 {sponsor.name}
@@ -249,7 +249,7 @@ function ChallengeHub() {
 
         <section
           aria-labelledby="challenge-hub-leaderboard-title"
-          className="challenge-hub__updates"
+          className="challenge-hub__leaderboard-card"
           id="updates"
         >
           <header>

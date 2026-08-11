@@ -39,6 +39,12 @@ describe('ChallengeHub', () => {
     })
     expect(container.querySelector('.challenge-hub__hero-media')).toBeNull()
     expect(
+      container.querySelector('.challenge-hub__leaderboard-card'),
+    ).not.toBeNull()
+    expect(
+      container.querySelector('.challenge-hub__prize-sponsor'),
+    ).not.toBeNull()
+    expect(
       screen.getByRole('navigation', { name: 'Challenge navigation' }),
     ).toHaveTextContent('Leaderboard')
     expect(screen.queryByText('Updates', { exact: true })).not.toBeInTheDocument()
@@ -95,6 +101,12 @@ describe('ChallengeHub presentation', () => {
     )
     expect(hubStyles).toMatch(
       /\.challenge-hub__footer\s*\{[^}]*background:\s*var\(--ink-950\);/,
+    )
+    expect(hubStyles).toMatch(
+      /\.challenge-hub__nav a\s*\{[^}]*min-height:\s*44px;/,
+    )
+    expect(hubStyles).toMatch(
+      /\.challenge-hub__header-cta\s*\{[^}]*min-height:\s*44px;/,
     )
   })
 

@@ -19,6 +19,7 @@
 .challenge-hub__section,
 .challenge-hub__fact-rail,
 .challenge-hub__prizes,
+.challenge-hub__leaderboard-card,
 .challenge-hub__updates {
   width: min(1240px, calc(100% - 64px));
   margin-inline: auto;
@@ -67,6 +68,9 @@
 }
 
 .challenge-hub__nav a {
+  display: inline-flex;
+  min-height: 44px;
+  align-items: center;
   color: rgba(230, 241, 243, 0.75);
   font-size: 0.78rem;
   font-weight: 600;
@@ -80,7 +84,7 @@
 }
 
 .challenge-hub__header-cta {
-  min-height: 40px;
+  min-height: 44px;
   padding: 0 13px;
   color: var(--ink-950);
   background: var(--cyan);
@@ -545,16 +549,14 @@
   letter-spacing: 0.1em;
 }
 
-.challenge-hub__prize-sponsor,
-.challenge-hub__prizes header > p:last-child {
+.challenge-hub__prize-sponsor {
   margin: 0 0 7px;
   color: #663024;
   font: 600 clamp(0.83rem, 1.2vw, 0.98rem)/1.4 var(--font-display);
   letter-spacing: -0.015em;
 }
 
-.challenge-hub__prize-sponsor a,
-.challenge-hub__prizes header > p:last-child a {
+.challenge-hub__prize-sponsor a {
   color: #a54424;
   font-weight: 800;
   text-decoration-color: rgba(165, 68, 36, 0.45);
@@ -803,6 +805,7 @@
   .challenge-hub__section,
   .challenge-hub__fact-rail,
   .challenge-hub__prizes,
+  .challenge-hub__leaderboard-card,
   .challenge-hub__updates {
     width: min(100% - 44px, 860px);
   }
