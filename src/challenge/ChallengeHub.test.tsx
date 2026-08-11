@@ -95,6 +95,19 @@ describe('ChallengeHub presentation', () => {
     expect(hubStyles).toContain('@media (max-width: 760px)')
   })
 
+  it('keeps the mobile hero title in two compact phrase lines', () => {
+    expect(hubStyles).toMatch(
+      /@media \(max-width: 760px\) \{[\s\S]*?\.challenge-hub__hero h1\s*\{[^}]*font-size:\s*clamp\(1\.65rem,\s*7\.5vw,\s*2\.8rem\);/,
+    )
+    expect(hubStyles).toMatch(
+      /@media \(max-width: 760px\) \{[\s\S]*?\.challenge-hub__hero-title-line\s*\{[^}]*white-space:\s*nowrap;/,
+    )
+  })
+
+  it('uses only the active leaderboard card selector', () => {
+    expect(hubStyles).not.toContain('.challenge-hub__updates')
+  })
+
   it('keeps the brand touchable and the footer on a stable navy surface', () => {
     expect(hubStyles).toMatch(
       /\.challenge-hub__brand\s*\{[^}]*min-height:\s*44px;/,
