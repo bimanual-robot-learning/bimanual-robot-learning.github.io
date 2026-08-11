@@ -1,6 +1,6 @@
 import { ArrowDown, ArrowLeft, ArrowUpRight } from 'lucide-react'
 import ChallengeVideoGallery from '../components/ChallengeVideoGallery'
-import { challenge, challengeOrganizers } from '../data/workshop'
+import { challenge, challengeOrganizers, sponsor } from '../data/workshop'
 import { challengeHub } from '../data/challengeHub'
 
 const externalLinkProps = {
@@ -43,19 +43,29 @@ function ChallengeHub() {
           <div className="challenge-hub__hero-content">
             <p className="challenge-hub__eyebrow">{challengeHub.identity}</p>
             <h1
-              aria-label="Real-World Household Bimanual Manipulation Challenge"
+              aria-label={`${challengeHub.hero.titleLines.join(' ')} ${challengeHub.hero.accent}`}
               id="challenge-hub-title"
             >
-              {challengeHub.hero.titleLines.map((line) => (
+              {challengeHub.hero.titleLines.map((line, index) => (
                 <span className="challenge-hub__hero-title-line" key={line}>
-                  {line}{' '}
+                  {line}
+                  {index === challengeHub.hero.titleLines.length - 1 && (
+                    <>
+                      {' '}
+                      <span className="challenge-hub__hero-title-accent">
+                        {challengeHub.hero.accent}
+                      </span>
+                    </>
+                  )}
                 </span>
               ))}
-              <span className="challenge-hub__hero-title-accent">
-                {challengeHub.hero.accent}
-              </span>
             </h1>
-            <p className="challenge-hub__sponsor">{challengeHub.hero.sponsor}</p>
+            <p className="challenge-hub__sponsor">
+              {challengeHub.hero.sponsorPrefix}{' '}
+              <a href={sponsor.url} {...externalLinkProps}>
+                {sponsor.name}
+              </a>
+            </p>
             <p className="challenge-hub__tagline">{challengeHub.hero.tagline}</p>
             <div className="challenge-hub__hero-actions">
               <a
@@ -69,12 +79,6 @@ function ChallengeHub() {
                 Watch Task Demos <ArrowDown aria-hidden="true" size={18} />
               </a>
             </div>
-          </div>
-          <div className="challenge-hub__hero-media" aria-hidden="true">
-            <img
-              alt=""
-              src="/images/challenge-videos/washer-put-clothing-teleoperation.webp"
-            />
           </div>
         </section>
 
@@ -194,7 +198,9 @@ function ChallengeHub() {
             <p className="challenge-hub__eyebrow">Important dates</p>
             <h2 id="challenge-hub-timeline-title">Challenge Timeline</h2>
             <ol className="challenge-hub__timeline">
-              {challenge.timeline.map((milestone) => (
+              {challenge.timeline
+                .filter((milestone) => milestone.label !== 'Sample Data Release')
+                .map((milestone) => (
                 <li
                   data-testid="challenge-hub-milestone"
                   key={milestone.label}
@@ -205,7 +211,7 @@ function ChallengeHub() {
                     {milestone.time && <span>{` · ${milestone.time}`}</span>}
                   </p>
                 </li>
-              ))}
+                ))}
             </ol>
           </section>
         </section>
@@ -220,6 +226,12 @@ function ChallengeHub() {
             <h2 id="challenge-hub-prizes-title">
               {challenge.prizePoolTotal}
             </h2>
+            <p className="challenge-hub__prize-sponsor">
+              Sponsored by{' '}
+              <a href={sponsor.url} {...externalLinkProps}>
+                {sponsor.name}
+              </a>
+            </p>
           </header>
           <div className="challenge-hub__prize-grid">
             {challenge.prizes.map((prize) => (
@@ -236,22 +248,30 @@ function ChallengeHub() {
         </section>
 
         <section
-          aria-labelledby="challenge-hub-updates-title"
-          className="challenge-hub__updates"
+          aria-labelledby="challenge-hub-leaderboard-title"
+          className="challenge-hub__leaderboard-card"
           id="updates"
         >
-          <div>
+          <header>
             <p className="challenge-hub__eyebrow">
-              {challengeHub.future.leaderboardTitle}
+              {challengeHub.leaderboard.eyebrow}
             </p>
-            <h2 id="challenge-hub-updates-title">
-              {challengeHub.future.leaderboardDescription}
+            <p>{challengeHub.leaderboard.status}</p>
+            <h2 id="challenge-hub-leaderboard-title">
+              {challengeHub.leaderboard.title}
             </h2>
-          </div>
-          <div>
-            <h3>{challengeHub.future.updatesTitle}</h3>
-            <p>{challengeHub.future.updatesDescription}</p>
-          </div>
+            <p>{challengeHub.leaderboard.description}</p>
+            <p>Opening date: {challengeHub.leaderboard.openingDate}</p>
+          </header>
+          <ol>
+            {challengeHub.leaderboard.stages.map((stage) => (
+              <li data-testid="challenge-hub-leaderboard-stage" key={stage}>
+                <article>
+                  <h3>{stage}</h3>
+                </article>
+              </li>
+            ))}
+          </ol>
         </section>
 
         <section
