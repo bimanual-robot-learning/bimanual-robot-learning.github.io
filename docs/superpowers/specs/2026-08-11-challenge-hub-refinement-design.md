@@ -41,6 +41,8 @@ awards, dataset schema details, and organizer roster stay unchanged.
 
 - Replace the two-column `Leaderboard + Updates` placeholder with one full-width
   leaderboard empty-state card.
+- Rename the existing navigation item from `Updates` to `Leaderboard` while
+  preserving its `#updates` anchor target.
 - Do not show `Updates`, `Get updates`, or an implied subscription action.
 - Show: `Leaderboard`, `Coming soon`, `Leaderboard opens with online evaluation.`,
   the August 25, 2026 opening date, and the three eventual score stages: Online
