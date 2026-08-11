@@ -1,19 +1,23 @@
 import { render, screen, within } from '@testing-library/react'
 import { describe, expect, it } from 'vitest'
 import challengeHtml from '../../challenge/index.html?raw'
-import { challenge, challengeOrganizers, challengeVideos } from '../data/workshop'
+import {
+  challenge,
+  challengeOrganizers,
+  challengeVideos,
+} from '../data/workshop'
 import galleryStyles from '../components/ChallengeVideoGallery.css?raw'
 import hubStyles from './ChallengeHub.css?raw'
 import ChallengeHub from './ChallengeHub'
 
 describe('ChallengeHub', () => {
-  it('renders the participant journey and future-ready Challenge content', () => {
-    render(<ChallengeHub />)
+  it('renders the refined challenge content and leaderboard contract', () => {
+    const { container } = render(<ChallengeHub />)
 
     expect(
       screen.getByRole('heading', {
         level: 1,
-        name: 'Real-World Household Bimanual Manipulation Challenge',
+        name: 'Household Bimanual Manipulation Challenge',
       }),
     ).toBeVisible()
     expect(
@@ -24,11 +28,24 @@ describe('ChallengeHub', () => {
       'https://huggingface.co/datasets/challenge-2026/challenge_data',
     )
     expect(screen.getAllByTestId('challenge-hub-fact')).toHaveLength(4)
+    expect(screen.getByText('1,500+ hours')).toBeVisible()
+    expect(screen.queryByText('12+ household tasks')).not.toBeInTheDocument()
+    const sponsorLinks = screen.getAllByRole('link', { name: 'PrimeBot' })
+    expect(sponsorLinks).toHaveLength(2)
+    sponsorLinks.forEach((link) => {
+      expect(link).toHaveAttribute('href', 'https://www.primebot.cn/')
+      expect(link).toHaveAttribute('target', '_blank')
+      expect(link).toHaveAttribute('rel', 'noreferrer')
+    })
+    expect(container.querySelector('.challenge-hub__hero-media')).toBeNull()
+    expect(
+      screen.getByRole('navigation', { name: 'Challenge navigation' }),
+    ).toHaveTextContent('Leaderboard')
+    expect(screen.queryByText('Updates', { exact: true })).not.toBeInTheDocument()
     expect(screen.getAllByTestId('challenge-participation-step')).toHaveLength(3)
     expect(screen.getAllByTestId('challenge-hub-stage')).toHaveLength(3)
-    expect(screen.getAllByTestId('challenge-hub-milestone')).toHaveLength(
-      challenge.timeline.length,
-    )
+    expect(screen.getAllByTestId('challenge-hub-milestone')).toHaveLength(4)
+    expect(screen.queryByText('Sample Data Release')).not.toBeInTheDocument()
     expect(screen.getAllByTestId('challenge-hub-prize')).toHaveLength(
       challenge.prizes.length,
     )
@@ -36,8 +53,15 @@ describe('ChallengeHub', () => {
       challengeOrganizers.length,
     )
     expect(
-      screen.getByText('Opens with online evaluation. Coming soon.'),
+      screen.getByRole('heading', {
+        name: 'Leaderboard opens with online evaluation.',
+      }),
     ).toBeVisible()
+    expect(screen.getByText('Coming soon')).toBeVisible()
+    expect(screen.getByText('August 25, 2026')).toBeVisible()
+    expect(screen.getAllByTestId('challenge-hub-leaderboard-stage')).toHaveLength(
+      3,
+    )
 
     const gallery = screen.getByRole('region', {
       name: 'See the challenge in action',

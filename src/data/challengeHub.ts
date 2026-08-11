@@ -9,6 +9,15 @@ export interface ChallengeHubParticipationStep {
   description: string
 }
 
+export interface ChallengeHubLeaderboard {
+  eyebrow: 'Leaderboard'
+  status: 'Coming soon'
+  title: 'Leaderboard opens with online evaluation.'
+  description: 'Scores and final rankings will appear here after the evaluation portal opens.'
+  openingDate: 'August 25, 2026'
+  stages: readonly ['Online score', 'Real-robot score', 'Final ranking']
+}
+
 export const challengeHub = {
   identity: 'BIMANUAL ROBOT LEARNING WORKSHOP · IROS 2026',
   navigation: [
@@ -16,16 +25,16 @@ export const challengeHub = {
     { label: 'Tasks', href: '#tasks' },
     { label: 'Evaluation', href: '#evaluation' },
     { label: 'Prizes', href: '#prizes' },
-    { label: 'Updates', href: '#updates' },
+    { label: 'Leaderboard', href: '#updates' },
   ] satisfies ChallengeHubNavigationItem[],
   hero: {
-    titleLines: ['Real-World Household', 'Bimanual Manipulation'],
+    titleLines: ['Household Bimanual', 'Manipulation'],
     accent: 'Challenge',
-    sponsor: 'Designed and sponsored by PrimeBot',
+    sponsorPrefix: 'Designed and sponsored by',
     tagline: 'Train from real demonstrations. Evaluate on real robots.',
   },
   factRail: [
-    '12+ household tasks',
+    '1,500+ hours',
     'Teleoperation + UMI data',
     'Online + real-robot evaluation',
     'USD 3,000 prize pool',
@@ -70,11 +79,13 @@ export const challengeHub = {
   ] satisfies ChallengeHubParticipationStep[],
   taskScope:
     'Real-robot evaluation covers up to four household tasks, including washer manipulation and clothing folding.',
-  future: {
-    leaderboardTitle: 'Leaderboard',
-    leaderboardDescription: 'Opens with online evaluation. Coming soon.',
-    updatesTitle: 'Updates',
-    updatesDescription:
-      'Dataset releases, evaluation notices, and rule changes will be posted here.',
-  },
+  leaderboard: {
+    eyebrow: 'Leaderboard',
+    status: 'Coming soon',
+    title: 'Leaderboard opens with online evaluation.',
+    description:
+      'Scores and final rankings will appear here after the evaluation portal opens.',
+    openingDate: 'August 25, 2026',
+    stages: ['Online score', 'Real-robot score', 'Final ranking'],
+  } satisfies ChallengeHubLeaderboard,
 } as const
