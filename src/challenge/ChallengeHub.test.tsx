@@ -91,6 +91,17 @@ describe('ChallengeHub presentation', () => {
     )
   })
 
+  it('gives the media-free hero a full-width desktop content shell', () => {
+    expect(hubStyles).toMatch(
+      /\.challenge-hub__hero\s*\{[^}]*display:\s*block;/,
+    )
+    expect(hubStyles).toMatch(
+      /\.challenge-hub__hero-content\s*\{[^}]*width:\s*min\(100% - 64px,\s*1240px\);[^}]*margin-inline:\s*auto;/,
+    )
+    expect(hubStyles).not.toContain('.challenge-hub__hero-media')
+    expect(hubStyles).not.toContain('grid-template-columns: minmax(0, 1.08fr)')
+  })
+
   it('retains a scrollable touch-friendly navigation row on mobile', () => {
     expect(hubStyles).toMatch(
       /@media \(max-width: 760px\) \{[\s\S]*?\.challenge-hub__nav\s*\{[^}]*display:\s*flex;[^}]*overflow-x:\s*auto;/,
