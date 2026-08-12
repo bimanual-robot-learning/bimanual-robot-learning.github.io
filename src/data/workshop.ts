@@ -286,7 +286,12 @@ export const challenge: ChallengeInfo = {
       url: '/challenge/',
       external: false,
     },
-    { label: 'Dataset', status: 'coming-soon' },
+    {
+      label: 'View Dataset',
+      status: 'available',
+      url: 'https://huggingface.co/datasets/challenge-2026/challenge_data',
+      external: true,
+    },
     { label: 'Evaluation Portal', status: 'coming-soon' },
   ],
 }
