@@ -41,7 +41,14 @@ function ChallengeHub() {
           id="top"
         >
           <div className="challenge-hub__hero-content">
-            <p className="challenge-hub__eyebrow">{challengeHub.identity}</p>
+            <div className="challenge-hub__hero-identity">
+              <p className="challenge-hub__hero-parent">
+                Bimanual Robot Learning Workshop
+              </p>
+              <p className="challenge-hub__hero-track">
+                Challenge Track · PrimeBot
+              </p>
+            </div>
             <h1
               aria-label={`${challengeHub.hero.titleLines.join(' ')} ${challengeHub.hero.accent}`}
               id="challenge-hub-title"
