@@ -1208,6 +1208,7 @@ describe('workshop landing page', () => {
     )
     expect(resources[1]).toHaveAttribute('target', '_blank')
     expect(resources[1]).toHaveAttribute('rel', 'noreferrer')
+    expect(resources[1]).toHaveClass('challenge-resource--primary')
     expect(within(resources[1]).getByText('Open')).toBeInTheDocument()
     expect(within(resources[1]).queryByText('Coming Soon')).not.toBeInTheDocument()
     expect(within(resources[2]).getByText('Coming Soon')).toBeInTheDocument()
