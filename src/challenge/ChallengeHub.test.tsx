@@ -20,6 +20,8 @@ describe('ChallengeHub', () => {
         name: 'Household Bimanual Manipulation Challenge',
       }),
     ).toBeVisible()
+    expect(screen.getByText('Bimanual Robot Learning Workshop')).toBeVisible()
+    expect(screen.getByText('Challenge Track · PrimeBot')).toBeVisible()
     expect(
       screen.getByRole('navigation', { name: 'Challenge navigation' }),
     ).toBeVisible()
@@ -93,6 +95,17 @@ describe('ChallengeHub presentation', () => {
     expect(hubStyles).toContain('.challenge-hub__prize-sponsor')
     expect(hubStyles).toContain('.challenge-hub__hero-title-line')
     expect(hubStyles).toContain('@media (max-width: 760px)')
+  })
+
+  it('gives the hero a distinct workshop and PrimeBot challenge identity', () => {
+    expect(hubStyles).toContain('.challenge-hub__hero-parent')
+    expect(hubStyles).toContain('.challenge-hub__hero-track')
+    expect(hubStyles).toContain(
+      'background: linear-gradient(135deg, #1a0b08 0%, #30130e 48%, #693221 100%)',
+    )
+    expect(hubStyles).toMatch(
+      /\.challenge-hub__hero-title-line\s*\{[^}]*display:\s*block;[^}]*white-space:\s*nowrap;/,
+    )
   })
 
   it('keeps the mobile hero title in two compact phrase lines', () => {

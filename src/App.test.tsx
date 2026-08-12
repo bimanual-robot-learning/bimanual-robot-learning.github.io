@@ -260,7 +260,12 @@ describe('workshop landing page', () => {
         url: '/challenge/',
         external: false,
       },
-      { label: 'Dataset', status: 'coming-soon' },
+      {
+        label: 'View Dataset',
+        status: 'available',
+        url: 'https://huggingface.co/datasets/challenge-2026/challenge_data',
+        external: true,
+      },
       { label: 'Evaluation Portal', status: 'coming-soon' },
     ])
     expect(
@@ -1197,11 +1202,18 @@ describe('workshop landing page', () => {
     expect(resources[0]).not.toHaveAttribute('target')
     expect(resources[0]).not.toHaveAttribute('rel')
     expect(within(resources[0]).getByText('Open')).toBeInTheDocument()
-    for (const resource of resources.slice(1)) {
-      expect(within(resource).getByText('Coming Soon')).toBeInTheDocument()
-      expect(resource.closest('a, button')).toBeNull()
-      expect(resource).not.toHaveAttribute('tabindex')
-    }
+    expect(resources[1]).toHaveAttribute(
+      'href',
+      'https://huggingface.co/datasets/challenge-2026/challenge_data',
+    )
+    expect(resources[1]).toHaveAttribute('target', '_blank')
+    expect(resources[1]).toHaveAttribute('rel', 'noreferrer')
+    expect(resources[1]).toHaveClass('challenge-resource--primary')
+    expect(within(resources[1]).getByText('Open')).toBeInTheDocument()
+    expect(within(resources[1]).queryByText('Coming Soon')).not.toBeInTheDocument()
+    expect(within(resources[2]).getByText('Coming Soon')).toBeInTheDocument()
+    expect(resources[2].closest('a, button')).toBeNull()
+    expect(resources[2]).not.toHaveAttribute('tabindex')
     for (const resource of resources) {
       expect(resource).not.toHaveTextContent(/[→↗]/)
     }

@@ -58,9 +58,11 @@ function ChallengeSection() {
             <p>{challenge.participation.description}</p>
           </header>
           <div className="challenge-resources" aria-label="Challenge resources">
-            {challenge.resources.map((resource, index) => {
+            {challenge.resources.map((resource) => {
               const className =
-                index === 0 ? 'challenge-resource--primary' : undefined
+                resource.status === 'available'
+                  ? 'challenge-resource--primary'
+                  : undefined
 
               return resource.status === 'available' ? (
                 <a
