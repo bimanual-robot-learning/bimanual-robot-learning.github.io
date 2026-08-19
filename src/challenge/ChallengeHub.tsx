@@ -3,6 +3,7 @@ import ChallengeStageDescription from '../components/ChallengeStageDescription'
 import ChallengeVideoGallery from '../components/ChallengeVideoGallery'
 import { challenge, challengeOrganizers, sponsor } from '../data/workshop'
 import { challengeHub } from '../data/challengeHub'
+import './ChallengeLeaderboard.css'
 import ChallengeLeaderboard from './ChallengeLeaderboard'
 
 const externalLinkProps = {
@@ -260,16 +261,19 @@ function ChallengeHub() {
 
         <section
           aria-labelledby="challenge-hub-leaderboard-title"
-          className="challenge-hub__leaderboard-card"
+          className="challenge-hub__leaderboard"
           id="leaderboard"
         >
-          <header>
-            <p className="challenge-hub__eyebrow">Leaderboard</p>
-            <h2 id="challenge-hub-leaderboard-title">
-              Leaderboard
-            </h2>
-            <p>{challengeHub.leaderboard.status}</p>
-            <p>Opening date: {challengeHub.leaderboard.openingDate}</p>
+          <header className="challenge-hub__leaderboard-header">
+            <div>
+              <p className="challenge-hub__leaderboard-status">
+                {challengeHub.leaderboard.status}
+              </p>
+              <h2 id="challenge-hub-leaderboard-title">Leaderboard</h2>
+            </div>
+            <p>
+              Online evaluation begins {challengeHub.leaderboard.openingDate}.
+            </p>
           </header>
           <ChallengeLeaderboard
             entries={challengeHub.leaderboard.entries}
