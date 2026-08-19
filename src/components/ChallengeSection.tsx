@@ -1,5 +1,6 @@
 import { ArrowUpRight } from 'lucide-react'
 import { challenge, sponsor } from '../data/workshop'
+import ChallengeDisclosure from './ChallengeDisclosure'
 import ChallengeStageDescription from './ChallengeStageDescription'
 import ChallengeVideoGallery from './ChallengeVideoGallery'
 
@@ -126,12 +127,12 @@ function ChallengeSection() {
         </section>
 
         <div className="challenge-logistics" data-testid="challenge-logistics">
-          <section
+          <ChallengeDisclosure
             className="challenge-evaluation"
-            aria-labelledby="evaluation-title"
+            eyebrow="How it works"
+            title="Evaluation Format"
+            titleId="evaluation-title"
           >
-            <p className="eyebrow">How it works</p>
-            <h3 id="evaluation-title">Evaluation Format</h3>
             <ol className="challenge-flow">
               {challenge.stages.map((stage, index) => (
                 <li data-testid="challenge-stage" key={stage.step}>
@@ -171,14 +172,14 @@ function ChallengeSection() {
                 </p>
               </li>
             </ol>
-          </section>
+          </ChallengeDisclosure>
 
-          <section
+          <ChallengeDisclosure
             className="challenge-timeline"
-            aria-labelledby="challenge-timeline-title"
+            eyebrow="Important dates"
+            title="Challenge Timeline"
+            titleId="challenge-timeline-title"
           >
-            <p className="eyebrow">Important dates</p>
-            <h3 id="challenge-timeline-title">Challenge Timeline</h3>
             <ol>
               {challenge.timeline.map((milestone, index) => (
                 <li data-testid="challenge-milestone" key={milestone.label}>
@@ -193,7 +194,7 @@ function ChallengeSection() {
                 </li>
               ))}
             </ol>
-          </section>
+          </ChallengeDisclosure>
         </div>
 
       </div>

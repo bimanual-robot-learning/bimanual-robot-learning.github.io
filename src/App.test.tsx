@@ -606,7 +606,9 @@ describe('workshop landing page', () => {
     const stages = within(evaluation).getAllByTestId('challenge-stage')
     expect(stages).toHaveLength(3)
     expect(
-      Array.from(evaluation.querySelectorAll(':scope > .challenge-flow > li')).map(
+      Array.from(
+        evaluation.querySelectorAll(':scope > .challenge-flow > li'),
+      ).map(
         (stage) => within(stage as HTMLElement).getByRole('heading', { level: 4 })
           .textContent,
       ),
@@ -644,6 +646,57 @@ describe('workshop landing page', () => {
     expect(challengeSection).not.toHaveTextContent(
       'Detailed scoring protocols will be announced before online evaluation opens.',
     )
+  })
+
+  it('keeps the homepage evaluation details closed until each disclosure is opened', async () => {
+    const user = userEvent.setup()
+    render(<App />)
+
+    const challengeSection = screen.getByTestId('challenge-section')
+    const logistics = within(challengeSection).getByTestId('challenge-logistics')
+    const disclosures = within(logistics).getAllByTestId('challenge-disclosure')
+
+    expect(disclosures).toHaveLength(2)
+    disclosures.forEach((disclosure) => {
+      expect(disclosure.tagName).toBe('DETAILS')
+      expect(disclosure).not.toHaveAttribute('open')
+    })
+    for (const resource of within(challengeSection).getAllByTestId(
+      'challenge-resource',
+    )) {
+      expect(resource).toBeVisible()
+      disclosures.forEach((disclosure) => {
+        expect(disclosure).not.toContainElement(resource)
+      })
+    }
+
+    await user.click(
+      within(disclosures[0]).getByRole('heading', {
+        name: 'Evaluation Format',
+        level: 3,
+      }),
+    )
+    expect(disclosures[0]).toHaveAttribute('open')
+    expect(disclosures[1]).not.toHaveAttribute('open')
+
+    await user.click(
+      within(disclosures[1]).getByRole('heading', {
+        name: 'Challenge Timeline',
+        level: 3,
+      }),
+    )
+    disclosures.forEach((disclosure) => expect(disclosure).toHaveAttribute('open'))
+
+    const evaluation = within(disclosures[0]).getByRole('region', {
+      name: 'Evaluation Format',
+    })
+    const timeline = within(disclosures[1]).getByRole('region', {
+      name: 'Challenge Timeline',
+    })
+    expect(within(evaluation).getAllByTestId('challenge-stage')).toHaveLength(3)
+    expect(within(evaluation).getAllByTestId('challenge-task')).toHaveLength(4)
+    expect(within(timeline).getAllByTestId('challenge-milestone')).toHaveLength(5)
+    expect(timeline).toHaveTextContent('August 25, 2026 · 11:59 PM AOE')
   })
 
   it('uses the redesigned Challenge visual system', () => {
@@ -694,8 +747,13 @@ describe('workshop landing page', () => {
       extractCssRule(appStyles, '.challenge-ranking-formula').declarations,
       'font-size',
     )).toBe('clamp(1rem, 1.25vw, 1.15rem)')
-    expect(styleFor('.challenge-timeline > ol').display).toBe('grid')
-    expect(styleFor('.challenge-timeline > ol').gridTemplateColumns).toBe('1fr')
+    expect(
+      styleFor('.challenge-timeline .challenge-disclosure__body > ol').display,
+    ).toBe('grid')
+    expect(
+      styleFor('.challenge-timeline .challenge-disclosure__body > ol')
+        .gridTemplateColumns,
+    ).toBe('1fr')
     expectGridColumns('.challenge-organizer-grid', 2)
     expect(styleFor('.challenge-prize-grid').gap).toBe('0px')
     expect(
@@ -886,8 +944,6 @@ describe('workshop landing page', () => {
     expect(compactChallengePanel.selectors).toEqual(
       expect.arrayContaining([
         '.challenge-participation',
-        '.challenge-evaluation',
-        '.challenge-timeline',
         '.challenge-prize-pool',
       ]),
     )
@@ -1074,11 +1130,13 @@ describe('workshop landing page', () => {
       'grid-template-columns': 'repeat(2, minmax(0, 1fr))',
       gap: '16px',
       'margin-bottom': '32px',
+      'align-items': 'start',
     })
     for (const selector of ['.challenge-evaluation', '.challenge-timeline']) {
       expectOwnedCssProperties(appStyles, selector, {
-        padding: 'clamp(24px, 3vw, 30px)',
+        padding: '0',
         margin: '0',
+        overflow: 'clip',
         background: 'rgba(82, 216, 230, 0.08)',
         border: '1px solid rgba(27, 132, 153, 0.2)',
         'border-radius': '7px',
@@ -1119,9 +1177,13 @@ describe('workshop landing page', () => {
         'text-underline-offset': '3px',
       },
     )
-    expectOwnedCssProperties(appStyles, '.challenge-timeline > ol', {
-      'grid-template-columns': '1fr',
-    })
+    expectOwnedCssProperties(
+      appStyles,
+      '.challenge-timeline .challenge-disclosure__body > ol',
+      {
+        'grid-template-columns': '1fr',
+      },
+    )
     expectOwnedCssProperties(appStyles, '.challenge-timeline li', {
       display: 'grid',
       'grid-template-columns': 'minmax(0, 1fr) auto',
@@ -1147,6 +1209,27 @@ describe('workshop landing page', () => {
     }
   })
 
+  it('styles homepage logistics as native disclosure panels', () => {
+    expectOwnedCssProperties(appStyles, '.challenge-disclosure', {
+      padding: '0',
+      margin: '0',
+      overflow: 'clip',
+    })
+    expectOwnedCssProperties(appStyles, '.challenge-disclosure > summary', {
+      display: 'flex',
+      'min-height': '96px',
+      cursor: 'pointer',
+      'list-style': 'none',
+    })
+    expectOwnedCssProperties(appStyles, '.challenge-disclosure[open]', {
+      'background-color': 'rgba(82, 216, 230, 0.12)',
+    })
+    expect(appStyles).toContain('.challenge-disclosure > summary::-webkit-details-marker')
+    expect(indexStyles).toMatch(
+      /@media \(prefers-reduced-motion: reduce\) \{[\s\S]*?\.challenge-disclosure__icon\s*\{[^}]*transition:\s*none;/,
+    )
+  })
+
   it('hides decorative Challenge sequence numerals from assistive technology', () => {
     render(<App />)
 
@@ -1164,9 +1247,13 @@ describe('workshop landing page', () => {
     }
   })
 
-  it('nests the complete real-robot evaluation scope inside Step 02', () => {
+  it('nests the complete real-robot evaluation scope inside Step 02', async () => {
+    const user = userEvent.setup()
     render(<App />)
 
+    await user.click(
+      screen.getByRole('heading', { name: 'Evaluation Format', level: 3 }),
+    )
     const evaluation = screen.getByRole('region', { name: 'Evaluation Format' })
     const realRobotStage = within(evaluation).getAllByTestId('challenge-stage')[1]
     const taskList = within(realRobotStage).getByRole('list', {
@@ -1218,10 +1305,17 @@ describe('workshop landing page', () => {
     expect(prizePool.querySelector('.challenge-prize-pool__grid')).not.toBeInTheDocument()
   })
 
-  it('renders five Challenge milestones and the configured resource states', () => {
+  it('renders five Challenge milestones and the configured resource states', async () => {
+    const user = userEvent.setup()
     render(<App />)
 
     const challengeSection = screen.getByTestId('challenge-section')
+    await user.click(
+      within(challengeSection).getByRole('heading', {
+        name: 'Challenge Timeline',
+        level: 3,
+      }),
+    )
     const milestones = within(challengeSection).getAllByTestId('challenge-milestone')
     const resources = within(challengeSection).getAllByTestId('challenge-resource')
     const participation = within(challengeSection)

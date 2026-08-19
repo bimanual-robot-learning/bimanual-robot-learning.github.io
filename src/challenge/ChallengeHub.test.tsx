@@ -134,6 +134,26 @@ describe('ChallengeHub', () => {
       'August 25, 2026 · 11:59 PM AOE',
     )
   })
+
+  it('keeps Challenge Hub logistics expanded as ordinary regions', () => {
+    render(<ChallengeHub />)
+
+    const logistics = screen.getByRole('region', {
+      name: 'Evaluation format and challenge timeline',
+    })
+    expect(logistics.tagName).toBe('SECTION')
+    expect(logistics.querySelector('details')).toBeNull()
+    expect(
+      within(logistics)
+        .getByRole('heading', { name: 'Evaluation Format', level: 2 })
+        .closest('section'),
+    ).toBeVisible()
+    expect(
+      within(logistics)
+        .getByRole('heading', { name: 'Challenge Timeline', level: 2 })
+        .closest('section'),
+    ).toBeVisible()
+  })
 })
 
 describe('ChallengeHub presentation', () => {
