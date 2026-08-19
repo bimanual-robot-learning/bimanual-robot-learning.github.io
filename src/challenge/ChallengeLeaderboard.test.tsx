@@ -1,6 +1,7 @@
 import { render, screen } from '@testing-library/react'
 import { describe, expect, it } from 'vitest'
 import type { ChallengeLeaderboardEntry } from '../data/challengeHub'
+import leaderboardStyles from './ChallengeLeaderboard.css?raw'
 import ChallengeLeaderboard from './ChallengeLeaderboard'
 
 describe('ChallengeLeaderboard', () => {
@@ -19,7 +20,11 @@ describe('ChallengeLeaderboard', () => {
       'Final Score',
       'Status',
     ])
-    expect(screen.getByText('No results yet')).toBeVisible()
+    const emptyState = screen.getByText('No results yet')
+    expect(emptyState).toBeVisible()
+    expect(emptyState.parentElement).toHaveClass(
+      'challenge-leaderboard__empty-content',
+    )
     expect(
       screen.getByText(
         (_, element) =>
@@ -28,6 +33,15 @@ describe('ChallengeLeaderboard', () => {
       ),
     ).toBeVisible()
     expect(screen.queryAllByTestId('challenge-leaderboard-entry')).toHaveLength(0)
+  })
+
+  it('pins empty-state content inside the initial viewport', () => {
+    expect(leaderboardStyles).toMatch(
+      /\.challenge-leaderboard__empty td\s*\{[^}]*text-align:\s*left;/,
+    )
+    expect(leaderboardStyles).toMatch(
+      /\.challenge-leaderboard__empty-content\s*\{[^}]*position:\s*sticky;[^}]*left:\s*18px;[^}]*width:\s*min\(520px,\s*calc\(100vw - 112px\)\);[^}]*max-width:\s*calc\(100% - 36px\);[^}]*text-align:\s*left;/,
+    )
   })
 
   it('renders verified leaderboard entries and unavailable scores', () => {

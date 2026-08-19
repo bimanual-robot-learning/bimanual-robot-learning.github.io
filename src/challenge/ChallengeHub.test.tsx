@@ -81,7 +81,7 @@ describe('ChallengeHub', () => {
     expect(within(leaderboard).getByText('No results yet')).toBeVisible()
     expect(within(leaderboard).queryByText('Coming soon')).not.toBeInTheDocument()
     expect(
-      leaderboard.querySelector('.challenge-hub-leaderboard-stage'),
+      within(leaderboard).queryByTestId('challenge-hub-leaderboard-stage'),
     ).toBeNull()
     expect(within(leaderboard).queryByText('Team A')).not.toBeInTheDocument()
 

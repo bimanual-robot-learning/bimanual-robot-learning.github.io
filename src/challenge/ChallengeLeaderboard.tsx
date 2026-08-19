@@ -39,11 +39,13 @@ function ChallengeLeaderboard({
           {entries.length === 0 ? (
             <tr className="challenge-leaderboard__empty">
               <td colSpan={6}>
-                <strong>No results yet</strong>
-                <span>
-                  Online evaluation begins {openingDate}. Rankings will be
-                  published after results are verified.
-                </span>
+                <div className="challenge-leaderboard__empty-content">
+                  <strong>No results yet</strong>
+                  <span>
+                    Online evaluation begins {openingDate}. Rankings will be
+                    published after results are verified.
+                  </span>
+                </div>
               </td>
             </tr>
           ) : (
