@@ -147,6 +147,11 @@ describe('ChallengeHub presentation', () => {
     expect(hubStyles).toContain('@media (max-width: 760px)')
   })
 
+  it('limits stage-number styles to direct stage children', () => {
+    expect(hubStyles).toContain('.challenge-hub__stages > li > span')
+    expect(hubStyles).not.toContain('.challenge-hub__stages span')
+  })
+
   it('gives the hero a distinct workshop and PrimeBot challenge identity', () => {
     expect(hubStyles).toContain('.challenge-hub__hero-parent')
     expect(hubStyles).toContain('.challenge-hub__hero-track')

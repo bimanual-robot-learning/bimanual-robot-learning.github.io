@@ -457,7 +457,7 @@
 }
 
 .challenge-hub__participation-grid span,
-.challenge-hub__stages span {
+.challenge-hub__stages > li > span {
   display: block;
   margin-bottom: 34px;
   color: var(--cyan-deep);
@@ -519,7 +519,7 @@
   border-top: 1px solid var(--line-light);
 }
 
-.challenge-hub__stages span {
+.challenge-hub__stages > li > span {
   margin: 4px 0 0;
   grid-row: span 2;
 }
