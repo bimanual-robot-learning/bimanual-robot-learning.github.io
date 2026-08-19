@@ -3,7 +3,6 @@ import ChallengeStageDescription from '../components/ChallengeStageDescription'
 import ChallengeVideoGallery from '../components/ChallengeVideoGallery'
 import { challenge, challengeOrganizers, sponsor } from '../data/workshop'
 import { challengeHub } from '../data/challengeHub'
-import './ChallengeLeaderboard.css'
 import ChallengeLeaderboard from './ChallengeLeaderboard'
 
 const externalLinkProps = {
@@ -271,7 +270,7 @@ function ChallengeHub() {
               </p>
               <h2 id="challenge-hub-leaderboard-title">Leaderboard</h2>
             </div>
-            <p>
+            <p className="challenge-leaderboard__opening-date">
               Online evaluation begins {challengeHub.leaderboard.openingDate}.
             </p>
           </header>

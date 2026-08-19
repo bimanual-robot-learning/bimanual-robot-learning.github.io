@@ -72,13 +72,18 @@ describe('ChallengeHub', () => {
         name: 'Leaderboard',
       }),
     ).toBeVisible()
-    expect(
-      within(leaderboard).getByText(
-        'Online evaluation begins August 25, 2026.',
-      ),
-    ).toBeVisible()
+    const openingDate = within(leaderboard).getByText(
+      'Online evaluation begins August 25, 2026.',
+    )
+    expect(openingDate).toBeVisible()
+    expect(openingDate).toHaveClass('challenge-leaderboard__opening-date')
     expect(within(leaderboard).getAllByRole('columnheader')).toHaveLength(6)
-    expect(within(leaderboard).getByText('No results yet')).toBeVisible()
+    expect(
+      within(leaderboard).getByText('Leaderboard opens August 25, 2026'),
+    ).toBeVisible()
+    expect(
+      within(leaderboard).queryByText('No results yet'),
+    ).not.toBeInTheDocument()
     expect(within(leaderboard).queryByText('Coming soon')).not.toBeInTheDocument()
     expect(
       within(leaderboard).queryByTestId('challenge-hub-leaderboard-stage'),
