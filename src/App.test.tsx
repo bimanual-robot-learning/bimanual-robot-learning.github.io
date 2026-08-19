@@ -1108,6 +1108,17 @@ describe('workshop landing page', () => {
     expectOwnedCssProperties(appStyles, '.challenge-flow > li > p', {
       'grid-column': '2',
     })
+    expectOwnedCssProperties(
+      appStyles,
+      '.challenge-evaluation .challenge-stage-description a',
+      {
+        color: 'var(--cyan-deep)',
+        'font-weight': '700',
+        'text-decoration': 'underline',
+        'text-decoration-thickness': '1px',
+        'text-underline-offset': '3px',
+      },
+    )
     expectOwnedCssProperties(appStyles, '.challenge-timeline > ol', {
       'grid-template-columns': '1fr',
     })
