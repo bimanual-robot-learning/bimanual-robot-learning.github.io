@@ -71,11 +71,61 @@ describe('ChallengeHub', () => {
       3,
     )
 
+    const leaderboard = screen
+      .getByRole('heading', {
+        name: 'Leaderboard opens with online evaluation.',
+      })
+      .closest('section')
+    expect(leaderboard).not.toBeNull()
+    expect(within(leaderboard as HTMLElement).getByText('Coming soon')).toBeVisible()
+
     const gallery = screen.getByRole('region', {
       name: 'See the challenge in action',
     })
     expect(within(gallery).getAllByRole('button')).toHaveLength(
       challengeVideos.length,
+    )
+  })
+
+  it('renders linked evaluation submission instructions from structured stages', () => {
+    render(<ChallengeHub />)
+
+    const evaluation = screen.getByRole('region', {
+      name: 'Evaluation format and challenge timeline',
+    })
+    const stages = within(evaluation).getAllByTestId('challenge-hub-stage')
+
+    expect(stages).toHaveLength(3)
+    for (const [index, expectedStage] of challenge.stages.entries()) {
+      const stage = stages[index]
+      const description = stage.querySelector('.challenge-stage-description')
+      const linkSegment = expectedStage.descriptionSegments.find(
+        ({ url }) => url,
+      )
+
+      expect(description).toHaveTextContent(
+        expectedStage.descriptionSegments.map(({ text }) => text).join(''),
+      )
+      expect(linkSegment).toBeDefined()
+      const inlineLink = within(description as HTMLElement).getByRole('link', {
+        name: linkSegment?.text,
+      })
+      expect(inlineLink).toHaveAttribute('href', linkSegment?.url)
+      expect(inlineLink).toHaveAttribute('target', '_blank')
+      expect(inlineLink).toHaveAttribute('rel', 'noreferrer')
+    }
+
+    const timeline = within(evaluation).getByRole('heading', {
+      name: 'Challenge Timeline',
+      level: 2,
+    }).parentElement
+    expect(timeline).not.toBeNull()
+    const onlineEvaluationMilestone = within(timeline as HTMLElement).getByRole(
+      'heading',
+      { name: 'Online Evaluation Begins', level: 3 },
+    ).parentElement
+    expect(onlineEvaluationMilestone).toHaveTextContent(
+      'August 25, 2026 · 11:59 PM AOE',
     )
   })
 })

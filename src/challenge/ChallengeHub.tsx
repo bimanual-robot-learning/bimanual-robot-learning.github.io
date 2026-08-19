@@ -1,4 +1,5 @@
 import { ArrowDown, ArrowLeft, ArrowUpRight } from 'lucide-react'
+import ChallengeStageDescription from '../components/ChallengeStageDescription'
 import ChallengeVideoGallery from '../components/ChallengeVideoGallery'
 import { challenge, challengeOrganizers, sponsor } from '../data/workshop'
 import { challengeHub } from '../data/challengeHub'
@@ -189,7 +190,9 @@ function ChallengeHub() {
                 <li data-testid="challenge-hub-stage" key={stage.step}>
                   <span aria-hidden="true">{stage.step}</span>
                   <h3>{stage.title}</h3>
-                  <p>{stage.description}</p>
+                  <ChallengeStageDescription
+                    segments={stage.descriptionSegments}
+                  />
                 </li>
               ))}
               <li data-testid="challenge-hub-stage">

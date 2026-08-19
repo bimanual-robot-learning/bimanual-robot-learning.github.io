@@ -483,6 +483,14 @@
   line-height: 1.6;
 }
 
+.challenge-hub__stages .challenge-stage-description a {
+  color: var(--cyan-deep);
+  font-weight: 700;
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+}
+
 .challenge-hub__logistics {
   align-items: start;
 }

@@ -1,5 +1,6 @@
 import { ArrowUpRight } from 'lucide-react'
 import { challenge, sponsor } from '../data/workshop'
+import ChallengeStageDescription from './ChallengeStageDescription'
 import ChallengeVideoGallery from './ChallengeVideoGallery'
 
 function ChallengeSection() {
@@ -136,7 +137,9 @@ function ChallengeSection() {
                 <li data-testid="challenge-stage" key={stage.step}>
                   <span aria-hidden="true">{stage.step}</span>
                   <h4>{stage.title}</h4>
-                  <p>{stage.description}</p>
+                  <ChallengeStageDescription
+                    segments={stage.descriptionSegments}
+                  />
                   {index === 1 && (
                     <div className="challenge-evaluation-scope">
                       <h5 id="real-robot-evaluation-scope">

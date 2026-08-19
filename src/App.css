@@ -1555,6 +1555,14 @@
   grid-column: 2;
 }
 
+.challenge-evaluation .challenge-stage-description a {
+  color: var(--cyan);
+  font-weight: 700;
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+}
+
 .challenge-evaluation-scope {
   margin-top: 18px;
   grid-column: 2;

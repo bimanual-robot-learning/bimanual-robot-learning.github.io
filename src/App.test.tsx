@@ -177,13 +177,34 @@ describe('workshop landing page', () => {
       {
         step: '01',
         title: 'Online Evaluation',
-        description: 'Submit trained models through the online evaluation portal.',
+        descriptionSegments: [
+          {
+            text: 'Submit action predictions for the validation set through the ',
+          },
+          {
+            text: 'Google Form',
+            url: 'https://docs.google.com/forms/d/e/1FAIpQLSdrc5k91kazH9BLEjY17xCQ1KqAPVjmwPp5y21TT0GXQgpyKw/viewform?usp=publish-editor',
+          },
+          {
+            text: '. Based on the online evaluation results, up to five top-performing teams will advance to the real-robot evaluation.',
+          },
+        ],
       },
       {
         step: '02',
         title: 'Real-Robot Evaluation',
-        description:
-          'Up to five top-performing entries advance to household task evaluation.',
+        descriptionSegments: [
+          {
+            text: 'Shortlisted teams will submit a Docker image containing their trained model. The image must be built from the base Docker image available in the ',
+          },
+          {
+            text: 'Challenge Dataset repository',
+            url: 'https://huggingface.co/datasets/challenge-2026/challenge_data',
+          },
+          {
+            text: '. PrimeBot will deploy and evaluate the submitted models on real robots across the designated household manipulation tasks.',
+          },
+        ],
       },
     ])
     expect(challenge.finalRanking).toEqual({
@@ -239,7 +260,7 @@ describe('workshop landing page', () => {
         time: '11:59 PM AOE',
       },
       {
-        label: 'Online Evaluation Opens',
+        label: 'Online Evaluation Begins',
         date: 'August 25, 2026',
         time: '11:59 PM AOE',
       },
@@ -266,7 +287,12 @@ describe('workshop landing page', () => {
         url: 'https://huggingface.co/datasets/challenge-2026/challenge_data',
         external: true,
       },
-      { label: 'Evaluation Portal', status: 'coming-soon' },
+      {
+        label: 'Submit Predictions',
+        status: 'available',
+        url: 'https://docs.google.com/forms/d/e/1FAIpQLSdrc5k91kazH9BLEjY17xCQ1KqAPVjmwPp5y21TT0GXQgpyKw/viewform?usp=publish-editor',
+        external: true,
+      },
     ])
     expect(
       challengeOrganizers.map(({ name, institution }) => ({ name, institution })),
@@ -592,7 +618,23 @@ describe('workshop landing page', () => {
           level: 4,
         }),
       ).toBeInTheDocument()
-      expect(within(stages[index]).getByText(expectedStage.description)).toBeVisible()
+      const description = stages[index].querySelector(
+        '.challenge-stage-description',
+      )
+      const linkSegment = expectedStage.descriptionSegments.find(
+        ({ url }) => url,
+      )
+
+      expect(description).toHaveTextContent(
+        expectedStage.descriptionSegments.map(({ text }) => text).join(''),
+      )
+      expect(linkSegment).toBeDefined()
+      const inlineLink = within(description as HTMLElement).getByRole('link', {
+        name: linkSegment?.text,
+      })
+      expect(inlineLink).toHaveAttribute('href', linkSegment?.url)
+      expect(inlineLink).toHaveAttribute('target', '_blank')
+      expect(inlineLink).toHaveAttribute('rel', 'noreferrer')
     }
 
     const finalRanking = within(stages[2]).getByTestId(
@@ -1193,6 +1235,16 @@ describe('workshop landing page', () => {
       }
     }
     expect(challengeSection.textContent?.match(/11:59 PM AOE/g)).toHaveLength(3)
+    const onlineEvaluationMilestone = milestones[2]
+    expect(
+      within(onlineEvaluationMilestone).getByRole('heading', {
+        name: 'Online Evaluation Begins',
+        level: 4,
+      }),
+    ).toBeInTheDocument()
+    expect(onlineEvaluationMilestone).toHaveTextContent(
+      'August 25, 2026 · 11:59 PM AOE',
+    )
     expect(resources).toHaveLength(3)
     expect(participation).toContainElement(resources[0])
     expect(participation).toContainElement(resources[1])
@@ -1211,50 +1263,21 @@ describe('workshop landing page', () => {
     expect(resources[1]).toHaveClass('challenge-resource--primary')
     expect(within(resources[1]).getByText('Open')).toBeInTheDocument()
     expect(within(resources[1]).queryByText('Coming Soon')).not.toBeInTheDocument()
-    expect(within(resources[2]).getByText('Coming Soon')).toBeInTheDocument()
-    expect(resources[2].closest('a, button')).toBeNull()
-    expect(resources[2]).not.toHaveAttribute('tabindex')
+    expect(within(resources[2]).getByText('Submit Predictions')).toBeInTheDocument()
+    expect(resources[2]).toHaveAttribute(
+      'href',
+      'https://docs.google.com/forms/d/e/1FAIpQLSdrc5k91kazH9BLEjY17xCQ1KqAPVjmwPp5y21TT0GXQgpyKw/viewform?usp=publish-editor',
+    )
+    expect(resources[2]).toHaveAttribute('target', '_blank')
+    expect(resources[2]).toHaveAttribute('rel', 'noreferrer')
+    expect(resources[2]).toHaveClass('challenge-resource--primary')
+    expect(within(resources[2]).getByText('Open')).toBeInTheDocument()
+    expect(within(resources[2]).queryByText('Coming Soon')).not.toBeInTheDocument()
+    expect(
+      within(challengeSection).queryByText('Evaluation Portal'),
+    ).not.toBeInTheDocument()
     for (const resource of resources) {
       expect(resource).not.toHaveTextContent(/[→↗]/)
-    }
-  })
-
-  it('turns an available Challenge resource into a safe external call to action', () => {
-    const originalResources = [...challenge.resources]
-    challenge.resources.splice(
-      1,
-      1,
-      {
-        label: 'Dataset',
-        status: 'available',
-        url: 'https://huggingface.co/datasets/example/household-challenge',
-        external: true,
-      },
-    )
-
-    try {
-      render(<App />)
-
-      const challengeSection = screen.getByTestId('challenge-section')
-      const resources = within(challengeSection).getAllByTestId('challenge-resource')
-      const datasetLink = within(challengeSection).getByRole('link', { name: /Dataset/i })
-
-      expect(resources).toHaveLength(3)
-      expect(
-        within(challengeSection).getByRole('link', {
-          name: /Explore Challenge Details/i,
-        }),
-      ).toBeInTheDocument()
-      expect(within(challengeSection).getByText('Evaluation Portal')).toBeInTheDocument()
-      expect(datasetLink).toHaveAttribute(
-        'href',
-        'https://huggingface.co/datasets/example/household-challenge',
-      )
-      expect(datasetLink).toHaveAttribute('target', '_blank')
-      expect(datasetLink).toHaveAttribute('rel', 'noreferrer')
-      expect(within(datasetLink).queryByText('Coming Soon')).not.toBeInTheDocument()
-    } finally {
-      challenge.resources.splice(0, challenge.resources.length, ...originalResources)
     }
   })
 

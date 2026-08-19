@@ -45,10 +45,15 @@ export interface ChallengeParticipation {
   description: string
 }
 
+export interface ChallengeDescriptionSegment {
+  text: string
+  url?: `https://${string}`
+}
+
 export interface ChallengeStage {
   step: string
   title: string
-  description: string
+  descriptionSegments: ChallengeDescriptionSegment[]
 }
 
 export interface ChallengeTask {
@@ -173,6 +178,12 @@ export const workshopMeta: WorkshopMeta = {
   repositoryUrl: 'https://github.com/bimanual-robot-learning/bimanual-robot-learning.github.io',
 }
 
+export const googleFormUrl =
+  'https://docs.google.com/forms/d/e/1FAIpQLSdrc5k91kazH9BLEjY17xCQ1KqAPVjmwPp5y21TT0GXQgpyKw/viewform?usp=publish-editor' as const
+
+export const challengeDatasetUrl =
+  'https://huggingface.co/datasets/challenge-2026/challenge_data' as const
+
 export const challenge: ChallengeInfo = {
   title: {
     lineOne: 'Real-World Household',
@@ -209,13 +220,31 @@ export const challenge: ChallengeInfo = {
     {
       step: '01',
       title: 'Online Evaluation',
-      description: 'Submit trained models through the online evaluation portal.',
+      descriptionSegments: [
+        {
+          text: 'Submit action predictions for the validation set through the ',
+        },
+        { text: 'Google Form', url: googleFormUrl },
+        {
+          text: '. Based on the online evaluation results, up to five top-performing teams will advance to the real-robot evaluation.',
+        },
+      ],
     },
     {
       step: '02',
       title: 'Real-Robot Evaluation',
-      description:
-        'Up to five top-performing entries advance to household task evaluation.',
+      descriptionSegments: [
+        {
+          text: 'Shortlisted teams will submit a Docker image containing their trained model. The image must be built from the base Docker image available in the ',
+        },
+        {
+          text: 'Challenge Dataset repository',
+          url: challengeDatasetUrl,
+        },
+        {
+          text: '. PrimeBot will deploy and evaluate the submitted models on real robots across the designated household manipulation tasks.',
+        },
+      ],
     },
   ],
   tasks: [
@@ -266,7 +295,7 @@ export const challenge: ChallengeInfo = {
       time: '11:59 PM AOE',
     },
     {
-      label: 'Online Evaluation Opens',
+      label: 'Online Evaluation Begins',
       date: 'August 25, 2026',
       time: '11:59 PM AOE',
     },
@@ -289,10 +318,15 @@ export const challenge: ChallengeInfo = {
     {
       label: 'View Dataset',
       status: 'available',
-      url: 'https://huggingface.co/datasets/challenge-2026/challenge_data',
+      url: challengeDatasetUrl,
       external: true,
     },
-    { label: 'Evaluation Portal', status: 'coming-soon' },
+    {
+      label: 'Submit Predictions',
+      status: 'available',
+      url: googleFormUrl,
+      external: true,
+    },
   ],
 }
 

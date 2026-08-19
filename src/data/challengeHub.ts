@@ -1,3 +1,5 @@
+import { challengeDatasetUrl } from './workshop'
+
 export interface ChallengeHubNavigationItem {
   label: string
   href: '#overview' | '#tasks' | '#evaluation' | '#prizes' | '#updates'
@@ -54,7 +56,7 @@ export const challengeHub = {
       'LeRobot V2.1 format',
       'Sample data available',
     ],
-    url: 'https://huggingface.co/datasets/challenge-2026/challenge_data',
+    url: challengeDatasetUrl,
     action: 'Explore on Hugging Face',
     note:
       'Complete dataset documentation, field definitions, sample files, and loading examples are maintained on Hugging Face.',
