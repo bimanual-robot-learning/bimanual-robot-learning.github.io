@@ -2,7 +2,7 @@ import { challengeDatasetUrl } from './workshop'
 
 export interface ChallengeHubNavigationItem {
   label: string
-  href: '#overview' | '#tasks' | '#evaluation' | '#prizes' | '#updates'
+  href: '#overview' | '#tasks' | '#evaluation' | '#prizes' | '#leaderboard'
 }
 
 export interface ChallengeHubParticipationStep {
@@ -11,13 +11,24 @@ export interface ChallengeHubParticipationStep {
   description: string
 }
 
+export type ChallengeLeaderboardStatus =
+  | 'Online Evaluation'
+  | 'Finalist'
+  | 'Final Result'
+
+export interface ChallengeLeaderboardEntry {
+  rank: number
+  team: string
+  onlineScore: number
+  realRobotScore: number | null
+  finalScore: number | null
+  status: ChallengeLeaderboardStatus
+}
+
 export interface ChallengeHubLeaderboard {
-  eyebrow: 'Leaderboard'
-  status: 'Coming soon'
-  title: 'Leaderboard opens with online evaluation.'
-  description: 'Scores and final rankings will appear here after the evaluation portal opens.'
+  status: 'Results pending'
   openingDate: 'August 25, 2026'
-  stages: readonly ['Online score', 'Real-robot score', 'Final ranking']
+  entries: readonly ChallengeLeaderboardEntry[]
 }
 
 export const challengeHub = {
@@ -27,7 +38,7 @@ export const challengeHub = {
     { label: 'Tasks', href: '#tasks' },
     { label: 'Evaluation', href: '#evaluation' },
     { label: 'Prizes', href: '#prizes' },
-    { label: 'Leaderboard', href: '#updates' },
+    { label: 'Leaderboard', href: '#leaderboard' },
   ] satisfies ChallengeHubNavigationItem[],
   hero: {
     titleLines: ['Household Bimanual', 'Manipulation'],
@@ -82,12 +93,8 @@ export const challengeHub = {
   taskScope:
     'Real-robot evaluation covers up to four household tasks, including washer manipulation and clothing folding.',
   leaderboard: {
-    eyebrow: 'Leaderboard',
-    status: 'Coming soon',
-    title: 'Leaderboard opens with online evaluation.',
-    description:
-      'Scores and final rankings will appear here after the evaluation portal opens.',
+    status: 'Results pending',
     openingDate: 'August 25, 2026',
-    stages: ['Online score', 'Real-robot score', 'Final ranking'],
+    entries: [] satisfies ChallengeLeaderboardEntry[],
   } satisfies ChallengeHubLeaderboard,
 } as const

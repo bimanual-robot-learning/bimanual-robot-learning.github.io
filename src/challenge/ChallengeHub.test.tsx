@@ -49,6 +49,10 @@ describe('ChallengeHub', () => {
     expect(
       screen.getByRole('navigation', { name: 'Challenge navigation' }),
     ).toHaveTextContent('Leaderboard')
+    expect(screen.getByRole('link', { name: 'Leaderboard' })).toHaveAttribute(
+      'href',
+      '#leaderboard',
+    )
     expect(screen.queryByText('Updates', { exact: true })).not.toBeInTheDocument()
     expect(screen.getAllByTestId('challenge-participation-step')).toHaveLength(3)
     expect(screen.getAllByTestId('challenge-hub-stage')).toHaveLength(3)
@@ -62,22 +66,24 @@ describe('ChallengeHub', () => {
     )
     expect(
       screen.getByRole('heading', {
-        name: 'Leaderboard opens with online evaluation.',
+        name: 'Leaderboard',
       }),
     ).toBeVisible()
-    expect(screen.getByText('Coming soon')).toBeVisible()
+    expect(screen.getByText('Results pending')).toBeVisible()
     expect(screen.getByText('August 25, 2026')).toBeVisible()
-    expect(screen.getAllByTestId('challenge-hub-leaderboard-stage')).toHaveLength(
-      3,
-    )
+    expect(screen.getByText('No results yet')).toBeVisible()
+    expect(screen.queryByText('Coming soon')).not.toBeInTheDocument()
+    expect(screen.queryAllByTestId('challenge-hub-leaderboard-stage')).toHaveLength(0)
 
     const leaderboard = screen
       .getByRole('heading', {
-        name: 'Leaderboard opens with online evaluation.',
+        name: 'Leaderboard',
       })
       .closest('section')
     expect(leaderboard).not.toBeNull()
-    expect(within(leaderboard as HTMLElement).getByText('Coming soon')).toBeVisible()
+    expect(
+      within(leaderboard as HTMLElement).getByText('Results pending'),
+    ).toBeVisible()
 
     const gallery = screen.getByRole('region', {
       name: 'See the challenge in action',
