@@ -20,7 +20,9 @@ describe('ChallengeLeaderboard', () => {
       'Final Score',
       'Status',
     ])
-    const emptyState = screen.getByText('No results yet')
+    const emptyState = screen.getByText(
+      'Leaderboard opens August 25, 2026',
+    )
     expect(emptyState).toBeVisible()
     expect(emptyState.parentElement).toHaveClass(
       'challenge-leaderboard__empty-content',
@@ -29,9 +31,10 @@ describe('ChallengeLeaderboard', () => {
       screen.getByText(
         (_, element) =>
           element?.textContent ===
-          'Online evaluation begins August 25, 2026. Rankings will be published after results are verified.',
+          'Verified online evaluation results will be published here as submissions are evaluated.',
       ),
     ).toBeVisible()
+    expect(screen.queryByText('No results yet')).not.toBeInTheDocument()
     expect(screen.queryAllByTestId('challenge-leaderboard-entry')).toHaveLength(0)
   })
 
@@ -41,6 +44,12 @@ describe('ChallengeLeaderboard', () => {
     )
     expect(leaderboardStyles).toMatch(
       /\.challenge-leaderboard__empty-content\s*\{[^}]*position:\s*sticky;[^}]*left:\s*18px;[^}]*width:\s*min\(520px,\s*calc\(100vw - 112px\)\);[^}]*max-width:\s*calc\(100% - 36px\);[^}]*text-align:\s*left;/,
+    )
+  })
+
+  it('keeps the opening date intact on desktop without forcing mobile overflow', () => {
+    expect(leaderboardStyles).toMatch(
+      /@media \(min-width: 761px\) \{[\s\S]*?\.challenge-leaderboard__opening-date\s*\{[^}]*white-space:\s*nowrap;/,
     )
   })
 

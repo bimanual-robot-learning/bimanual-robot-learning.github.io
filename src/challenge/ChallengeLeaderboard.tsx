@@ -1,4 +1,5 @@
 import type { ChallengeLeaderboardEntry } from '../data/challengeHub'
+import './ChallengeLeaderboard.css'
 
 interface ChallengeLeaderboardProps {
   entries: readonly ChallengeLeaderboardEntry[]
@@ -40,10 +41,10 @@ function ChallengeLeaderboard({
             <tr className="challenge-leaderboard__empty">
               <td colSpan={6}>
                 <div className="challenge-leaderboard__empty-content">
-                  <strong>No results yet</strong>
+                  <strong>Leaderboard opens {openingDate}</strong>
                   <span>
-                    Online evaluation begins {openingDate}. Rankings will be
-                    published after results are verified.
+                    Verified online evaluation results will be published here
+                    as submissions are evaluated.
                   </span>
                 </div>
               </td>
