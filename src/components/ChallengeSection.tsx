@@ -1,4 +1,6 @@
 import { ArrowUpRight } from 'lucide-react'
+import ChallengeLeaderboard from '../challenge/ChallengeLeaderboard'
+import { challengeHub } from '../data/challengeHub'
 import { challenge, sponsor } from '../data/workshop'
 import ChallengeDisclosure from './ChallengeDisclosure'
 import ChallengeStageDescription from './ChallengeStageDescription'
@@ -124,6 +126,28 @@ function ChallengeSection() {
               </article>
             ))}
           </div>
+        </section>
+
+        <section
+          aria-labelledby="challenge-home-leaderboard-title"
+          className="challenge-home-leaderboard"
+          data-testid="challenge-home-leaderboard"
+        >
+          <header className="challenge-home-leaderboard__header">
+            <div>
+              <p className="eyebrow">Verified results</p>
+              <h3 id="challenge-home-leaderboard-title">
+                Challenge Leaderboard
+              </h3>
+            </div>
+            <p className="challenge-leaderboard__opening-date">
+              Online evaluation begins {challengeHub.leaderboard.openingDate}.
+            </p>
+          </header>
+          <ChallengeLeaderboard
+            entries={challengeHub.leaderboard.entries}
+            openingDate={challengeHub.leaderboard.openingDate}
+          />
         </section>
 
         <div className="challenge-logistics" data-testid="challenge-logistics">

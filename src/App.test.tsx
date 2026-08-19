@@ -571,6 +571,9 @@ describe('workshop landing page', () => {
       'challenge-video-gallery',
     )
     const prizePool = within(challengeSection).getByTestId('challenge-prize-pool')
+    const homepageLeaderboard = within(challengeSection).getByRole('region', {
+      name: 'Challenge Leaderboard',
+    })
     const logistics = within(challengeSection).getByTestId('challenge-logistics')
 
     expect(participation).toHaveClass('challenge-participation')
@@ -589,9 +592,28 @@ describe('workshop landing page', () => {
     expect(gallery.compareDocumentPosition(prizePool)).toBe(
       Node.DOCUMENT_POSITION_FOLLOWING,
     )
-    expect(prizePool.compareDocumentPosition(logistics)).toBe(
+    expect(prizePool.compareDocumentPosition(homepageLeaderboard)).toBe(
       Node.DOCUMENT_POSITION_FOLLOWING,
     )
+    expect(homepageLeaderboard.compareDocumentPosition(logistics)).toBe(
+      Node.DOCUMENT_POSITION_FOLLOWING,
+    )
+    expect(
+      within(homepageLeaderboard).getAllByRole('columnheader'),
+    ).toHaveLength(6)
+    expect(
+      within(homepageLeaderboard).getByText(
+        'Leaderboard opens August 25, 2026',
+      ),
+    ).toBeVisible()
+    expect(
+      within(homepageLeaderboard).getByText(
+        'Verified online evaluation results will be published here as submissions are evaluated.',
+      ),
+    ).toBeVisible()
+    expect(
+      within(homepageLeaderboard).queryByText('Team A'),
+    ).not.toBeInTheDocument()
     expect(logistics).toHaveClass('challenge-logistics')
 
     const logisticsHeadings = within(logistics).getAllByRole('heading', { level: 3 })
@@ -1237,6 +1259,11 @@ describe('workshop landing page', () => {
     for (const task of screen.getAllByTestId('challenge-task')) {
       expect(task.matches('.challenge-flow > li')).toBe(false)
     }
+  })
+
+  it('owns a homepage-aligned leaderboard surface', () => {
+    expect(appStyles).toContain('.challenge-home-leaderboard')
+    expect(appStyles).toContain('.challenge-home-leaderboard__header')
   })
 
   it('styles homepage logistics as native disclosure panels', () => {

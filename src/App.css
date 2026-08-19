@@ -1442,6 +1442,42 @@
   grid-row: 1 / span 2;
 }
 
+.challenge-home-leaderboard {
+  padding: clamp(28px, 4vw, 44px);
+  margin-bottom: 32px;
+  overflow: hidden;
+  color: var(--paper);
+  background: var(--ink-950);
+  border: 1px solid rgba(27, 132, 153, 0.28);
+  border-radius: 7px;
+}
+
+.challenge-home-leaderboard__header {
+  display: flex;
+  margin-bottom: 24px;
+  align-items: end;
+  justify-content: space-between;
+  gap: 24px;
+}
+
+.challenge-home-leaderboard__header .eyebrow {
+  margin: 0 0 8px;
+  color: var(--cyan);
+}
+
+.challenge-home-leaderboard__header h3 {
+  margin: 0;
+  color: var(--paper);
+  font: 600 clamp(1.8rem, 3.2vw, 2.7rem)/1 var(--font-display);
+  letter-spacing: -0.05em;
+}
+
+.challenge-home-leaderboard__header > p {
+  margin: 0;
+  color: var(--slate-light-readable);
+  font-size: 0.88rem;
+}
+
 .challenge-logistics {
   display: grid;
   margin-bottom: 32px;
@@ -2343,10 +2379,20 @@
     gap: 6px;
   }
 
-  .challenge-participation__header,
-  .challenge-logistics {
-    grid-template-columns: 1fr;
-  }
+   .challenge-participation__header,
+   .challenge-logistics {
+     grid-template-columns: 1fr;
+   }
+
+   .challenge-home-leaderboard {
+     padding: 28px 18px;
+   }
+
+   .challenge-home-leaderboard__header {
+     align-items: start;
+     flex-direction: column;
+     gap: 12px;
+   }
 
   .challenge-participation__header {
     align-items: start;
