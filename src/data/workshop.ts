@@ -23,9 +23,97 @@ export interface ScheduleEntry {
 
 export interface Person {
   name: string
-  institution: string
+  institution?: string
   image: string
   imageAlt: string
+}
+
+export interface ChallengeTitle {
+  lineOne: string
+  lineTwo: string
+  accent: 'Challenge'
+}
+
+export interface ChallengeIntroductionSegment {
+  text: string
+  emphasis: boolean
+}
+
+export interface ChallengeParticipation {
+  eyebrow: string
+  title: string
+  description: string
+}
+
+export interface ChallengeStage {
+  step: string
+  title: string
+  description: string
+}
+
+export interface ChallengeTask {
+  title: string
+  description: string
+}
+
+export interface ChallengePrize {
+  place: string
+  amount: string
+  accent: 'primary' | 'secondary'
+}
+
+export interface ChallengeFinalRanking {
+  label: 'Final Ranking'
+  formula: string
+}
+
+export interface ChallengeMilestone {
+  label: string
+  date: string
+  time?: string
+}
+
+export interface ChallengeVideo {
+  id: string
+  title: string
+  sourceLabel: 'Real-robot teleoperation' | 'UMI demonstration'
+  durationLabel: string
+  src: `/videos/challenge/${string}.mp4`
+  poster: `/images/challenge-videos/${string}.webp`
+  format: 'landscape' | 'square'
+}
+
+export type ChallengeResource =
+  | {
+      label: string
+      status: 'coming-soon'
+      url?: never
+    }
+  | {
+      label: string
+      status: 'available'
+      url: '/challenge/'
+      external: false
+    }
+  | {
+      label: string
+      status: 'available'
+      url: `http://${string}` | `https://${string}`
+      external: true
+    }
+
+export interface ChallengeInfo {
+  title: ChallengeTitle
+  sponsorLine: string
+  introductionSegments: ChallengeIntroductionSegment[]
+  participation: ChallengeParticipation
+  finalRanking: ChallengeFinalRanking
+  stages: ChallengeStage[]
+  tasks: ChallengeTask[]
+  prizePoolTotal: string
+  prizes: ChallengePrize[]
+  timeline: ChallengeMilestone[]
+  resources: ChallengeResource[]
 }
 
 export interface TopicGroup {
@@ -84,6 +172,205 @@ export const workshopMeta: WorkshopMeta = {
     'https://openreview.net/group?id=IEEE.org%2FIROS%2F2026%2FWorkshop%2FBimanual_Manipulation',
   repositoryUrl: 'https://github.com/bimanual-robot-learning/bimanual-robot-learning.github.io',
 }
+
+export const challenge: ChallengeInfo = {
+  title: {
+    lineOne: 'Real-World Household',
+    lineTwo: 'Bimanual Manipulation',
+    accent: 'Challenge',
+  },
+  sponsorLine: 'Designed and sponsored by',
+  introductionSegments: [
+    { text: 'This ', emphasis: false },
+    { text: 'challenge', emphasis: true },
+    {
+      text: ' focuses on real-world bimanual manipulation in household environments. Participants train on ',
+      emphasis: false,
+    },
+    { text: 'thousands of hours', emphasis: true },
+    { text: ' of real-robot ', emphasis: false },
+    { text: 'teleoperation and UMI data', emphasis: true },
+    {
+      text: ' spanning diverse household tasks, with the freedom to design their own data mixtures and training strategies.',
+      emphasis: false,
+    },
+  ],
+  participation: {
+    eyebrow: 'Get started',
+    title: 'Participate in the Challenge',
+    description:
+      'The full rules, dataset documentation, submission instructions, and leaderboard will live on the challenge website.',
+  },
+  finalRanking: {
+    label: 'Final Ranking',
+    formula: 'Online evaluation score + final real-robot evaluation score.',
+  },
+  stages: [
+    {
+      step: '01',
+      title: 'Online Evaluation',
+      description: 'Submit trained models through the online evaluation portal.',
+    },
+    {
+      step: '02',
+      title: 'Real-Robot Evaluation',
+      description:
+        'Up to five top-performing entries advance to household task evaluation.',
+    },
+  ],
+  tasks: [
+    {
+      title: 'Open the Washer Door',
+      description: 'Fully open the door with the gripper.',
+    },
+    {
+      title: 'Put Clothing in the Washer',
+      description: 'Put two pieces of clothing into the washer.',
+    },
+    {
+      title: 'Close the Washer Door',
+      description: 'Close the door securely with the gripper.',
+    },
+    {
+      title: 'Fold Clothing',
+      description: 'Unfold the clothing and fold it neatly.',
+    },
+  ],
+  prizePoolTotal: 'USD 3,000',
+  prizes: [
+    {
+      place: '1st Place',
+      amount: 'USD 2,000',
+      accent: 'primary',
+    },
+    {
+      place: '2nd Place',
+      amount: 'USD 500',
+      accent: 'secondary',
+    },
+    {
+      place: '3rd Place',
+      amount: 'USD 500',
+      accent: 'secondary',
+    },
+  ],
+  timeline: [
+    {
+      label: 'Sample Data Release',
+      date: 'August 7, 2026',
+      time: '11:59 PM AOE',
+    },
+    {
+      label: 'Full Dataset Release',
+      date: 'August 11, 2026',
+      time: '11:59 PM AOE',
+    },
+    {
+      label: 'Online Evaluation Opens',
+      date: 'August 25, 2026',
+      time: '11:59 PM AOE',
+    },
+    {
+      label: 'First Real-World Evaluation',
+      date: 'September 11, 2026',
+    },
+    {
+      label: 'Final Real-World Evaluation',
+      date: 'September 21, 2026',
+    },
+  ],
+  resources: [
+    {
+      label: 'Explore Challenge Details',
+      status: 'available',
+      url: '/challenge/',
+      external: false,
+    },
+    {
+      label: 'View Dataset',
+      status: 'available',
+      url: 'https://huggingface.co/datasets/challenge-2026/challenge_data',
+      external: true,
+    },
+    { label: 'Evaluation Portal', status: 'coming-soon' },
+  ],
+}
+
+export const challengeVideos: ChallengeVideo[] = [
+  {
+    id: 'fold-clothing-teleoperation',
+    title: 'Fold Clothing',
+    sourceLabel: 'Real-robot teleoperation',
+    durationLabel: '00:36',
+    src: '/videos/challenge/fold-clothing-teleoperation.mp4',
+    poster: '/images/challenge-videos/fold-clothing-teleoperation.webp',
+    format: 'landscape',
+  },
+  {
+    id: 'washer-retrieve-clothing-teleoperation',
+    title: 'Open Washer Door → Retrieve Clothing → Close Washer Door',
+    sourceLabel: 'Real-robot teleoperation',
+    durationLabel: '00:40',
+    src: '/videos/challenge/washer-retrieve-clothing-teleoperation.mp4',
+    poster:
+      '/images/challenge-videos/washer-retrieve-clothing-teleoperation.webp',
+    format: 'landscape',
+  },
+  {
+    id: 'washer-put-clothing-teleoperation',
+    title: 'Open Washer Door → Put Clothing In → Close Washer Door',
+    sourceLabel: 'Real-robot teleoperation',
+    durationLabel: '00:52',
+    src: '/videos/challenge/washer-put-clothing-teleoperation.mp4',
+    poster: '/images/challenge-videos/washer-put-clothing-teleoperation.webp',
+    format: 'landscape',
+  },
+  {
+    id: 'fold-clothing-umi-left',
+    title: 'Fold Clothing · Left View',
+    sourceLabel: 'UMI demonstration',
+    durationLabel: '00:24',
+    src: '/videos/challenge/fold-clothing-umi-left.mp4',
+    poster: '/images/challenge-videos/fold-clothing-umi-left.webp',
+    format: 'square',
+  },
+  {
+    id: 'fold-clothing-umi-right',
+    title: 'Fold Clothing · Right View',
+    sourceLabel: 'UMI demonstration',
+    durationLabel: '00:24',
+    src: '/videos/challenge/fold-clothing-umi-right.mp4',
+    poster: '/images/challenge-videos/fold-clothing-umi-right.webp',
+    format: 'square',
+  },
+]
+
+export const challengeOrganizers: Person[] = [
+  {
+    name: 'Kai Li',
+    institution: 'PrimeBot',
+    image: '/images/challenge-organizers/kai-li.jpg',
+    imageAlt: 'Portrait of challenge organizer Kai Li',
+  },
+  {
+    name: 'Ran Cheng',
+    institution: 'PrimeBot',
+    image: '/images/challenge-organizers/ran-cheng.jpg',
+    imageAlt: 'Portrait of challenge organizer Ran Cheng',
+  },
+  {
+    name: 'Yan Shen',
+    institution: 'Peking University',
+    image: '/images/organizers/yan-shen.jpg',
+    imageAlt: 'Portrait of challenge organizer Yan Shen',
+  },
+  {
+    name: 'Hao Dong',
+    institution: 'PrimeBot · Peking University',
+    image: '/images/organizers/hao-dong.jpg',
+    imageAlt: 'Portrait of challenge organizer Hao Dong',
+  },
+]
 
 export const introduction: {
   points: IntroductionPoint[]

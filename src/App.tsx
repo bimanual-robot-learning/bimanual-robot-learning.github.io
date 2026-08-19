@@ -13,6 +13,7 @@ import {
 } from 'lucide-react'
 import {
   awards,
+  challengeOrganizers,
   importantDates,
   introduction,
   organizers,
@@ -24,6 +25,7 @@ import {
   workshopMeta,
   type Person,
 } from './data/workshop'
+import ChallengeSection from './components/ChallengeSection'
 import './App.css'
 
 const navigation = [
@@ -31,14 +33,22 @@ const navigation = [
   { label: 'Schedule', href: '#schedule' },
   { label: 'Speakers', href: '#speakers' },
   { label: 'Call for Papers', href: '#call-for-papers' },
+  { label: 'Challenge', href: '#challenge' },
   { label: 'Organizers', href: '#organizers' },
 ]
 
-function PersonCard({ person, kind }: { person: Person; kind: 'speaker' | 'organizer' }) {
+function PersonCard({
+  person,
+  kind,
+}: {
+  person: Person
+  kind: 'speaker' | 'organizer' | 'challenge-organizer'
+}) {
   const initials = person.name
     .split(' ')
     .map((part) => part[0])
     .join('')
+  const NameHeading = 'h3'
 
   return (
     <article className={`person-card person-card--${kind}`} data-testid={`${kind}-card`}>
@@ -50,8 +60,8 @@ function PersonCard({ person, kind }: { person: Person; kind: 'speaker' | 'organ
         <span className="person-card__corner" aria-hidden="true" />
       </div>
       <div className="person-card__copy">
-        <h3>{person.name}</h3>
-        <p>{person.institution}</p>
+        <NameHeading>{person.name}</NameHeading>
+        {person.institution && <p>{person.institution}</p>}
       </div>
     </article>
   )
@@ -485,10 +495,17 @@ function App() {
           </div>
         </section>
 
-        <section className="section section--organizers" id="organizers" aria-labelledby="organizers-title">
+        <ChallengeSection />
+
+        <section
+          className="section section--organizers"
+          id="organizers"
+          aria-labelledby="organizers-title"
+          data-testid="workshop-organizers"
+        >
           <div className="page-width">
             <div className="section-heading">
-              <p className="section-index">05 / Team</p>
+              <p className="section-index">06 / Workshop Team</p>
               <div>
                 <h2 id="organizers-title">Workshop Organizers</h2>
                 <p className="section-description">
@@ -501,6 +518,36 @@ function App() {
             <div className="organizer-grid">
               {organizers.map((organizer) => (
                 <PersonCard key={organizer.name} person={organizer} kind="organizer" />
+              ))}
+            </div>
+          </div>
+        </section>
+
+        <section
+          className="section section--challenge-organizers"
+          id="challenge-organizers"
+          aria-labelledby="challenge-organizers-title"
+          data-testid="challenge-organizers"
+        >
+          <div className="page-width">
+            <div className="section-heading">
+              <p className="section-index">07 / Challenge Team</p>
+              <div>
+                <h2 id="challenge-organizers-title">Challenge Organizers</h2>
+                <p className="section-description">
+                  The team coordinating the challenge, data release, and real-world
+                  evaluation.
+                </p>
+              </div>
+            </div>
+
+            <div className="challenge-organizer-grid">
+              {challengeOrganizers.map((organizer) => (
+                <PersonCard
+                  key={organizer.name}
+                  person={organizer}
+                  kind="challenge-organizer"
+                />
               ))}
             </div>
           </div>
