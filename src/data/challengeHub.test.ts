@@ -22,16 +22,12 @@ describe('challengeHub content', () => {
     expect(challengeHub.participationSteps).toHaveLength(3)
     expect(challengeHub.navigation).toContainEqual({
       label: 'Leaderboard',
-      href: '#updates',
+      href: '#leaderboard',
     })
     expect(challengeHub.leaderboard).toEqual({
-      eyebrow: 'Leaderboard',
-      status: 'Coming soon',
-      title: 'Leaderboard opens with online evaluation.',
-      description:
-        'Scores and final rankings will appear here after the evaluation portal opens.',
+      status: 'Results pending',
       openingDate: 'August 25, 2026',
-      stages: ['Online score', 'Real-robot score', 'Final ranking'],
+      entries: [],
     })
   })
 })

@@ -1,7 +1,10 @@
 import { ArrowDown, ArrowLeft, ArrowUpRight } from 'lucide-react'
+import ChallengeStageDescription from '../components/ChallengeStageDescription'
 import ChallengeVideoGallery from '../components/ChallengeVideoGallery'
 import { challenge, challengeOrganizers, sponsor } from '../data/workshop'
 import { challengeHub } from '../data/challengeHub'
+import './ChallengeLeaderboard.css'
+import ChallengeLeaderboard from './ChallengeLeaderboard'
 
 const externalLinkProps = {
   rel: 'noreferrer',
@@ -189,7 +192,9 @@ function ChallengeHub() {
                 <li data-testid="challenge-hub-stage" key={stage.step}>
                   <span aria-hidden="true">{stage.step}</span>
                   <h3>{stage.title}</h3>
-                  <p>{stage.description}</p>
+                  <ChallengeStageDescription
+                    segments={stage.descriptionSegments}
+                  />
                 </li>
               ))}
               <li data-testid="challenge-hub-stage">
@@ -256,29 +261,24 @@ function ChallengeHub() {
 
         <section
           aria-labelledby="challenge-hub-leaderboard-title"
-          className="challenge-hub__leaderboard-card"
-          id="updates"
+          className="challenge-hub__leaderboard"
+          id="leaderboard"
         >
-          <header>
-            <p className="challenge-hub__eyebrow">
-              {challengeHub.leaderboard.eyebrow}
+          <header className="challenge-hub__leaderboard-header">
+            <div>
+              <p className="challenge-hub__leaderboard-status">
+                {challengeHub.leaderboard.status}
+              </p>
+              <h2 id="challenge-hub-leaderboard-title">Leaderboard</h2>
+            </div>
+            <p>
+              Online evaluation begins {challengeHub.leaderboard.openingDate}.
             </p>
-            <p>{challengeHub.leaderboard.status}</p>
-            <h2 id="challenge-hub-leaderboard-title">
-              {challengeHub.leaderboard.title}
-            </h2>
-            <p>{challengeHub.leaderboard.description}</p>
-            <p>Opening date: {challengeHub.leaderboard.openingDate}</p>
           </header>
-          <ol>
-            {challengeHub.leaderboard.stages.map((stage) => (
-              <li data-testid="challenge-hub-leaderboard-stage" key={stage}>
-                <article>
-                  <h3>{stage}</h3>
-                </article>
-              </li>
-            ))}
-          </ol>
+          <ChallengeLeaderboard
+            entries={challengeHub.leaderboard.entries}
+            openingDate={challengeHub.leaderboard.openingDate}
+          />
         </section>
 
         <section

@@ -1355,11 +1355,6 @@
   color: var(--orange-deep);
 }
 
-.challenge-evaluation > .eyebrow,
-.challenge-timeline > .eyebrow {
-  color: var(--cyan-deep);
-}
-
 .challenge-introduction {
   max-width: 1060px;
   padding-left: clamp(22px, 3vw, 34px);
@@ -1452,45 +1447,77 @@
   margin-bottom: 32px;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 16px;
+  align-items: start;
 }
 
-.challenge-evaluation {
-  padding: clamp(24px, 3vw, 30px);
+.challenge-disclosure {
+  padding: 0;
   margin: 0;
+  overflow: clip;
   background: rgba(82, 216, 230, 0.08);
   border: 1px solid rgba(27, 132, 153, 0.2);
   border-radius: 7px;
 }
 
-.challenge-timeline {
-  padding: clamp(24px, 3vw, 30px);
+.challenge-disclosure > summary {
+  display: flex;
+  min-height: 96px;
+  padding: clamp(22px, 3vw, 28px);
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  cursor: pointer;
+  list-style: none;
+}
+
+.challenge-disclosure > summary::-webkit-details-marker {
+  display: none;
+}
+
+.challenge-disclosure__copy {
+  display: grid;
+  gap: 7px;
+}
+
+.challenge-disclosure__copy .eyebrow {
   margin: 0;
-  background: rgba(82, 216, 230, 0.08);
-  border: 1px solid rgba(27, 132, 153, 0.2);
-  border-radius: 7px;
+  color: var(--cyan-deep);
 }
 
-.challenge-evaluation > .eyebrow,
-.challenge-timeline > .eyebrow,
-.challenge-prize-pool > header .eyebrow {
-  margin: 0 0 8px;
-}
-
-.challenge-evaluation > h3,
-.challenge-timeline > h3 {
-  max-width: 760px;
-  margin: 0 0 28px;
+.challenge-disclosure__title {
   color: var(--ink-950);
   font-family: var(--font-display);
-  font-size: clamp(1.8rem, 3.2vw, 2.65rem);
+  font-size: clamp(1.55rem, 2.8vw, 2.25rem);
   font-weight: 600;
   letter-spacing: -0.045em;
   line-height: 1.08;
-  text-wrap: balance;
 }
 
-.challenge-evaluation > h3 {
-  margin: 0 0 20px;
+.challenge-disclosure__icon {
+  flex: none;
+  color: var(--cyan-deep);
+  transition: transform 180ms;
+}
+
+.challenge-disclosure[open] {
+  background-color: rgba(82, 216, 230, 0.12);
+}
+
+.challenge-disclosure[open] .challenge-disclosure__icon {
+  transform: rotate(180deg);
+}
+
+.challenge-disclosure > summary:hover {
+  background: rgba(82, 216, 230, 0.08);
+}
+
+.challenge-disclosure > summary:focus-visible {
+  outline: 3px solid var(--orange);
+  outline-offset: -3px;
+}
+
+.challenge-disclosure__body {
+  padding: 0 clamp(22px, 3vw, 28px) clamp(22px, 3vw, 28px);
 }
 
 .challenge-flow {
@@ -1553,6 +1580,14 @@
   margin: 0;
   line-height: 1.62;
   grid-column: 2;
+}
+
+.challenge-evaluation .challenge-stage-description a {
+  color: var(--cyan-deep);
+  font-weight: 700;
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
 }
 
 .challenge-evaluation-scope {
@@ -1702,7 +1737,7 @@
   white-space: nowrap;
 }
 
-.challenge-timeline > ol {
+.challenge-timeline .challenge-disclosure__body > ol {
   display: grid;
   padding: 0;
   margin: 0;
@@ -2473,8 +2508,6 @@
   }
 
   .challenge-participation,
-  .challenge-evaluation,
-  .challenge-timeline,
   .challenge-prize-pool {
     padding: 26px 22px;
   }
@@ -2500,5 +2533,11 @@
 
   .important-dates {
     padding: 24px 22px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .challenge-disclosure__icon {
+    transition: none;
   }
 }

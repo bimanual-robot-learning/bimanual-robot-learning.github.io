@@ -177,13 +177,34 @@ describe('workshop landing page', () => {
       {
         step: '01',
         title: 'Online Evaluation',
-        description: 'Submit trained models through the online evaluation portal.',
+        descriptionSegments: [
+          {
+            text: 'Submit action predictions for the validation set through the ',
+          },
+          {
+            text: 'Google Form',
+            url: 'https://docs.google.com/forms/d/e/1FAIpQLSdrc5k91kazH9BLEjY17xCQ1KqAPVjmwPp5y21TT0GXQgpyKw/viewform?usp=publish-editor',
+          },
+          {
+            text: '. Based on the online evaluation results, up to five top-performing teams will advance to the real-robot evaluation.',
+          },
+        ],
       },
       {
         step: '02',
         title: 'Real-Robot Evaluation',
-        description:
-          'Up to five top-performing entries advance to household task evaluation.',
+        descriptionSegments: [
+          {
+            text: 'Shortlisted teams will submit a Docker image containing their trained model. The image must be built from the base Docker image available in the ',
+          },
+          {
+            text: 'Challenge Dataset repository',
+            url: 'https://huggingface.co/datasets/challenge-2026/challenge_data',
+          },
+          {
+            text: '. PrimeBot will deploy and evaluate the submitted models on real robots across the designated household manipulation tasks.',
+          },
+        ],
       },
     ])
     expect(challenge.finalRanking).toEqual({
@@ -239,7 +260,7 @@ describe('workshop landing page', () => {
         time: '11:59 PM AOE',
       },
       {
-        label: 'Online Evaluation Opens',
+        label: 'Online Evaluation Begins',
         date: 'August 25, 2026',
         time: '11:59 PM AOE',
       },
@@ -266,7 +287,12 @@ describe('workshop landing page', () => {
         url: 'https://huggingface.co/datasets/challenge-2026/challenge_data',
         external: true,
       },
-      { label: 'Evaluation Portal', status: 'coming-soon' },
+      {
+        label: 'Submit Predictions',
+        status: 'available',
+        url: 'https://docs.google.com/forms/d/e/1FAIpQLSdrc5k91kazH9BLEjY17xCQ1KqAPVjmwPp5y21TT0GXQgpyKw/viewform?usp=publish-editor',
+        external: true,
+      },
     ])
     expect(
       challengeOrganizers.map(({ name, institution }) => ({ name, institution })),
@@ -574,13 +600,19 @@ describe('workshop landing page', () => {
       'Challenge Timeline',
     ])
 
+    const evaluationDisclosure = within(logistics).getAllByTestId(
+      'challenge-disclosure',
+    )[0] as HTMLDetailsElement
+    evaluationDisclosure.open = true
     const evaluation = within(challengeSection).getByRole('region', {
       name: 'Evaluation Format',
     })
     const stages = within(evaluation).getAllByTestId('challenge-stage')
     expect(stages).toHaveLength(3)
     expect(
-      Array.from(evaluation.querySelectorAll(':scope > .challenge-flow > li')).map(
+      Array.from(
+        evaluation.querySelectorAll(':scope > .challenge-flow > li'),
+      ).map(
         (stage) => within(stage as HTMLElement).getByRole('heading', { level: 4 })
           .textContent,
       ),
@@ -592,7 +624,23 @@ describe('workshop landing page', () => {
           level: 4,
         }),
       ).toBeInTheDocument()
-      expect(within(stages[index]).getByText(expectedStage.description)).toBeVisible()
+      const description = stages[index].querySelector(
+        '.challenge-stage-description',
+      )
+      const linkSegment = expectedStage.descriptionSegments.find(
+        ({ url }) => url,
+      )
+
+      expect(description).toHaveTextContent(
+        expectedStage.descriptionSegments.map(({ text }) => text).join(''),
+      )
+      expect(linkSegment).toBeDefined()
+      const inlineLink = within(description as HTMLElement).getByRole('link', {
+        name: linkSegment?.text,
+      })
+      expect(inlineLink).toHaveAttribute('href', linkSegment?.url)
+      expect(inlineLink).toHaveAttribute('target', '_blank')
+      expect(inlineLink).toHaveAttribute('rel', 'noreferrer')
     }
 
     const finalRanking = within(stages[2]).getByTestId(
@@ -602,6 +650,83 @@ describe('workshop landing page', () => {
     expect(challengeSection).not.toHaveTextContent(
       'Detailed scoring protocols will be announced before online evaluation opens.',
     )
+  })
+
+  it('keeps the homepage evaluation details closed until each disclosure is opened', async () => {
+    const user = userEvent.setup()
+    render(<App />)
+
+    const challengeSection = screen.getByTestId('challenge-section')
+    const logistics = within(challengeSection).getByTestId('challenge-logistics')
+    const disclosures = within(logistics).getAllByTestId('challenge-disclosure')
+
+    expect(disclosures).toHaveLength(2)
+    disclosures.forEach((disclosure) => {
+      expect(disclosure.tagName).toBe('DETAILS')
+      expect(disclosure).not.toHaveAttribute('open')
+    })
+    const evaluationBody = disclosures[0].querySelector<HTMLElement>(
+      '.challenge-disclosure__body',
+    )
+    const timelineBody = disclosures[1].querySelector<HTMLElement>(
+      '.challenge-disclosure__body',
+    )
+    expect(evaluationBody).not.toBeNull()
+    expect(timelineBody).not.toBeNull()
+    const evaluationStage = within(evaluationBody as HTMLElement).getAllByTestId(
+      'challenge-stage',
+    )[0]
+    const timelineMilestone = within(timelineBody as HTMLElement).getAllByTestId(
+      'challenge-milestone',
+    )[0]
+    expect(evaluationBody).not.toBeVisible()
+    expect(timelineBody).not.toBeVisible()
+    expect(evaluationStage).not.toBeVisible()
+    expect(timelineMilestone).not.toBeVisible()
+    for (const resource of within(challengeSection).getAllByTestId(
+      'challenge-resource',
+    )) {
+      expect(resource).toBeVisible()
+      disclosures.forEach((disclosure) => {
+        expect(disclosure).not.toContainElement(resource)
+      })
+    }
+
+    await user.click(
+      within(disclosures[0]).getByRole('heading', {
+        name: 'Evaluation Format',
+        level: 3,
+      }),
+    )
+    expect(disclosures[0]).toHaveAttribute('open')
+    expect(disclosures[1]).not.toHaveAttribute('open')
+    expect(evaluationBody).toBeVisible()
+    expect(evaluationStage).toBeVisible()
+    expect(timelineBody).not.toBeVisible()
+    expect(timelineMilestone).not.toBeVisible()
+
+    await user.click(
+      within(disclosures[1]).getByRole('heading', {
+        name: 'Challenge Timeline',
+        level: 3,
+      }),
+    )
+    disclosures.forEach((disclosure) => expect(disclosure).toHaveAttribute('open'))
+    expect(evaluationBody).toBeVisible()
+    expect(timelineBody).toBeVisible()
+    expect(evaluationStage).toBeVisible()
+    expect(timelineMilestone).toBeVisible()
+
+    const evaluation = within(disclosures[0]).getByRole('region', {
+      name: 'Evaluation Format',
+    })
+    const timeline = within(disclosures[1]).getByRole('region', {
+      name: 'Challenge Timeline',
+    })
+    expect(within(evaluation).getAllByTestId('challenge-stage')).toHaveLength(3)
+    expect(within(evaluation).getAllByTestId('challenge-task')).toHaveLength(4)
+    expect(within(timeline).getAllByTestId('challenge-milestone')).toHaveLength(5)
+    expect(timeline).toHaveTextContent('August 25, 2026 · 11:59 PM AOE')
   })
 
   it('uses the redesigned Challenge visual system', () => {
@@ -652,8 +777,13 @@ describe('workshop landing page', () => {
       extractCssRule(appStyles, '.challenge-ranking-formula').declarations,
       'font-size',
     )).toBe('clamp(1rem, 1.25vw, 1.15rem)')
-    expect(styleFor('.challenge-timeline > ol').display).toBe('grid')
-    expect(styleFor('.challenge-timeline > ol').gridTemplateColumns).toBe('1fr')
+    expect(
+      styleFor('.challenge-timeline .challenge-disclosure__body > ol').display,
+    ).toBe('grid')
+    expect(
+      styleFor('.challenge-timeline .challenge-disclosure__body > ol')
+        .gridTemplateColumns,
+    ).toBe('1fr')
     expectGridColumns('.challenge-organizer-grid', 2)
     expect(styleFor('.challenge-prize-grid').gap).toBe('0px')
     expect(
@@ -844,8 +974,6 @@ describe('workshop landing page', () => {
     expect(compactChallengePanel.selectors).toEqual(
       expect.arrayContaining([
         '.challenge-participation',
-        '.challenge-evaluation',
-        '.challenge-timeline',
         '.challenge-prize-pool',
       ]),
     )
@@ -1032,16 +1160,18 @@ describe('workshop landing page', () => {
       'grid-template-columns': 'repeat(2, minmax(0, 1fr))',
       gap: '16px',
       'margin-bottom': '32px',
+      'align-items': 'start',
     })
-    for (const selector of ['.challenge-evaluation', '.challenge-timeline']) {
-      expectOwnedCssProperties(appStyles, selector, {
-        padding: 'clamp(24px, 3vw, 30px)',
-        margin: '0',
-        background: 'rgba(82, 216, 230, 0.08)',
-        border: '1px solid rgba(27, 132, 153, 0.2)',
-        'border-radius': '7px',
-      })
-    }
+    expectOwnedCssProperties(appStyles, '.challenge-disclosure', {
+      padding: '0',
+      margin: '0',
+      overflow: 'clip',
+      background: 'rgba(82, 216, 230, 0.08)',
+      border: '1px solid rgba(27, 132, 153, 0.2)',
+      'border-radius': '7px',
+    })
+    expect(findCssRules(appStyles, '.challenge-evaluation')).toHaveLength(0)
+    expect(findCssRules(appStyles, '.challenge-timeline')).toHaveLength(0)
     expectOwnedCssProperties(appStyles, '.challenge-flow', {
       'grid-template-columns': '1fr',
       gap: '0',
@@ -1066,9 +1196,24 @@ describe('workshop landing page', () => {
     expectOwnedCssProperties(appStyles, '.challenge-flow > li > p', {
       'grid-column': '2',
     })
-    expectOwnedCssProperties(appStyles, '.challenge-timeline > ol', {
-      'grid-template-columns': '1fr',
-    })
+    expectOwnedCssProperties(
+      appStyles,
+      '.challenge-evaluation .challenge-stage-description a',
+      {
+        color: 'var(--cyan-deep)',
+        'font-weight': '700',
+        'text-decoration': 'underline',
+        'text-decoration-thickness': '1px',
+        'text-underline-offset': '3px',
+      },
+    )
+    expectOwnedCssProperties(
+      appStyles,
+      '.challenge-timeline .challenge-disclosure__body > ol',
+      {
+        'grid-template-columns': '1fr',
+      },
+    )
     expectOwnedCssProperties(appStyles, '.challenge-timeline li', {
       display: 'grid',
       'grid-template-columns': 'minmax(0, 1fr) auto',
@@ -1094,6 +1239,38 @@ describe('workshop landing page', () => {
     }
   })
 
+  it('styles homepage logistics as native disclosure panels', () => {
+    expectOwnedCssProperties(appStyles, '.challenge-disclosure', {
+      padding: '0',
+      margin: '0',
+      overflow: 'clip',
+    })
+    expectOwnedCssProperties(appStyles, '.challenge-disclosure > summary', {
+      display: 'flex',
+      'min-height': '96px',
+      cursor: 'pointer',
+      'list-style': 'none',
+    })
+    expectOwnedCssProperties(appStyles, '.challenge-disclosure[open]', {
+      'background-color': 'rgba(82, 216, 230, 0.12)',
+    })
+    expect(appStyles).toContain('.challenge-disclosure > summary::-webkit-details-marker')
+    const iconTransitionIndex = appStyles.indexOf(
+      '.challenge-disclosure__icon',
+    )
+    const reducedMotionIndex = appStyles.lastIndexOf(
+      '@media (prefers-reduced-motion: reduce)',
+    )
+    expect(reducedMotionIndex).toBeGreaterThan(iconTransitionIndex)
+    const reducedMotion = extractCssBlock(
+      appStyles,
+      '@media (prefers-reduced-motion: reduce)',
+    )
+    expectOwnedCssProperties(reducedMotion, '.challenge-disclosure__icon', {
+      transition: 'none',
+    })
+  })
+
   it('hides decorative Challenge sequence numerals from assistive technology', () => {
     render(<App />)
 
@@ -1111,9 +1288,13 @@ describe('workshop landing page', () => {
     }
   })
 
-  it('nests the complete real-robot evaluation scope inside Step 02', () => {
+  it('nests the complete real-robot evaluation scope inside Step 02', async () => {
+    const user = userEvent.setup()
     render(<App />)
 
+    await user.click(
+      screen.getByRole('heading', { name: 'Evaluation Format', level: 3 }),
+    )
     const evaluation = screen.getByRole('region', { name: 'Evaluation Format' })
     const realRobotStage = within(evaluation).getAllByTestId('challenge-stage')[1]
     const taskList = within(realRobotStage).getByRole('list', {
@@ -1165,10 +1346,17 @@ describe('workshop landing page', () => {
     expect(prizePool.querySelector('.challenge-prize-pool__grid')).not.toBeInTheDocument()
   })
 
-  it('renders five Challenge milestones and the configured resource states', () => {
+  it('renders five Challenge milestones and the configured resource states', async () => {
+    const user = userEvent.setup()
     render(<App />)
 
     const challengeSection = screen.getByTestId('challenge-section')
+    await user.click(
+      within(challengeSection).getByRole('heading', {
+        name: 'Challenge Timeline',
+        level: 3,
+      }),
+    )
     const milestones = within(challengeSection).getAllByTestId('challenge-milestone')
     const resources = within(challengeSection).getAllByTestId('challenge-resource')
     const participation = within(challengeSection)
@@ -1193,6 +1381,16 @@ describe('workshop landing page', () => {
       }
     }
     expect(challengeSection.textContent?.match(/11:59 PM AOE/g)).toHaveLength(3)
+    const onlineEvaluationMilestone = milestones[2]
+    expect(
+      within(onlineEvaluationMilestone).getByRole('heading', {
+        name: 'Online Evaluation Begins',
+        level: 4,
+      }),
+    ).toBeInTheDocument()
+    expect(onlineEvaluationMilestone).toHaveTextContent(
+      'August 25, 2026 · 11:59 PM AOE',
+    )
     expect(resources).toHaveLength(3)
     expect(participation).toContainElement(resources[0])
     expect(participation).toContainElement(resources[1])
@@ -1211,50 +1409,21 @@ describe('workshop landing page', () => {
     expect(resources[1]).toHaveClass('challenge-resource--primary')
     expect(within(resources[1]).getByText('Open')).toBeInTheDocument()
     expect(within(resources[1]).queryByText('Coming Soon')).not.toBeInTheDocument()
-    expect(within(resources[2]).getByText('Coming Soon')).toBeInTheDocument()
-    expect(resources[2].closest('a, button')).toBeNull()
-    expect(resources[2]).not.toHaveAttribute('tabindex')
+    expect(within(resources[2]).getByText('Submit Predictions')).toBeInTheDocument()
+    expect(resources[2]).toHaveAttribute(
+      'href',
+      'https://docs.google.com/forms/d/e/1FAIpQLSdrc5k91kazH9BLEjY17xCQ1KqAPVjmwPp5y21TT0GXQgpyKw/viewform?usp=publish-editor',
+    )
+    expect(resources[2]).toHaveAttribute('target', '_blank')
+    expect(resources[2]).toHaveAttribute('rel', 'noreferrer')
+    expect(resources[2]).toHaveClass('challenge-resource--primary')
+    expect(within(resources[2]).getByText('Open')).toBeInTheDocument()
+    expect(within(resources[2]).queryByText('Coming Soon')).not.toBeInTheDocument()
+    expect(
+      within(challengeSection).queryByText('Evaluation Portal'),
+    ).not.toBeInTheDocument()
     for (const resource of resources) {
       expect(resource).not.toHaveTextContent(/[→↗]/)
-    }
-  })
-
-  it('turns an available Challenge resource into a safe external call to action', () => {
-    const originalResources = [...challenge.resources]
-    challenge.resources.splice(
-      1,
-      1,
-      {
-        label: 'Dataset',
-        status: 'available',
-        url: 'https://huggingface.co/datasets/example/household-challenge',
-        external: true,
-      },
-    )
-
-    try {
-      render(<App />)
-
-      const challengeSection = screen.getByTestId('challenge-section')
-      const resources = within(challengeSection).getAllByTestId('challenge-resource')
-      const datasetLink = within(challengeSection).getByRole('link', { name: /Dataset/i })
-
-      expect(resources).toHaveLength(3)
-      expect(
-        within(challengeSection).getByRole('link', {
-          name: /Explore Challenge Details/i,
-        }),
-      ).toBeInTheDocument()
-      expect(within(challengeSection).getByText('Evaluation Portal')).toBeInTheDocument()
-      expect(datasetLink).toHaveAttribute(
-        'href',
-        'https://huggingface.co/datasets/example/household-challenge',
-      )
-      expect(datasetLink).toHaveAttribute('target', '_blank')
-      expect(datasetLink).toHaveAttribute('rel', 'noreferrer')
-      expect(within(datasetLink).queryByText('Coming Soon')).not.toBeInTheDocument()
-    } finally {
-      challenge.resources.splice(0, challenge.resources.length, ...originalResources)
     }
   })
 

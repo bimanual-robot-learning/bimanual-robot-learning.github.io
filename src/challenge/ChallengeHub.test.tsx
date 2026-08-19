@@ -7,6 +7,7 @@ import {
   challengeVideos,
 } from '../data/workshop'
 import galleryStyles from '../components/ChallengeVideoGallery.css?raw'
+import leaderboardStyles from './ChallengeLeaderboard.css?raw'
 import hubStyles from './ChallengeHub.css?raw'
 import ChallengeHub from './ChallengeHub'
 
@@ -41,14 +42,16 @@ describe('ChallengeHub', () => {
     })
     expect(container.querySelector('.challenge-hub__hero-media')).toBeNull()
     expect(
-      container.querySelector('.challenge-hub__leaderboard-card'),
-    ).not.toBeNull()
-    expect(
       container.querySelector('.challenge-hub__prize-sponsor'),
     ).not.toBeNull()
-    expect(
-      screen.getByRole('navigation', { name: 'Challenge navigation' }),
-    ).toHaveTextContent('Leaderboard')
+    const navigation = screen.getByRole('navigation', {
+      name: 'Challenge navigation',
+    })
+    expect(navigation).toHaveTextContent('Leaderboard')
+    expect(within(navigation).getByRole('link', { name: 'Leaderboard' })).toHaveAttribute(
+      'href',
+      '#leaderboard',
+    )
     expect(screen.queryByText('Updates', { exact: true })).not.toBeInTheDocument()
     expect(screen.getAllByTestId('challenge-participation-step')).toHaveLength(3)
     expect(screen.getAllByTestId('challenge-hub-stage')).toHaveLength(3)
@@ -60,16 +63,27 @@ describe('ChallengeHub', () => {
     expect(screen.getAllByTestId('challenge-hub-organizer')).toHaveLength(
       challengeOrganizers.length,
     )
+    const leaderboard = screen.getByRole('region', { name: 'Leaderboard' })
+    expect(leaderboard).toHaveAttribute('id', 'leaderboard')
+    expect(within(leaderboard).getByText('Results pending')).toBeVisible()
     expect(
-      screen.getByRole('heading', {
-        name: 'Leaderboard opens with online evaluation.',
+      within(leaderboard).getByRole('heading', {
+        level: 2,
+        name: 'Leaderboard',
       }),
     ).toBeVisible()
-    expect(screen.getByText('Coming soon')).toBeVisible()
-    expect(screen.getByText('August 25, 2026')).toBeVisible()
-    expect(screen.getAllByTestId('challenge-hub-leaderboard-stage')).toHaveLength(
-      3,
-    )
+    expect(
+      within(leaderboard).getByText(
+        'Online evaluation begins August 25, 2026.',
+      ),
+    ).toBeVisible()
+    expect(within(leaderboard).getAllByRole('columnheader')).toHaveLength(6)
+    expect(within(leaderboard).getByText('No results yet')).toBeVisible()
+    expect(within(leaderboard).queryByText('Coming soon')).not.toBeInTheDocument()
+    expect(
+      within(leaderboard).queryByTestId('challenge-hub-leaderboard-stage'),
+    ).toBeNull()
+    expect(within(leaderboard).queryByText('Team A')).not.toBeInTheDocument()
 
     const gallery = screen.getByRole('region', {
       name: 'See the challenge in action',
@@ -77,6 +91,68 @@ describe('ChallengeHub', () => {
     expect(within(gallery).getAllByRole('button')).toHaveLength(
       challengeVideos.length,
     )
+  })
+
+  it('renders linked evaluation submission instructions from structured stages', () => {
+    render(<ChallengeHub />)
+
+    const evaluation = screen.getByRole('region', {
+      name: 'Evaluation format and challenge timeline',
+    })
+    const stages = within(evaluation).getAllByTestId('challenge-hub-stage')
+
+    expect(stages).toHaveLength(3)
+    for (const [index, expectedStage] of challenge.stages.entries()) {
+      const stage = stages[index]
+      const description = stage.querySelector('.challenge-stage-description')
+      const linkSegment = expectedStage.descriptionSegments.find(
+        ({ url }) => url,
+      )
+
+      expect(description).toHaveTextContent(
+        expectedStage.descriptionSegments.map(({ text }) => text).join(''),
+      )
+      expect(linkSegment).toBeDefined()
+      const inlineLink = within(description as HTMLElement).getByRole('link', {
+        name: linkSegment?.text,
+      })
+      expect(inlineLink).toHaveAttribute('href', linkSegment?.url)
+      expect(inlineLink).toHaveAttribute('target', '_blank')
+      expect(inlineLink).toHaveAttribute('rel', 'noreferrer')
+    }
+
+    const timeline = within(evaluation).getByRole('heading', {
+      name: 'Challenge Timeline',
+      level: 2,
+    }).parentElement
+    expect(timeline).not.toBeNull()
+    const onlineEvaluationMilestone = within(timeline as HTMLElement).getByRole(
+      'heading',
+      { name: 'Online Evaluation Begins', level: 3 },
+    ).parentElement
+    expect(onlineEvaluationMilestone).toHaveTextContent(
+      'August 25, 2026 · 11:59 PM AOE',
+    )
+  })
+
+  it('keeps Challenge Hub logistics expanded as ordinary regions', () => {
+    render(<ChallengeHub />)
+
+    const logistics = screen.getByRole('region', {
+      name: 'Evaluation format and challenge timeline',
+    })
+    expect(logistics.tagName).toBe('SECTION')
+    expect(logistics.querySelector('details')).toBeNull()
+    expect(
+      within(logistics)
+        .getByRole('heading', { name: 'Evaluation Format', level: 2 })
+        .closest('section'),
+    ).toBeVisible()
+    expect(
+      within(logistics)
+        .getByRole('heading', { name: 'Challenge Timeline', level: 2 })
+        .closest('section'),
+    ).toBeVisible()
   })
 })
 
@@ -91,10 +167,26 @@ describe('ChallengeHub presentation', () => {
   })
 
   it('defines the refined hero, prize sponsor, and leaderboard styling hooks', () => {
-    expect(hubStyles).toContain('.challenge-hub__leaderboard-card')
+    expect(hubStyles).toContain('.challenge-hub__leaderboard')
     expect(hubStyles).toContain('.challenge-hub__prize-sponsor')
     expect(hubStyles).toContain('.challenge-hub__hero-title-line')
     expect(hubStyles).toContain('@media (max-width: 760px)')
+  })
+
+  it('ships an accessible horizontally scrollable leaderboard table', () => {
+    expect(leaderboardStyles).toContain('.challenge-leaderboard__viewport')
+    expect(leaderboardStyles).toMatch(
+      /\.challenge-leaderboard__viewport\s*\{[^}]*overflow-x:\s*auto;/,
+    )
+    expect(leaderboardStyles).toMatch(
+      /\.challenge-leaderboard__table\s*\{[^}]*min-width:\s*760px;/,
+    )
+    expect(leaderboardStyles).toContain('.challenge-leaderboard__empty')
+  })
+
+  it('limits stage-number styles to direct stage children', () => {
+    expect(hubStyles).toContain('.challenge-hub__stages > li > span')
+    expect(hubStyles).not.toContain('.challenge-hub__stages span')
   })
 
   it('gives the hero a distinct workshop and PrimeBot challenge identity', () => {
