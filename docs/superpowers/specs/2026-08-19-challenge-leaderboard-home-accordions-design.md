@@ -46,8 +46,8 @@ workshop homepage.
 
 The module header contains:
 
-- Eyebrow: `Leaderboard`
-- Status: `Results pending`
+- Status label: `Results pending`
+- Visible section heading: `Leaderboard`
 - Context line: `Online evaluation begins August 25, 2026.`
 
 The former `Leaderboard opens with online evaluation.` title and explanatory
