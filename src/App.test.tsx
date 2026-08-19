@@ -600,6 +600,10 @@ describe('workshop landing page', () => {
       'Challenge Timeline',
     ])
 
+    const evaluationDisclosure = within(logistics).getAllByTestId(
+      'challenge-disclosure',
+    )[0] as HTMLDetailsElement
+    evaluationDisclosure.open = true
     const evaluation = within(challengeSection).getByRole('region', {
       name: 'Evaluation Format',
     })
@@ -661,6 +665,24 @@ describe('workshop landing page', () => {
       expect(disclosure.tagName).toBe('DETAILS')
       expect(disclosure).not.toHaveAttribute('open')
     })
+    const evaluationBody = disclosures[0].querySelector<HTMLElement>(
+      '.challenge-disclosure__body',
+    )
+    const timelineBody = disclosures[1].querySelector<HTMLElement>(
+      '.challenge-disclosure__body',
+    )
+    expect(evaluationBody).not.toBeNull()
+    expect(timelineBody).not.toBeNull()
+    const evaluationStage = within(evaluationBody as HTMLElement).getAllByTestId(
+      'challenge-stage',
+    )[0]
+    const timelineMilestone = within(timelineBody as HTMLElement).getAllByTestId(
+      'challenge-milestone',
+    )[0]
+    expect(evaluationBody).not.toBeVisible()
+    expect(timelineBody).not.toBeVisible()
+    expect(evaluationStage).not.toBeVisible()
+    expect(timelineMilestone).not.toBeVisible()
     for (const resource of within(challengeSection).getAllByTestId(
       'challenge-resource',
     )) {
@@ -678,6 +700,10 @@ describe('workshop landing page', () => {
     )
     expect(disclosures[0]).toHaveAttribute('open')
     expect(disclosures[1]).not.toHaveAttribute('open')
+    expect(evaluationBody).toBeVisible()
+    expect(evaluationStage).toBeVisible()
+    expect(timelineBody).not.toBeVisible()
+    expect(timelineMilestone).not.toBeVisible()
 
     await user.click(
       within(disclosures[1]).getByRole('heading', {
@@ -686,6 +712,10 @@ describe('workshop landing page', () => {
       }),
     )
     disclosures.forEach((disclosure) => expect(disclosure).toHaveAttribute('open'))
+    expect(evaluationBody).toBeVisible()
+    expect(timelineBody).toBeVisible()
+    expect(evaluationStage).toBeVisible()
+    expect(timelineMilestone).toBeVisible()
 
     const evaluation = within(disclosures[0]).getByRole('region', {
       name: 'Evaluation Format',
@@ -1132,16 +1162,16 @@ describe('workshop landing page', () => {
       'margin-bottom': '32px',
       'align-items': 'start',
     })
-    for (const selector of ['.challenge-evaluation', '.challenge-timeline']) {
-      expectOwnedCssProperties(appStyles, selector, {
-        padding: '0',
-        margin: '0',
-        overflow: 'clip',
-        background: 'rgba(82, 216, 230, 0.08)',
-        border: '1px solid rgba(27, 132, 153, 0.2)',
-        'border-radius': '7px',
-      })
-    }
+    expectOwnedCssProperties(appStyles, '.challenge-disclosure', {
+      padding: '0',
+      margin: '0',
+      overflow: 'clip',
+      background: 'rgba(82, 216, 230, 0.08)',
+      border: '1px solid rgba(27, 132, 153, 0.2)',
+      'border-radius': '7px',
+    })
+    expect(findCssRules(appStyles, '.challenge-evaluation')).toHaveLength(0)
+    expect(findCssRules(appStyles, '.challenge-timeline')).toHaveLength(0)
     expectOwnedCssProperties(appStyles, '.challenge-flow', {
       'grid-template-columns': '1fr',
       gap: '0',
@@ -1225,9 +1255,20 @@ describe('workshop landing page', () => {
       'background-color': 'rgba(82, 216, 230, 0.12)',
     })
     expect(appStyles).toContain('.challenge-disclosure > summary::-webkit-details-marker')
-    expect(indexStyles).toMatch(
-      /@media \(prefers-reduced-motion: reduce\) \{[\s\S]*?\.challenge-disclosure__icon\s*\{[^}]*transition:\s*none;/,
+    const iconTransitionIndex = appStyles.indexOf(
+      '.challenge-disclosure__icon',
     )
+    const reducedMotionIndex = appStyles.lastIndexOf(
+      '@media (prefers-reduced-motion: reduce)',
+    )
+    expect(reducedMotionIndex).toBeGreaterThan(iconTransitionIndex)
+    const reducedMotion = extractCssBlock(
+      appStyles,
+      '@media (prefers-reduced-motion: reduce)',
+    )
+    expectOwnedCssProperties(reducedMotion, '.challenge-disclosure__icon', {
+      transition: 'none',
+    })
   })
 
   it('hides decorative Challenge sequence numerals from assistive technology', () => {

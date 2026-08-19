@@ -105,7 +105,4 @@ p {
     transition-duration: 0.01ms !important;
   }
 
-  .challenge-disclosure__icon {
-    transition: none;
-  }
 }

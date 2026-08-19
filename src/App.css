@@ -1459,24 +1459,6 @@
   border-radius: 7px;
 }
 
-.challenge-evaluation {
-  padding: 0;
-  margin: 0;
-  overflow: clip;
-  background: rgba(82, 216, 230, 0.08);
-  border: 1px solid rgba(27, 132, 153, 0.2);
-  border-radius: 7px;
-}
-
-.challenge-timeline {
-  padding: 0;
-  margin: 0;
-  overflow: clip;
-  background: rgba(82, 216, 230, 0.08);
-  border: 1px solid rgba(27, 132, 153, 0.2);
-  border-radius: 7px;
-}
-
 .challenge-disclosure > summary {
   display: flex;
   min-height: 96px;
@@ -2551,5 +2533,11 @@
 
   .important-dates {
     padding: 24px 22px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .challenge-disclosure__icon {
+    transition: none;
   }
 }
