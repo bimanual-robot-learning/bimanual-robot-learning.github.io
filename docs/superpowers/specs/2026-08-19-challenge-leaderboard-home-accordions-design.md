@@ -73,7 +73,8 @@ No fictitious teams, scores, ranks, or test names appear on the public page.
 When the entry array is empty, the table header remains visible and a single
 body row spans all six columns:
 
-> **No results yet**  
+> **No results yet**
+>
 > Online evaluation begins August 25, 2026. Rankings will be published after
 > results are verified.
 
