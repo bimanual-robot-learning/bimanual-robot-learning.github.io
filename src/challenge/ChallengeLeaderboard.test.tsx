@@ -98,15 +98,17 @@ describe('ChallengeLeaderboard', () => {
       { rank: 3, teamId: 'T000010', teamName: 'Primotion', totalScore: 61 },
       { rank: 4, teamId: 'T000011', teamName: 'Horizon', totalScore: 45.316 },
     ]
+    const firstEntry = entries[0]
 
     render(<ChallengeLeaderboard entries={entries} />)
 
     const rows = screen.getAllByTestId('challenge-leaderboard-entry')
     expect(rows).toHaveLength(4)
-    expect(rows[0]).toHaveAccessibleName('1 T000015 npu-eai 73.89')
-    expect(rows[1]).toHaveAccessibleName('2 T000012 sota 61.80')
-    expect(rows[2]).toHaveAccessibleName('3 T000010 Primotion 61.00')
-    expect(rows[3]).toHaveAccessibleName('4 T000011 Horizon 45.32')
+    expect(rows[0]).toHaveAccessibleName('1 T15 npu-eai 73.89')
+    expect(rows[1]).toHaveAccessibleName('2 T12 sota 61.80')
+    expect(rows[2]).toHaveAccessibleName('3 T10 Primotion 61.00')
+    expect(rows[3]).toHaveAccessibleName('4 T11 Horizon 45.32')
+    expect(firstEntry.teamId).toBe('T000015')
     expect(rows[0]).toHaveAttribute('data-rank-accent', 'gold')
     expect(rows[1]).toHaveAttribute('data-rank-accent', 'silver')
     expect(rows[2]).toHaveAttribute('data-rank-accent', 'bronze')
@@ -121,6 +123,12 @@ describe('ChallengeLeaderboard', () => {
     )
     expect(rows[0].querySelectorAll('td')[2]).toHaveClass(
       'challenge-leaderboard__score',
+    )
+    expect(screen.getByRole('columnheader', { name: 'Total Score' })).toHaveClass(
+      'challenge-leaderboard__score-align',
+    )
+    expect(rows[0].querySelectorAll('td')[2]).toHaveClass(
+      'challenge-leaderboard__score-align',
     )
   })
 })

@@ -12,6 +12,11 @@ function formatScore(score: number) {
   })
 }
 
+function formatTeamId(teamId: string) {
+  const finalDigits = teamId.match(/(\d{2})$/)?.[1]
+  return finalDigits ? `T${finalDigits}` : teamId
+}
+
 function getRankAccent(rank: number) {
   if (rank === 1) return 'gold'
   if (rank === 2) return 'silver'
@@ -30,12 +35,20 @@ function ChallengeLeaderboard({ entries }: ChallengeLeaderboardProps) {
         <caption className="sr-only">
           Household Bimanual Manipulation Challenge rankings
         </caption>
+        <colgroup>
+          <col className="challenge-leaderboard__rank-column" />
+          <col className="challenge-leaderboard__id-column" />
+          <col className="challenge-leaderboard__name-column" />
+          <col className="challenge-leaderboard__score-column" />
+        </colgroup>
         <thead>
           <tr>
             <th scope="col">Rank</th>
             <th scope="col">Team ID</th>
             <th scope="col">Team Name</th>
-            <th scope="col">Total Score</th>
+            <th scope="col" className="challenge-leaderboard__score-align">
+              Total Score
+            </th>
           </tr>
         </thead>
         <tbody>
@@ -55,10 +68,10 @@ function ChallengeLeaderboard({ entries }: ChallengeLeaderboardProps) {
               >
                 <td className="challenge-leaderboard__rank">{entry.rank}</td>
                 <td className="challenge-leaderboard__team-id">
-                  {entry.teamId}
+                  {formatTeamId(entry.teamId)}
                 </td>
                 <th scope="row">{entry.teamName}</th>
-                <td className="challenge-leaderboard__score">
+                <td className="challenge-leaderboard__score challenge-leaderboard__score-align">
                   {formatScore(entry.totalScore)}
                 </td>
               </tr>
