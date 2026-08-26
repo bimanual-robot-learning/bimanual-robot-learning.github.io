@@ -753,10 +753,6 @@
   outline-offset: 4px;
 }
 
-.challenge-hub :is(#overview, #tasks, #evaluation, #prizes, #leaderboard) {
-  scroll-margin-top: 96px;
-}
-
 @media (max-width: 980px) {
   .challenge-hub__header-inner,
   .challenge-hub__section,
@@ -789,6 +785,10 @@
 }
 
 @media (max-width: 760px) {
+  .challenge-hub :is(#overview, #tasks, #evaluation, #prizes, #leaderboard) {
+    scroll-margin-top: 32px;
+  }
+
   .challenge-hub__header-inner {
     min-height: 64px;
     padding-top: 6px;

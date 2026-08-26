@@ -1,6 +1,7 @@
 import { render, screen, within } from '@testing-library/react'
 import { describe, expect, it } from 'vitest'
 import challengeHtml from '../../challenge/index.html?raw'
+import { challengeHub } from '../data/challengeHub'
 import {
   challenge,
   challengeOrganizers,
@@ -10,6 +11,7 @@ import galleryStyles from '../components/ChallengeVideoGallery.css?raw'
 import leaderboardStyles from './ChallengeLeaderboard.css?raw'
 import hubStyles from './ChallengeHub.css?raw'
 import ChallengeHub from './ChallengeHub'
+import indexStyles from '../index.css?raw'
 
 describe('ChallengeHub', () => {
   it('renders the refined challenge content and leaderboard contract', () => {
@@ -171,19 +173,29 @@ describe('ChallengeHub', () => {
 describe('ChallengeHub presentation', () => {
   it('offsets every sticky-navigation target below the header', () => {
     const { container } = render(<ChallengeHub />)
-    const targetIds = [
-      'overview',
-      'tasks',
-      'evaluation',
-      'prizes',
-      'leaderboard',
-    ]
+    const targetIds = challengeHub.navigation.map(({ href }) => href.slice(1))
+    const targetSelector = `.challenge-hub :is(${targetIds
+      .map((targetId) => `#${targetId}`)
+      .join(', ')})`
 
     for (const targetId of targetIds) {
       expect(container.querySelector(`#${targetId}`)).not.toBeNull()
     }
-    expect(hubStyles).toMatch(
-      /\.challenge-hub :is\(#overview, #tasks, #evaluation, #prizes, #leaderboard\)\s*\{[^}]*scroll-margin-top:\s*96px;/,
+    const globalScrollPadding = indexStyles.match(
+      /html\s*\{[^}]*scroll-padding-top:\s*(\d+)px;/,
+    )?.[1]
+    const desktopStyles = hubStyles.slice(0, hubStyles.indexOf('@media'))
+    const mobileTargetRule = hubStyles.match(
+      new RegExp(
+        `@media \\(max-width: 760px\\) \\{[\\s\\S]*?${targetSelector.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\s*\\{[^}]*scroll-margin-top:\\s*(\\d+)px;`,
+      ),
+    )
+
+    expect(globalScrollPadding).toBe('78')
+    expect(desktopStyles).not.toContain(targetSelector)
+    expect(mobileTargetRule?.[1]).toBe('32')
+    expect(Number(globalScrollPadding) + Number(mobileTargetRule?.[1])).toBeGreaterThan(
+      106,
     )
   })
 
