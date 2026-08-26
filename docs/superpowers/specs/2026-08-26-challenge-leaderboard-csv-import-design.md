@@ -41,7 +41,7 @@ The source `team_name` value follows this private combined format:
 [team name] - [leader name]
 ```
 
-The importer will split on the final exact delimiter ` - ` and publish only the portion before it. Splitting on the final delimiter preserves team names that may themselves contain hyphens. To prevent accidental disclosure, an otherwise publishable row without this delimiter will fail validation rather than publishing the raw value.
+The importer will require exactly one occurrence of the exact delimiter ` - ` and publish only the portion before it. Team names may contain ordinary hyphens, but not another occurrence of the spaced privacy delimiter. To prevent accidental disclosure when the private/public boundary is ambiguous, an otherwise publishable row with zero or multiple occurrences will fail validation rather than publishing any portion of the raw value.
 
 ## Import Architecture
 
@@ -94,12 +94,12 @@ The current CSV should produce eight entries in this order:
 Before overwriting the generated data module, the importer will verify:
 
 - all four publication headers are present;
-- every rank is a positive integer;
+- every rank uses ordinary base-10 positive integer text and is a JavaScript safe integer;
 - every Team ID is non-empty and unique;
 - every rank is unique;
-- every publishable combined team name contains the privacy delimiter;
+- every publishable combined team name contains exactly one privacy delimiter;
 - every sanitized team name is non-empty;
-- every total score is finite;
+- every total score matches the signed decimal grammar `[+-]?[0-9]+(?:\.[0-9]+)?`, excludes exponent notation, and is finite;
 - at least one valid row is available for publication.
 
 Any validation error will exit with a non-zero status and leave the existing generated leaderboard unchanged. The command will identify the row and reason without printing private leader names. Output replacement will occur only after the complete dataset passes validation.

@@ -6,6 +6,8 @@ import { parse } from 'csv-parse/sync'
 
 const requiredHeaders = ['rank', 'team_name', 'team_id', 'total_score']
 const privacyDelimiter = ' - '
+const positiveBase10IntegerPattern = /^\d+$/
+const nonExponentDecimalPattern = /^[+-]?\d+(?:\.\d+)?$/
 const defaultOutputPath = fileURLToPath(
   new URL('../src/data/challengeLeaderboard.generated.ts', import.meta.url),
 )
@@ -17,18 +19,30 @@ function fail(message) {
 export function parseLeaderboardCsv(source) {
   let headers = []
   let rows
+  let duplicateHeader
 
   try {
     rows = parse(source, {
       bom: true,
       columns: (values) => {
         headers = values.map((value) => value.trim())
+        const seenHeaders = new Set()
+        for (const header of headers) {
+          if (seenHeaders.has(header)) {
+            duplicateHeader = header
+            fail('Duplicate CSV header')
+          }
+          seenHeaders.add(header)
+        }
         return headers
       },
       skip_empty_lines: true,
       trim: true,
     })
   } catch {
+    if (duplicateHeader !== undefined) {
+      fail(`Duplicate CSV header: ${duplicateHeader}`)
+    }
     fail('Unable to parse leaderboard CSV')
   }
 
@@ -55,7 +69,11 @@ export function parseLeaderboardCsv(source) {
 
     const rawRank = String(row.rank ?? '').trim()
     const rank = Number(rawRank)
-    if (!rawRank || !Number.isInteger(rank) || rank <= 0) {
+    if (
+      !positiveBase10IntegerPattern.test(rawRank) ||
+      !Number.isSafeInteger(rank) ||
+      rank <= 0
+    ) {
       fail(`Row ${rowNumber}: rank must be a positive integer`)
     }
 
@@ -65,10 +83,15 @@ export function parseLeaderboardCsv(source) {
     }
 
     const combinedTeamName = String(row.team_name ?? '')
-    const delimiterIndex = combinedTeamName.lastIndexOf(privacyDelimiter)
+    const delimiterIndex = combinedTeamName.indexOf(privacyDelimiter)
     if (delimiterIndex < 0) {
       fail(
         `Row ${rowNumber}: team_name must use the required privacy delimiter`,
+      )
+    }
+    if (delimiterIndex !== combinedTeamName.lastIndexOf(privacyDelimiter)) {
+      fail(
+        `Row ${rowNumber}: team_name must contain exactly one privacy delimiter`,
       )
     }
 
@@ -79,7 +102,10 @@ export function parseLeaderboardCsv(source) {
 
     const rawTotalScore = String(row.total_score ?? '').trim()
     const totalScore = Number(rawTotalScore)
-    if (!rawTotalScore || !Number.isFinite(totalScore)) {
+    if (
+      !nonExponentDecimalPattern.test(rawTotalScore) ||
+      !Number.isFinite(totalScore)
+    ) {
       fail(`Row ${rowNumber}: total_score must be a finite number`)
     }
 

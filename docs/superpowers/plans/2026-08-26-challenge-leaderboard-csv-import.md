@@ -113,17 +113,25 @@ describe('parseLeaderboardCsv', () => {
     ])
   })
 
-  it('handles quoted commas and splits the final privacy delimiter', () => {
+  it('handles quoted commas with exactly one privacy delimiter', () => {
     const result = parseLeaderboardCsv(
-      'rank,team_name,team_id,total_score,status\n1,"Research, Robotics - Lab - Private Person",T009999,80,valid\n',
+      'rank,team_name,team_id,total_score,status\n1,"Research, Robotics - Private Person",T009999,80,valid\n',
     )
 
     expect(result.entries[0]).toEqual({
       rank: 1,
       teamId: 'T009999',
-      teamName: 'Research, Robotics - Lab',
+      teamName: 'Research, Robotics',
       totalScore: 80,
     })
+  })
+
+  it('rejects an ambiguous privacy delimiter without exposing raw content', () => {
+    const csv = 'rank,team_name,team_id,total_score,status\n1,Research Team - Lab - Private Person,T009999,80,valid\n'
+
+    expect(() => parseLeaderboardCsv(csv)).toThrow(
+      'Row 2: team_name must contain exactly one privacy delimiter',
+    )
   })
 
   it.each([
@@ -238,9 +246,12 @@ export function parseLeaderboardCsv(source) {
     if (!teamId) fail(`Row ${rowNumber}: team_id must not be empty`)
 
     const combinedTeamName = String(row.team_name ?? '')
-    const delimiterIndex = combinedTeamName.lastIndexOf(privacyDelimiter)
-    if (delimiterIndex <= 0) {
+    const delimiterIndex = combinedTeamName.indexOf(privacyDelimiter)
+    if (delimiterIndex < 0) {
       fail(`Row ${rowNumber}: team_name must use the required privacy delimiter`)
+    }
+    if (delimiterIndex !== combinedTeamName.lastIndexOf(privacyDelimiter)) {
+      fail(`Row ${rowNumber}: team_name must contain exactly one privacy delimiter`)
     }
     const teamName = combinedTeamName.slice(0, delimiterIndex).trim()
     if (!teamName) fail(`Row ${rowNumber}: sanitized team name must not be empty`)

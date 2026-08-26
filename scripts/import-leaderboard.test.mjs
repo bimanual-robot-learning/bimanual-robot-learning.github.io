@@ -11,7 +11,7 @@ import {
 } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
-import { fileURLToPath } from 'node:url'
+import { fileURLToPath, pathToFileURL } from 'node:url'
 import { promisify } from 'node:util'
 import { afterEach, describe, expect, it } from 'vitest'
 import {
@@ -80,18 +80,53 @@ describe('parseLeaderboardCsv', () => {
     })
   })
 
-  it('handles quoted commas, UTF-8, escaped quotes, and the final privacy delimiter', () => {
+  it('handles quoted commas, UTF-8, and escaped quotes with one privacy delimiter', () => {
     const result = parseLeaderboardCsv(
-      'rank,team_name,team_id,total_score\n1,"研究, ""Robotics"" - Lab - Private Person",T009999,80.125\n',
+      'rank,team_name,team_id,total_score\n1,"研究, ""Robotics"" - Private Person",T009999,80.125\n',
     )
 
     expect(result.entries[0]).toEqual({
       rank: 1,
       teamId: 'T009999',
-      teamName: '研究, "Robotics" - Lab',
+      teamName: '研究, "Robotics"',
       totalScore: 80.125,
     })
     expect(result.skippedRows).toBe(0)
+  })
+
+  it('rejects multiple privacy delimiters without exposing the raw team_name', () => {
+    const csv =
+      'rank,team_name,team_id,total_score\n1,Research Team - Lab - Private Person,T009999,80.125\n'
+
+    expect(() => parseLeaderboardCsv(csv)).toThrow(
+      'Row 2: team_name must contain exactly one privacy delimiter',
+    )
+    try {
+      parseLeaderboardCsv(csv)
+    } catch (error) {
+      expect(String(error)).not.toContain('Research Team')
+      expect(String(error)).not.toContain('Private Person')
+    }
+  })
+
+  it.each([
+    [
+      'public header',
+      'rank,team_name,team_id,total_score, rank \n1,Unsafe Raw Name,T1,10,1\n',
+      'Duplicate CSV header: rank',
+    ],
+    [
+      'status header',
+      'rank,team_name,team_id,total_score,status,status\n1,Unsafe Raw Name,T1,10,valid,valid\n',
+      'Duplicate CSV header: status',
+    ],
+  ])('rejects a duplicate normalized %s before parsing rows', (_, csv, message) => {
+    expect(() => parseLeaderboardCsv(csv)).toThrow(message)
+    try {
+      parseLeaderboardCsv(csv)
+    } catch (error) {
+      expect(String(error)).not.toContain('Unsafe Raw Name')
+    }
   })
 
   it('skips blank and non-valid statuses when the optional header is present', () => {
@@ -103,6 +138,47 @@ describe('parseLeaderboardCsv', () => {
       { rank: 1, teamId: 'T1', teamName: 'A', totalScore: 10 },
     ])
     expect(result.skippedRows).toBe(2)
+  })
+
+  it.each([
+    ['exponent notation', '1e2'],
+    ['hex notation', '0x10'],
+    ['decimal notation', '1.0'],
+    ['explicit plus sign', '+1'],
+    ['negative sign', '-1'],
+    ['zero', '0'],
+    ['unsafe integer', '9007199254740992'],
+  ])('rejects rank in %s form', (_, rank) => {
+    const csv = `rank,team_name,team_id,total_score\n${rank},Team - Person,T1,10\n`
+
+    expect(() => parseLeaderboardCsv(csv)).toThrow(
+      'Row 2: rank must be a positive integer',
+    )
+  })
+
+  it('accepts signed integer and fractional decimal scores', () => {
+    const result = parseLeaderboardCsv(
+      'rank,team_name,team_id,total_score\n1,A - Person,T1,+10\n2,B - Person,T2,-0.25\n',
+    )
+
+    expect(result.entries.map(({ totalScore }) => totalScore)).toEqual([
+      10, -0.25,
+    ])
+  })
+
+  it.each([
+    ['hex notation', '0x10'],
+    ['exponent notation', '1e2'],
+    ['positive infinity', 'Infinity'],
+    ['negative infinity', '-Infinity'],
+    ['not-a-number text', 'NaN'],
+    ['blank text', ''],
+  ])('rejects total_score in %s form', (_, totalScore) => {
+    const csv = `rank,team_name,team_id,total_score\n1,Team - Person,T1,${totalScore}\n`
+
+    expect(() => parseLeaderboardCsv(csv)).toThrow(
+      'Row 2: total_score must be a finite number',
+    )
   })
 
   it.each([
@@ -198,6 +274,42 @@ describe('renderGeneratedModule', () => {
     expect(output).not.toContain('status')
     expect(output).not.toContain('leaderName')
   })
+
+  it('round-trips hostile string content without executing it', async () => {
+    const directory = await makeTemporaryDirectory()
+    const modulePath = join(directory, 'generated.mjs')
+    const executionMarker = '__leaderboardGeneratedCodeExecuted'
+    const entry = {
+      rank: 1,
+      teamId: 'T"\\\n\u2028\u2029',
+      teamName: `Quoted "team" \\ path
+next\u2028line\u2029"}]; globalThis.${executionMarker} = true; //`,
+      totalScore: 12.345678901234567,
+    }
+    delete globalThis[executionMarker]
+
+    const output = renderGeneratedModule([entry])
+    const executableModule = output
+      .replace(
+        /export interface ChallengeLeaderboardEntry \{[\s\S]*?\}\n\n/,
+        '',
+      )
+      .replace(
+        '] as const satisfies readonly ChallengeLeaderboardEntry[]',
+        ']',
+      )
+    await writeFile(modulePath, executableModule)
+
+    try {
+      const importedModule = await import(
+        `${pathToFileURL(modulePath).href}?test=${Date.now()}`
+      )
+      expect(importedModule.challengeLeaderboardEntries).toEqual([entry])
+      expect(globalThis[executionMarker]).toBeUndefined()
+    } finally {
+      delete globalThis[executionMarker]
+    }
+  })
 })
 
 describe('importLeaderboard', () => {
@@ -224,6 +336,7 @@ describe('importLeaderboard', () => {
     const inputPath = join(directory, 'results.csv')
     const outputPath = join(directory, 'challengeLeaderboard.generated.ts')
     await writeFile(inputPath, sampleCsv)
+    await writeFile(outputPath, 'old generated output\n')
 
     await expect(importLeaderboard(inputPath, outputPath)).resolves.toEqual({
       importedRows: 8,
@@ -231,8 +344,8 @@ describe('importLeaderboard', () => {
       failedRows: 0,
       outputPath,
     })
-    await expect(readFile(outputPath, 'utf8')).resolves.toContain(
-      'teamId: "T000015"',
+    await expect(readFile(outputPath, 'utf8')).resolves.toBe(
+      renderGeneratedModule(parseLeaderboardCsv(sampleCsv).entries),
     )
     await expect(readdir(directory)).resolves.toEqual(
       expect.arrayContaining([
