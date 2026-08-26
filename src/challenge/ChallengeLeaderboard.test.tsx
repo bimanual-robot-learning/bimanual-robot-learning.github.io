@@ -76,7 +76,7 @@ describe('ChallengeLeaderboard', () => {
       /\.challenge-leaderboard__table \.challenge-leaderboard__rank-align\s*\{[^}]*text-align:\s*center;/,
     )
     expect(leaderboardStyles).toMatch(
-      /\.challenge-leaderboard__rank-badge\s*\{[^}]*display:\s*inline-grid;[^}]*width:\s*28px;[^}]*height:\s*28px;[^}]*place-items:\s*center;[^}]*border-radius:\s*50%;/,
+      /\.challenge-leaderboard__rank-badge\s*\{[^}]*display:\s*inline-grid;[^}]*width:\s*28px;[^}]*height:\s*28px;[^}]*place-items:\s*center;[^}]*color:\s*var\(--ink-950\);[^}]*border-radius:\s*50%;/,
     )
     expect(leaderboardStyles).toContain('.challenge-leaderboard__rank')
     expect(leaderboardStyles).toContain('.challenge-leaderboard__team-id')
@@ -113,13 +113,13 @@ describe('ChallengeLeaderboard', () => {
     )
     expect(leaderboardStyles).toContain('font-variant-numeric: tabular-nums')
     expect(leaderboardStyles).toMatch(
-      /\.challenge-leaderboard__table tr\[data-rank-accent="gold"\] > \.challenge-leaderboard__rank \.challenge-leaderboard__rank-badge\s*\{[^}]*background:\s*#f1c75b;/,
+      /\.challenge-leaderboard__table tr\[data-rank-accent="gold"\] > \.challenge-leaderboard__rank \.challenge-leaderboard__rank-badge\s*\{[^}]*background:\s*#f1c75b;[^}]*box-shadow:\s*0\s+0\s+0\s+3px\s+rgba\(241,\s*199,\s*91,\s*0\.22\);/,
     )
     expect(leaderboardStyles).toMatch(
-      /\.challenge-leaderboard__table tr\[data-rank-accent="silver"\] > \.challenge-leaderboard__rank \.challenge-leaderboard__rank-badge\s*\{[^}]*background:\s*#c7d2d9;/,
+      /\.challenge-leaderboard__table tr\[data-rank-accent="silver"\] > \.challenge-leaderboard__rank \.challenge-leaderboard__rank-badge\s*\{[^}]*background:\s*#c7d2d9;[^}]*box-shadow:\s*0\s+0\s+0\s+3px\s+rgba\(199,\s*210,\s*217,\s*0\.22\);/,
     )
     expect(leaderboardStyles).toMatch(
-      /\.challenge-leaderboard__table tr\[data-rank-accent="bronze"\] > \.challenge-leaderboard__rank \.challenge-leaderboard__rank-badge\s*\{[^}]*background:\s*#d99568;/,
+      /\.challenge-leaderboard__table tr\[data-rank-accent="bronze"\] > \.challenge-leaderboard__rank \.challenge-leaderboard__rank-badge\s*\{[^}]*background:\s*#d99568;[^}]*box-shadow:\s*0\s+0\s+0\s+3px\s+rgba\(217,\s*149,\s*104,\s*0\.22\);/,
     )
     expect(leaderboardStyles).not.toContain(
       '.challenge-leaderboard__opening-date',
@@ -169,17 +169,17 @@ describe('ChallengeLeaderboard', () => {
     expect(rows[0].querySelectorAll('td')[1]).toHaveClass(
       'challenge-leaderboard__team-id',
     )
-    expect(rows[0].querySelectorAll('td')[2]).toHaveClass(
-      'challenge-leaderboard__score',
-    )
+    rows.forEach((row) => {
+      const scoreCell = row.querySelectorAll('td')[2]
+
+      expect(scoreCell).toHaveClass('challenge-leaderboard__score')
+      expect(scoreCell).toHaveClass('challenge-leaderboard__score-align')
+    })
     expect(screen.getByRole('columnheader', { name: 'Total Score' })).toHaveClass(
       'challenge-leaderboard__score-align',
     )
     expect(screen.getByRole('columnheader', { name: 'Rank' })).toHaveClass(
       'challenge-leaderboard__rank-align',
-    )
-    expect(rows[0].querySelectorAll('td')[2]).toHaveClass(
-      'challenge-leaderboard__score-align',
     )
     expect(rows[0].querySelector('.challenge-leaderboard__rank-badge')).toHaveTextContent(
       '1',
