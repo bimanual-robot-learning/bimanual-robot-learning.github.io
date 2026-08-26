@@ -1272,12 +1272,15 @@ describe('workshop landing page', () => {
   it('owns a homepage-aligned leaderboard surface', () => {
     expect(appStyles).toContain('.challenge-home-leaderboard')
     expect(appStyles).toContain('.challenge-home-leaderboard__header')
-    expect(
-      extractCssProperty(
-        extractCssRule(appStyles, '.challenge-home-leaderboard').declarations,
-        'overflow',
-      ),
-    ).toBeUndefined()
+    const leaderboardCardRule = extractCssRule(
+      appStyles,
+      '.challenge-home-leaderboard',
+    )
+    for (const property of ['overflow', 'overflow-x', 'overflow-y']) {
+      expect(
+        extractCssProperty(leaderboardCardRule.declarations, property),
+      ).toBeUndefined()
+    }
     expect(leaderboardStyles).toMatch(
       /\.challenge-leaderboard__viewport\s*\{[^}]*overflow-x:\s*auto;/,
     )

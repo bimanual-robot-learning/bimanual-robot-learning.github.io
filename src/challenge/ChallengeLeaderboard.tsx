@@ -53,10 +53,14 @@ function ChallengeLeaderboard({ entries }: ChallengeLeaderboardProps) {
                 data-testid="challenge-leaderboard-entry"
                 key={entry.teamId}
               >
-                <td>{entry.rank}</td>
-                <td>{entry.teamId}</td>
+                <td className="challenge-leaderboard__rank">{entry.rank}</td>
+                <td className="challenge-leaderboard__team-id">
+                  {entry.teamId}
+                </td>
                 <th scope="row">{entry.teamName}</th>
-                <td>{formatScore(entry.totalScore)}</td>
+                <td className="challenge-leaderboard__score">
+                  {formatScore(entry.totalScore)}
+                </td>
               </tr>
             ))
           )}

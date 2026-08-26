@@ -26,6 +26,9 @@ describe('ChallengeLeaderboard', () => {
     )
     expect(emptyState).toBeVisible()
     expect(emptyState).toHaveAttribute('colspan', '4')
+    expect(emptyState).not.toHaveClass('challenge-leaderboard__rank')
+    expect(emptyState).not.toHaveClass('challenge-leaderboard__team-id')
+    expect(emptyState).not.toHaveClass('challenge-leaderboard__score')
     expect(screen.queryByText(/August 25, 2026/i)).not.toBeInTheDocument()
     expect(screen.queryByText(/Leaderboard opens/i)).not.toBeInTheDocument()
     expect(screen.queryAllByTestId('challenge-leaderboard-entry')).toHaveLength(0)
@@ -40,6 +43,15 @@ describe('ChallengeLeaderboard', () => {
     )
     expect(leaderboardStyles).toMatch(
       /\.challenge-leaderboard__table\s*\{[^}]*min-width:\s*620px;/,
+    )
+    expect(leaderboardStyles).toContain('.challenge-leaderboard__rank')
+    expect(leaderboardStyles).toContain('.challenge-leaderboard__team-id')
+    expect(leaderboardStyles).toContain('.challenge-leaderboard__score')
+    expect(leaderboardStyles).not.toMatch(
+      /\.challenge-leaderboard__table tbody td:(?:first-child|nth-child\(2\)|last-child)/,
+    )
+    expect(leaderboardStyles).toMatch(
+      /\.challenge-leaderboard__empty td\s*\{[^}]*color:\s*var\(--slate-light-readable\);[^}]*font-family:\s*var\(--font-body\);[^}]*font-size:\s*0\.92rem;[^}]*font-weight:\s*400;[^}]*line-height:\s*1\.6;[^}]*text-align:\s*left;/,
     )
     expect(leaderboardStyles).toContain('font-variant-numeric: tabular-nums')
     expect(leaderboardStyles).toContain('[data-rank-accent="gold"]')
@@ -83,5 +95,14 @@ describe('ChallengeLeaderboard', () => {
     expect(rows[3]).not.toHaveAttribute('data-rank-accent')
     expect(rows[0].querySelector('th[scope="row"]')).toHaveTextContent('npu-eai')
     expect(rows[0].querySelectorAll('td')).toHaveLength(3)
+    expect(rows[0].querySelectorAll('td')[0]).toHaveClass(
+      'challenge-leaderboard__rank',
+    )
+    expect(rows[0].querySelectorAll('td')[1]).toHaveClass(
+      'challenge-leaderboard__team-id',
+    )
+    expect(rows[0].querySelectorAll('td')[2]).toHaveClass(
+      'challenge-leaderboard__score',
+    )
   })
 })
