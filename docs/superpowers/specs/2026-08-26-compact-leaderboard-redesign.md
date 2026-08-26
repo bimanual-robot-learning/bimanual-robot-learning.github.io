@@ -20,9 +20,12 @@ The leaderboard remains a single table with these columns, in this order:
 - Display each team ID as `T` followed by the final two digits of its canonical ID. Examples: `T000015` becomes `T15`, and `T000012` becomes `T12`.
 - Keep the full canonical team ID in generated data and React keys. The shortening is presentation-only so recurring CSV imports do not lose source identity.
 - Continue displaying total scores with exactly two decimal places.
-- Apply one explicit shared right-alignment hook to both the `Total Score` header and every score cell so their right edges align exactly.
+- Apply one explicit shared left-alignment hook to both the `Total Score` header and every score cell so the column follows the same reading direction as Team Name.
+- Highlight every score with the same cyan color and weight; score emphasis must not depend on rank.
+- Center the `Rank` header and every rank value on one consistent vertical axis.
+- Render ranks 1, 2, and 3 as restrained 28px circular medals with gold, silver, and bronze fills respectively. Ranks 4 and below remain plain numbers but stay centered in the same column.
 - Keep tabular numerals for ranks, team IDs, and scores.
-- Retain restrained gold, silver, and bronze text accents on the top-three rank values only.
+- Pair the medal colors with visible rank numerals so rank meaning never depends on color alone.
 
 ## Layout
 
@@ -47,10 +50,11 @@ The leaderboard remains a single table with these columns, in this order:
 ## Testing and Validation
 
 - Add a unit test that proves canonical IDs render in the required short form while canonical data remains unchanged.
-- Add a unit/CSS regression test proving the score header and score cells share the same right-alignment hook.
+- Add a unit/CSS regression test proving the score header and score cells share the same left-alignment hook and uniform cyan emphasis.
+- Add markup/CSS regression tests proving all rank cells are centered while only ranks 1–3 receive circular medal styling.
 - Add layout regression assertions for the centered maximum width, fixed column proportions, reduced minimum width, and internal overflow containment.
 - Run the complete test suite, lint, TypeScript production build, and `git diff --check`.
-- Visually verify the homepage and Challenge subpage at desktop and mobile widths, including the right edge of the `Total Score` header and score values.
+- Visually verify the homepage and Challenge subpage at desktop and mobile widths, including consistent Rank-column centering and the shared left edge of the `Total Score` header and score values.
 
 ## Out of Scope
 
