@@ -24,6 +24,18 @@ All frequently updated content is in [`src/data/workshop.ts`](src/data/workshop.
 
 Portraits and workshop imagery are stored under `public/images/`. Keep root-relative paths such as `/images/speakers/name.jpg` so they continue to work on the organization-level GitHub Pages domain.
 
+## Updating the Challenge Leaderboard
+
+Keep the organizer CSV outside the repository, then import it with:
+
+```bash
+npm run leaderboard:import -- "/absolute/path/to/leaderboard.csv"
+```
+
+The importer reads columns by header name. When a `status` column exists, it publishes only rows marked `valid`. Each `team_name` must contain exactly one privacy delimiter (` - `); the importer removes the private leader suffix. It rejects duplicate headers, ranks, and Team IDs, validates numeric fields, and writes only the public fields to `src/data/challengeLeaderboard.generated.ts`.
+
+After every import, review the generated diff, run `npm test`, `npm run lint`, and `npm run build`, then preview both `/` and `/challenge/`. Commit and push the generated update only after it is approved.
+
 ## Quality checks
 
 ```bash
