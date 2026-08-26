@@ -85,7 +85,7 @@ describe('ChallengeHub', () => {
     expect(within(leaderboard).getByText('8 verified teams')).toBeVisible()
     expect(
       within(leaderboard).getByRole('row', {
-        name: '1 T000015 npu-eai 73.89',
+        name: '1 T15 npu-eai 73.89',
       }),
     ).toBeVisible()
     expect(leaderboard).not.toHaveTextContent('August 25, 2026')
@@ -221,10 +221,10 @@ describe('ChallengeHub presentation', () => {
     )
     expect(leaderboardStyles).toContain('.challenge-leaderboard__viewport')
     expect(leaderboardStyles).toMatch(
-      /\.challenge-leaderboard__viewport\s*\{[^}]*overflow-x:\s*auto;/,
+      /\.challenge-leaderboard__viewport\s*\{[^}]*width:\s*min\(100%,\s*800px\);[^}]*overflow-x:\s*auto;/,
     )
     expect(leaderboardStyles).toMatch(
-      /\.challenge-leaderboard__table\s*\{[^}]*min-width:\s*620px;/,
+      /\.challenge-leaderboard__table\s*\{[^}]*min-width:\s*540px;/,
     )
     expect(leaderboardStyles).toContain('.challenge-leaderboard__empty')
     expect(hubStyles).toMatch(

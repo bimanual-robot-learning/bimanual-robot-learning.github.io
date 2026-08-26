@@ -46,13 +46,31 @@ describe('ChallengeLeaderboard', () => {
 
   it('contains horizontal movement and exposes readable visual hooks', () => {
     expect(leaderboardStyles).toMatch(
-      /\.challenge-leaderboard__viewport\s*\{[^}]*max-width:\s*100%;[^}]*overflow-x:\s*auto;[^}]*overscroll-behavior-x:\s*contain;/,
+      /\.challenge-leaderboard__viewport\s*\{[^}]*width:\s*min\(100%,\s*800px\);[^}]*max-width:\s*100%;[^}]*margin-inline:\s*auto;[^}]*overflow-x:\s*auto;[^}]*overscroll-behavior-x:\s*contain;/,
     )
     expect(leaderboardStyles).toMatch(
       /\.challenge-leaderboard__viewport:focus-visible\s*\{/,
     )
     expect(leaderboardStyles).toMatch(
-      /\.challenge-leaderboard__table\s*\{[^}]*min-width:\s*620px;/,
+      /\.challenge-leaderboard__table\s*\{[^}]*min-width:\s*540px;[^}]*table-layout:\s*fixed;/,
+    )
+    expect(leaderboardStyles).toMatch(
+      /\.challenge-leaderboard__rank-column\s*\{[^}]*width:\s*12%;/,
+    )
+    expect(leaderboardStyles).toMatch(
+      /\.challenge-leaderboard__id-column\s*\{[^}]*width:\s*17%;/,
+    )
+    expect(leaderboardStyles).toMatch(
+      /\.challenge-leaderboard__name-column\s*\{[^}]*width:\s*46%;/,
+    )
+    expect(leaderboardStyles).toMatch(
+      /\.challenge-leaderboard__score-column\s*\{[^}]*width:\s*25%;/,
+    )
+    expect(leaderboardStyles).toMatch(
+      /\.challenge-leaderboard__table th,\s*\.challenge-leaderboard__table td\s*\{[^}]*padding:\s*15px\s+12px;/,
+    )
+    expect(leaderboardStyles).toMatch(
+      /\.challenge-leaderboard__score-align\s*\{[^}]*text-align:\s*right;/,
     )
     expect(leaderboardStyles).toContain('.challenge-leaderboard__rank')
     expect(leaderboardStyles).toContain('.challenge-leaderboard__team-id')

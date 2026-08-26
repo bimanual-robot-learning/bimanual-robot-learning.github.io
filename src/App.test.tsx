@@ -610,7 +610,7 @@ describe('workshop landing page', () => {
     expect(within(homepageLeaderboard).getByText('8 verified teams')).toBeVisible()
     expect(
       within(homepageLeaderboard).getByRole('row', {
-        name: '1 T000015 npu-eai 73.89',
+        name: '1 T15 npu-eai 73.89',
       }),
     ).toBeVisible()
     expect(homepageLeaderboard).not.toHaveTextContent('August 25, 2026')
@@ -1282,7 +1282,10 @@ describe('workshop landing page', () => {
       ).toBeUndefined()
     }
     expect(leaderboardStyles).toMatch(
-      /\.challenge-leaderboard__viewport\s*\{[^}]*overflow-x:\s*auto;/,
+      /\.challenge-leaderboard__viewport\s*\{[^}]*width:\s*min\(100%,\s*800px\);[^}]*overflow-x:\s*auto;/,
+    )
+    expect(leaderboardStyles).toMatch(
+      /\.challenge-leaderboard__table\s*\{[^}]*min-width:\s*540px;/,
     )
     expectOwnedCssProperties(
       appStyles,

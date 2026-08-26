@@ -1,5 +1,7 @@
 .challenge-leaderboard__viewport {
+  width: min(100%, 800px);
   max-width: 100%;
+  margin-inline: auto;
   overflow-x: auto;
   overscroll-behavior-x: contain;
   background: rgba(3, 20, 29, 0.58);
@@ -24,14 +26,31 @@
 
 .challenge-leaderboard__table {
   width: 100%;
-  min-width: 620px;
+  min-width: 540px;
+  table-layout: fixed;
   border-collapse: collapse;
   color: var(--paper);
 }
 
+.challenge-leaderboard__rank-column {
+  width: 12%;
+}
+
+.challenge-leaderboard__id-column {
+  width: 17%;
+}
+
+.challenge-leaderboard__name-column {
+  width: 46%;
+}
+
+.challenge-leaderboard__score-column {
+  width: 25%;
+}
+
 .challenge-leaderboard__table th,
 .challenge-leaderboard__table td {
-  padding: 18px 14px;
+  padding: 15px 12px;
   text-align: left;
   border-bottom: 1px solid rgba(183, 220, 230, 0.18);
 }
@@ -61,8 +80,7 @@
   font-variant-numeric: tabular-nums;
 }
 
-.challenge-leaderboard__table thead th:last-child,
-.challenge-leaderboard__score {
+.challenge-leaderboard__score-align {
   text-align: right;
 }
 
