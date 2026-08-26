@@ -136,7 +136,7 @@ expect(leaderboardStyles).toMatch(/\.challenge-leaderboard__id-column\s*\{[^}]*w
 expect(leaderboardStyles).toMatch(/\.challenge-leaderboard__name-column\s*\{[^}]*width:\s*46%;/)
 expect(leaderboardStyles).toMatch(/\.challenge-leaderboard__score-column\s*\{[^}]*width:\s*25%;/)
 expect(leaderboardStyles).toMatch(
-  /\.challenge-leaderboard__score-align\s*\{[^}]*text-align:\s*right;/,
+  /\.challenge-leaderboard__table \.challenge-leaderboard__score-align\s*\{[^}]*text-align:\s*left;/,
 )
 expect(leaderboardStyles).toMatch(
   /\.challenge-leaderboard__table th,\s*\.challenge-leaderboard__table td\s*\{[^}]*padding:\s*15px 12px;/,
@@ -193,7 +193,7 @@ Update the viewport and table rules:
 }
 
 .challenge-leaderboard__score-align {
-  text-align: right;
+  text-align: left;
 }
 ```
 
@@ -235,7 +235,7 @@ Use the production preview at 1440px and 390px for both `/` and `/challenge/`. V
 
 - the table is centered and no wider than 800px;
 - rendered IDs are `T15`, `T12`, `T10`, `T11`, `T13`, `T14`, `T16`, and `T17`;
-- the right edge of the `Total Score` header matches every score value;
+- the left edge of the `Total Score` header matches every score value;
 - the page itself has no horizontal overflow;
 - any mobile horizontal movement remains inside the table viewport;
 - keyboard focus remains visible.
@@ -245,4 +245,174 @@ Use the production preview at 1440px and 390px for both `/` and `/challenge/`. V
 ```bash
 git add src/challenge/ChallengeLeaderboard.css src/challenge/ChallengeLeaderboard.test.tsx src/App.test.tsx src/challenge/ChallengeHub.test.tsx
 git commit -m "style: tighten challenge leaderboard layout"
+```
+
+### Task 3: Consistent Rank Centering and Top-Three Medals
+
+**Files:**
+- Modify: `src/challenge/ChallengeLeaderboard.test.tsx`
+- Modify: `src/challenge/ChallengeLeaderboard.tsx`
+- Modify: `src/challenge/ChallengeLeaderboard.css`
+
+- [ ] **Step 1: Write failing markup and CSS assertions**
+
+Extend the populated-table test with these assertions:
+
+```tsx
+expect(screen.getByRole('columnheader', { name: 'Rank' })).toHaveClass(
+  'challenge-leaderboard__rank-align',
+)
+
+const rankCells = rows.map((row) =>
+  row.querySelector('.challenge-leaderboard__rank'),
+)
+rankCells.forEach((rankCell) => {
+  expect(rankCell).toHaveClass('challenge-leaderboard__rank-align')
+})
+
+expect(rankCells[0]?.querySelector('.challenge-leaderboard__rank-badge')).toHaveTextContent('1')
+expect(rankCells[1]?.querySelector('.challenge-leaderboard__rank-badge')).toHaveTextContent('2')
+expect(rankCells[2]?.querySelector('.challenge-leaderboard__rank-badge')).toHaveTextContent('3')
+expect(rankCells[3]?.querySelector('.challenge-leaderboard__rank-badge')).toBeNull()
+```
+
+Replace the score-alignment CSS expectation and add medal/centering assertions:
+
+```tsx
+expect(leaderboardStyles).toMatch(
+  /\.challenge-leaderboard__table \.challenge-leaderboard__score-align\s*\{[^}]*text-align:\s*left;/,
+)
+expect(leaderboardStyles).toMatch(
+  /\.challenge-leaderboard__table \.challenge-leaderboard__rank-align\s*\{[^}]*text-align:\s*center;/,
+)
+expect(leaderboardStyles).toMatch(
+  /\.challenge-leaderboard__rank-badge\s*\{[^}]*display:\s*inline-grid;[^}]*width:\s*28px;[^}]*height:\s*28px;[^}]*place-items:\s*center;[^}]*border-radius:\s*50%;/,
+)
+expect(leaderboardStyles).toContain('[data-rank-accent="gold"] .challenge-leaderboard__rank-badge')
+expect(leaderboardStyles).toContain('[data-rank-accent="silver"] .challenge-leaderboard__rank-badge')
+expect(leaderboardStyles).toContain('[data-rank-accent="bronze"] .challenge-leaderboard__rank-badge')
+```
+
+- [ ] **Step 2: Run the focused test and verify RED**
+
+Run:
+
+```bash
+npm test -- src/challenge/ChallengeLeaderboard.test.tsx
+```
+
+Expected: FAIL because Rank cells are not explicitly centered, ranks 1–3 lack badge elements, and scores still align right.
+
+- [ ] **Step 3: Implement consistent alignment and medal markup**
+
+Apply `challenge-leaderboard__rank-align` to the Rank header and every rank cell. In the populated-row map, compute the existing accent once and use it both on the row and to conditionally wrap only ranks 1–3:
+
+```tsx
+{entries.map((entry) => {
+  const rankAccent = getRankAccent(entry.rank)
+
+  return (
+    <tr
+      data-rank-accent={rankAccent}
+      data-testid="challenge-leaderboard-entry"
+      key={entry.teamId}
+    >
+      <td className="challenge-leaderboard__rank challenge-leaderboard__rank-align">
+        {rankAccent ? (
+          <span className="challenge-leaderboard__rank-badge">
+            {entry.rank}
+          </span>
+        ) : (
+          entry.rank
+        )}
+      </td>
+      <td className="challenge-leaderboard__team-id">
+        {formatTeamId(entry.teamId)}
+      </td>
+      <th scope="row">{entry.teamName}</th>
+      <td className="challenge-leaderboard__score challenge-leaderboard__score-align">
+        {formatScore(entry.totalScore)}
+      </td>
+    </tr>
+  )
+})}
+```
+
+Use this explicit Rank header markup:
+
+```tsx
+<th scope="col" className="challenge-leaderboard__rank-align">
+  Rank
+</th>
+```
+
+Update the alignment and medal CSS:
+
+```css
+.challenge-leaderboard__table .challenge-leaderboard__rank-align {
+  text-align: center;
+}
+
+.challenge-leaderboard__table .challenge-leaderboard__score-align {
+  text-align: left;
+}
+
+.challenge-leaderboard__rank-badge {
+  display: inline-grid;
+  width: 28px;
+  height: 28px;
+  color: var(--ink-950);
+  font-weight: 800;
+  line-height: 1;
+  border-radius: 50%;
+  place-items: center;
+}
+
+.challenge-leaderboard__table tr[data-rank-accent="gold"] .challenge-leaderboard__rank-badge {
+  background: #f1c75b;
+  box-shadow: 0 0 0 3px rgba(241, 199, 91, 0.12);
+}
+
+.challenge-leaderboard__table tr[data-rank-accent="silver"] .challenge-leaderboard__rank-badge {
+  background: #c7d2d9;
+  box-shadow: 0 0 0 3px rgba(199, 210, 217, 0.1);
+}
+
+.challenge-leaderboard__table tr[data-rank-accent="bronze"] .challenge-leaderboard__rank-badge {
+  background: #d99568;
+  box-shadow: 0 0 0 3px rgba(217, 149, 104, 0.1);
+}
+```
+
+Remove the old rules that color the entire rank cell for the top three. Keep `.challenge-leaderboard__score` cyan and bold for every row.
+
+- [ ] **Step 4: Run focused and full verification**
+
+Run:
+
+```bash
+npm test -- src/challenge/ChallengeLeaderboard.test.tsx
+npm test
+npm run lint
+npm run build
+git diff --check
+```
+
+Expected: focused and full suites PASS, lint and build exit 0, and no whitespace errors.
+
+- [ ] **Step 5: Verify both pages in the browser**
+
+At 1440px and 390px on both `/` and `/challenge/`, verify:
+
+- the Rank header and ranks 1–8 share one centered axis;
+- only ranks 1–3 have circular fills;
+- all score values retain the same cyan emphasis;
+- the `Total Score` header and every score share one left edge;
+- no page-level horizontal overflow is introduced.
+
+- [ ] **Step 6: Commit**
+
+```bash
+git add src/challenge/ChallengeLeaderboard.tsx src/challenge/ChallengeLeaderboard.css src/challenge/ChallengeLeaderboard.test.tsx
+git commit -m "style: add leaderboard rank medals"
 ```
