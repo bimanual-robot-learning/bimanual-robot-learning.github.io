@@ -1472,10 +1472,16 @@
   letter-spacing: -0.05em;
 }
 
-.challenge-home-leaderboard__header > p {
+.challenge-home-leaderboard__header > .challenge-leaderboard__summary {
   margin: 0;
-  color: var(--slate-light-readable);
-  font-size: 0.88rem;
+  color: var(--cyan);
+  font-family: var(--font-mono);
+  font-size: 0.76rem;
+  font-weight: 700;
+  line-height: 1.5;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  white-space: nowrap;
 }
 
 .challenge-logistics {

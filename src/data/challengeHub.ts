@@ -1,4 +1,10 @@
+import {
+  challengeLeaderboardEntries,
+  type ChallengeLeaderboardEntry,
+} from './challengeLeaderboard.generated'
 import { challengeDatasetUrl } from './workshop'
+
+export type { ChallengeLeaderboardEntry } from './challengeLeaderboard.generated'
 
 export interface ChallengeHubNavigationItem {
   label: string
@@ -11,23 +17,8 @@ export interface ChallengeHubParticipationStep {
   description: string
 }
 
-export type ChallengeLeaderboardStatus =
-  | 'Online Evaluation'
-  | 'Finalist'
-  | 'Final Result'
-
-export interface ChallengeLeaderboardEntry {
-  rank: number
-  team: string
-  onlineScore: number
-  realRobotScore: number | null
-  finalScore: number | null
-  status: ChallengeLeaderboardStatus
-}
-
 export interface ChallengeHubLeaderboard {
-  status: 'Results pending'
-  openingDate: 'August 25, 2026'
+  status: 'Verified results'
   entries: readonly ChallengeLeaderboardEntry[]
 }
 
@@ -93,8 +84,7 @@ export const challengeHub = {
   taskScope:
     'Real-robot evaluation covers up to four household tasks, including washer manipulation and clothing folding.',
   leaderboard: {
-    status: 'Results pending',
-    openingDate: 'August 25, 2026',
-    entries: [] satisfies ChallengeLeaderboardEntry[],
+    status: 'Verified results',
+    entries: challengeLeaderboardEntries,
   } satisfies ChallengeHubLeaderboard,
 } as const

@@ -7,6 +7,8 @@ import ChallengeStageDescription from './ChallengeStageDescription'
 import ChallengeVideoGallery from './ChallengeVideoGallery'
 
 function ChallengeSection() {
+  const verifiedTeamCount: number = challengeHub.leaderboard.entries.length
+
   return (
     <section
       className="section section--challenge"
@@ -140,14 +142,12 @@ function ChallengeSection() {
                 Challenge Leaderboard
               </h3>
             </div>
-            <p className="challenge-leaderboard__opening-date">
-              Online evaluation begins {challengeHub.leaderboard.openingDate}.
+            <p className="challenge-leaderboard__summary">
+              {verifiedTeamCount} verified{' '}
+              {verifiedTeamCount === 1 ? 'team' : 'teams'}
             </p>
           </header>
-          <ChallengeLeaderboard
-            entries={challengeHub.leaderboard.entries}
-            openingDate={challengeHub.leaderboard.openingDate}
-          />
+          <ChallengeLeaderboard entries={challengeHub.leaderboard.entries} />
         </section>
 
         <div className="challenge-logistics" data-testid="challenge-logistics">

@@ -2,7 +2,9 @@
   max-width: 100%;
   overflow-x: auto;
   overscroll-behavior-x: contain;
-  border-top: 1px solid rgba(82, 216, 230, 0.5);
+  background: rgba(3, 20, 29, 0.58);
+  border: 1px solid rgba(82, 216, 230, 0.22);
+  border-radius: 7px;
   scrollbar-width: thin;
 }
 
@@ -22,7 +24,7 @@
 
 .challenge-leaderboard__table {
   width: 100%;
-  min-width: 760px;
+  min-width: 620px;
   border-collapse: collapse;
   color: var(--paper);
 }
@@ -35,7 +37,7 @@
 }
 
 .challenge-leaderboard__table thead th {
-  color: rgba(230, 241, 243, 0.78);
+  color: rgba(230, 241, 243, 0.74);
   font: 700 0.69rem/1.35 var(--font-mono);
   letter-spacing: 0.07em;
   text-transform: uppercase;
@@ -44,42 +46,47 @@
 
 .challenge-leaderboard__table tbody th,
 .challenge-leaderboard__table tbody td {
+  color: rgba(239, 247, 248, 0.9);
   font-size: 0.92rem;
+}
+
+.challenge-leaderboard__table tbody th {
+  font-weight: 600;
+}
+
+.challenge-leaderboard__table tbody td:first-child,
+.challenge-leaderboard__table tbody td:nth-child(2),
+.challenge-leaderboard__table tbody td:last-child {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+}
+
+.challenge-leaderboard__table thead th:last-child,
+.challenge-leaderboard__table tbody td:last-child {
+  text-align: right;
+}
+
+.challenge-leaderboard__table tbody td:last-child {
+  color: var(--cyan);
+  font-weight: 800;
 }
 
 .challenge-leaderboard__empty td {
-  padding: clamp(42px, 6vw, 70px) 18px;
-  text-align: left;
-}
-
-.challenge-leaderboard__empty-content {
-  position: sticky;
-  left: 18px;
-  width: min(520px, calc(100vw - 112px));
-  max-width: calc(100% - 36px);
-  text-align: left;
-}
-
-.challenge-leaderboard__empty strong,
-.challenge-leaderboard__empty span {
-  display: block;
-}
-
-.challenge-leaderboard__empty strong {
-  margin-bottom: 10px;
-  color: #fff;
-  font: 600 clamp(1.25rem, 2vw, 1.65rem)/1 var(--font-display);
-  letter-spacing: -0.04em;
-}
-
-.challenge-leaderboard__empty span {
+  padding: clamp(38px, 5vw, 56px) 18px;
   color: var(--slate-light-readable);
   font-size: 0.92rem;
   line-height: 1.6;
+  text-align: center;
 }
 
-@media (min-width: 761px) {
-  .challenge-leaderboard__opening-date {
-    white-space: nowrap;
-  }
+.challenge-leaderboard__table tr[data-rank-accent="gold"] > td:first-child {
+  color: #f1c75b;
+}
+
+.challenge-leaderboard__table tr[data-rank-accent="silver"] > td:first-child {
+  color: #c7d2d9;
+}
+
+.challenge-leaderboard__table tr[data-rank-accent="bronze"] > td:first-child {
+  color: #d99568;
 }

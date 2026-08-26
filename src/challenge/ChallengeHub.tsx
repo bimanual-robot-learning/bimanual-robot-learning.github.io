@@ -11,6 +11,8 @@ const externalLinkProps = {
 } as const
 
 function ChallengeHub() {
+  const verifiedTeamCount: number = challengeHub.leaderboard.entries.length
+
   return (
     <div className="challenge-hub">
       <header className="challenge-hub__header">
@@ -270,14 +272,12 @@ function ChallengeHub() {
               </p>
               <h2 id="challenge-hub-leaderboard-title">Leaderboard</h2>
             </div>
-            <p className="challenge-leaderboard__opening-date">
-              Online evaluation begins {challengeHub.leaderboard.openingDate}.
+            <p className="challenge-leaderboard__summary">
+              {verifiedTeamCount} verified{' '}
+              {verifiedTeamCount === 1 ? 'team' : 'teams'}
             </p>
           </header>
-          <ChallengeLeaderboard
-            entries={challengeHub.leaderboard.entries}
-            openingDate={challengeHub.leaderboard.openingDate}
-          />
+          <ChallengeLeaderboard entries={challengeHub.leaderboard.entries} />
         </section>
 
         <section

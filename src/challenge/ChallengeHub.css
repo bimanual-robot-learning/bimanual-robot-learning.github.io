@@ -669,14 +669,15 @@
   letter-spacing: -0.06em;
 }
 
-.challenge-hub__leaderboard-header > p {
+.challenge-hub__leaderboard-header > .challenge-leaderboard__summary {
   max-width: 280px;
   margin: 0;
   color: var(--cyan);
-  font: 600 0.76rem/1.5 var(--font-mono);
-  letter-spacing: 0.05em;
+  font: 700 0.76rem/1.5 var(--font-mono);
+  letter-spacing: 0.06em;
   text-align: right;
   text-transform: uppercase;
+  white-space: nowrap;
 }
 
 .challenge-hub__organizers {
@@ -864,7 +865,7 @@
     gap: 14px;
   }
 
-  .challenge-hub__leaderboard-header > p {
+  .challenge-hub__leaderboard-header > .challenge-leaderboard__summary {
     max-width: none;
     text-align: left;
   }

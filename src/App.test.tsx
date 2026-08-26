@@ -599,18 +599,25 @@ describe('workshop landing page', () => {
       Node.DOCUMENT_POSITION_FOLLOWING,
     )
     expect(
-      within(homepageLeaderboard).getAllByRole('columnheader'),
-    ).toHaveLength(6)
+      within(homepageLeaderboard)
+        .getAllByRole('columnheader')
+        .map(({ textContent }) => textContent),
+    ).toEqual(['Rank', 'Team ID', 'Team Name', 'Total Score'])
     expect(
-      within(homepageLeaderboard).getByText(
-        'Leaderboard opens August 25, 2026',
-      ),
-    ).toBeVisible()
+      within(homepageLeaderboard).getAllByTestId('challenge-leaderboard-entry'),
+    ).toHaveLength(8)
+    expect(within(homepageLeaderboard).getByText('8 verified teams')).toBeVisible()
     expect(
-      within(homepageLeaderboard).getByText(
-        'Verified online evaluation results will be published here as submissions are evaluated.',
-      ),
+      within(homepageLeaderboard).getByRole('row', {
+        name: '1 T000015 npu-eai 73.89',
+      }),
     ).toBeVisible()
+    expect(homepageLeaderboard).not.toHaveTextContent('August 25, 2026')
+    expect(homepageLeaderboard).not.toHaveTextContent('Leaderboard opens')
+    expect(homepageLeaderboard).not.toHaveTextContent('Online Score')
+    expect(homepageLeaderboard).not.toHaveTextContent('Real-Robot Score')
+    expect(homepageLeaderboard).not.toHaveTextContent('Final Score')
+    expect(homepageLeaderboard).not.toHaveTextContent('Status')
     expect(
       within(homepageLeaderboard).queryByText('Team A'),
     ).not.toBeInTheDocument()
@@ -1264,6 +1271,20 @@ describe('workshop landing page', () => {
   it('owns a homepage-aligned leaderboard surface', () => {
     expect(appStyles).toContain('.challenge-home-leaderboard')
     expect(appStyles).toContain('.challenge-home-leaderboard__header')
+    expectOwnedCssProperties(
+      appStyles,
+      '.challenge-home-leaderboard__header > .challenge-leaderboard__summary',
+      {
+        color: 'var(--cyan)',
+        'font-family': 'var(--font-mono)',
+        'font-size': '0.76rem',
+        'font-weight': '700',
+        'line-height': '1.5',
+        'letter-spacing': '0.06em',
+        'text-transform': 'uppercase',
+        'white-space': 'nowrap',
+      },
+    )
   })
 
   it('styles homepage logistics as native disclosure panels', () => {

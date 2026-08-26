@@ -24,10 +24,14 @@ describe('challengeHub content', () => {
       label: 'Leaderboard',
       href: '#leaderboard',
     })
-    expect(challengeHub.leaderboard).toEqual({
-      status: 'Results pending',
-      openingDate: 'August 25, 2026',
-      entries: [],
+    expect(challengeHub.leaderboard.status).toBe('Verified results')
+    expect(challengeHub.leaderboard).not.toHaveProperty('openingDate')
+    expect(challengeHub.leaderboard.entries).toHaveLength(8)
+    expect(challengeHub.leaderboard.entries[0]).toEqual({
+      rank: 1,
+      teamId: 'T000015',
+      teamName: 'npu-eai',
+      totalScore: 73.89246498024903,
     })
   })
 })

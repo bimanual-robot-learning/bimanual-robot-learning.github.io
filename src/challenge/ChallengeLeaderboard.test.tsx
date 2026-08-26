@@ -5,79 +5,83 @@ import leaderboardStyles from './ChallengeLeaderboard.css?raw'
 import ChallengeLeaderboard from './ChallengeLeaderboard'
 
 describe('ChallengeLeaderboard', () => {
-  it('renders an empty leaderboard with its table headings and publication notice', () => {
-    render(
-      <ChallengeLeaderboard entries={[]} openingDate="August 25, 2026" />,
-    )
+  it('renders a semantic, scrollable four-column empty leaderboard', () => {
+    render(<ChallengeLeaderboard entries={[]} />)
 
     expect(
       screen.getAllByRole('columnheader').map((header) => header.textContent),
-    ).toEqual([
-      'Rank',
-      'Team',
-      'Online Score',
-      'Real-Robot Score',
-      'Final Score',
-      'Status',
-    ])
+    ).toEqual(['Rank', 'Team ID', 'Team Name', 'Total Score'])
+    expect(
+      screen.getByRole('table', {
+        name: 'Household Bimanual Manipulation Challenge rankings',
+      }),
+    ).toBeVisible()
+    const viewport = screen.getByLabelText(
+      'Challenge leaderboard table; scroll horizontally to view all columns',
+    )
+    expect(viewport).toHaveClass('challenge-leaderboard__viewport')
+    expect(viewport).toHaveAttribute('tabindex', '0')
     const emptyState = screen.getByText(
-      'Leaderboard opens August 25, 2026',
+      'Verified online evaluation results will be published here as submissions are evaluated.',
     )
     expect(emptyState).toBeVisible()
-    expect(emptyState.parentElement).toHaveClass(
-      'challenge-leaderboard__empty-content',
-    )
-    expect(
-      screen.getByText(
-        (_, element) =>
-          element?.textContent ===
-          'Verified online evaluation results will be published here as submissions are evaluated.',
-      ),
-    ).toBeVisible()
-    expect(screen.queryByText('No results yet')).not.toBeInTheDocument()
+    expect(emptyState).toHaveAttribute('colspan', '4')
+    expect(screen.queryByText(/August 25, 2026/i)).not.toBeInTheDocument()
+    expect(screen.queryByText(/Leaderboard opens/i)).not.toBeInTheDocument()
     expect(screen.queryAllByTestId('challenge-leaderboard-entry')).toHaveLength(0)
   })
 
-  it('pins empty-state content inside the initial viewport', () => {
+  it('contains horizontal movement and exposes readable visual hooks', () => {
     expect(leaderboardStyles).toMatch(
-      /\.challenge-leaderboard__empty td\s*\{[^}]*text-align:\s*left;/,
+      /\.challenge-leaderboard__viewport\s*\{[^}]*max-width:\s*100%;[^}]*overflow-x:\s*auto;[^}]*overscroll-behavior-x:\s*contain;/,
     )
     expect(leaderboardStyles).toMatch(
-      /\.challenge-leaderboard__empty-content\s*\{[^}]*position:\s*sticky;[^}]*left:\s*18px;[^}]*width:\s*min\(520px,\s*calc\(100vw - 112px\)\);[^}]*max-width:\s*calc\(100% - 36px\);[^}]*text-align:\s*left;/,
+      /\.challenge-leaderboard__viewport:focus-visible\s*\{/,
+    )
+    expect(leaderboardStyles).toMatch(
+      /\.challenge-leaderboard__table\s*\{[^}]*min-width:\s*620px;/,
+    )
+    expect(leaderboardStyles).toContain('font-variant-numeric: tabular-nums')
+    expect(leaderboardStyles).toContain('[data-rank-accent="gold"]')
+    expect(leaderboardStyles).toContain('#f1c75b')
+    expect(leaderboardStyles).toContain('[data-rank-accent="silver"]')
+    expect(leaderboardStyles).toContain('#c7d2d9')
+    expect(leaderboardStyles).toContain('[data-rank-accent="bronze"]')
+    expect(leaderboardStyles).toContain('#d99568')
+    expect(leaderboardStyles).not.toContain(
+      '.challenge-leaderboard__opening-date',
+    )
+    expect(leaderboardStyles).not.toContain(
+      '.challenge-leaderboard__empty-content',
     )
   })
 
-  it('keeps the opening date intact on desktop without forcing mobile overflow', () => {
-    expect(leaderboardStyles).toMatch(
-      /@media \(min-width: 761px\) \{[\s\S]*?\.challenge-leaderboard__opening-date\s*\{[^}]*white-space:\s*nowrap;/,
-    )
-  })
-
-  it('renders verified leaderboard entries and unavailable scores', () => {
+  it('renders two-decimal scores, semantic row headers, and top-three accents', () => {
     const entries: readonly ChallengeLeaderboardEntry[] = [
       {
         rank: 1,
-        team: 'Verified Robotics Team',
-        onlineScore: 91.5,
-        realRobotScore: null,
-        finalScore: null,
-        status: 'Finalist',
+        teamId: 'T000015',
+        teamName: 'npu-eai',
+        totalScore: 73.89246498024903,
       },
+      { rank: 2, teamId: 'T000012', teamName: 'sota', totalScore: 61.8 },
+      { rank: 3, teamId: 'T000010', teamName: 'Primotion', totalScore: 61 },
+      { rank: 4, teamId: 'T000011', teamName: 'Horizon', totalScore: 45.316 },
     ]
 
-    render(
-      <ChallengeLeaderboard entries={entries} openingDate="August 25, 2026" />,
-    )
+    render(<ChallengeLeaderboard entries={entries} />)
 
-    const entry = screen.getByTestId('challenge-leaderboard-entry')
-    expect(entry).toHaveTextContent('Verified Robotics Team')
-    expect(entry).toHaveTextContent('91.5')
-    expect(entry).toHaveTextContent('Finalist')
-    expect(entry.querySelectorAll('td')).toHaveLength(5)
-    expect(
-      Array.from(entry.querySelectorAll('td')).filter(
-        (cell) => cell.textContent === '—',
-      ),
-    ).toHaveLength(2)
+    const rows = screen.getAllByTestId('challenge-leaderboard-entry')
+    expect(rows).toHaveLength(4)
+    expect(rows[0]).toHaveAccessibleName('1 T000015 npu-eai 73.89')
+    expect(rows[1]).toHaveAccessibleName('2 T000012 sota 61.80')
+    expect(rows[2]).toHaveAccessibleName('3 T000010 Primotion 61.00')
+    expect(rows[3]).toHaveAccessibleName('4 T000011 Horizon 45.32')
+    expect(rows[0]).toHaveAttribute('data-rank-accent', 'gold')
+    expect(rows[1]).toHaveAttribute('data-rank-accent', 'silver')
+    expect(rows[2]).toHaveAttribute('data-rank-accent', 'bronze')
+    expect(rows[3]).not.toHaveAttribute('data-rank-accent')
+    expect(rows[0].querySelector('th[scope="row"]')).toHaveTextContent('npu-eai')
+    expect(rows[0].querySelectorAll('td')).toHaveLength(3)
   })
 })

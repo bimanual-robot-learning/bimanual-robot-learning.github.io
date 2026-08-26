@@ -65,26 +65,33 @@ describe('ChallengeHub', () => {
     )
     const leaderboard = screen.getByRole('region', { name: 'Leaderboard' })
     expect(leaderboard).toHaveAttribute('id', 'leaderboard')
-    expect(within(leaderboard).getByText('Results pending')).toBeVisible()
+    expect(within(leaderboard).getByText('Verified results')).toBeVisible()
     expect(
       within(leaderboard).getByRole('heading', {
         level: 2,
         name: 'Leaderboard',
       }),
     ).toBeVisible()
-    const openingDate = within(leaderboard).getByText(
-      'Online evaluation begins August 25, 2026.',
-    )
-    expect(openingDate).toBeVisible()
-    expect(openingDate).toHaveClass('challenge-leaderboard__opening-date')
-    expect(within(leaderboard).getAllByRole('columnheader')).toHaveLength(6)
     expect(
-      within(leaderboard).getByText('Leaderboard opens August 25, 2026'),
+      within(leaderboard)
+        .getAllByRole('columnheader')
+        .map(({ textContent }) => textContent),
+    ).toEqual(['Rank', 'Team ID', 'Team Name', 'Total Score'])
+    expect(
+      within(leaderboard).getAllByTestId('challenge-leaderboard-entry'),
+    ).toHaveLength(8)
+    expect(within(leaderboard).getByText('8 verified teams')).toBeVisible()
+    expect(
+      within(leaderboard).getByRole('row', {
+        name: '1 T000015 npu-eai 73.89',
+      }),
     ).toBeVisible()
-    expect(
-      within(leaderboard).queryByText('No results yet'),
-    ).not.toBeInTheDocument()
-    expect(within(leaderboard).queryByText('Coming soon')).not.toBeInTheDocument()
+    expect(leaderboard).not.toHaveTextContent('August 25, 2026')
+    expect(leaderboard).not.toHaveTextContent('Leaderboard opens')
+    expect(leaderboard).not.toHaveTextContent('Online Score')
+    expect(leaderboard).not.toHaveTextContent('Real-Robot Score')
+    expect(leaderboard).not.toHaveTextContent('Final Score')
+    expect(leaderboard).not.toHaveTextContent('Status')
     expect(
       within(leaderboard).queryByTestId('challenge-hub-leaderboard-stage'),
     ).toBeNull()
@@ -184,9 +191,15 @@ describe('ChallengeHub presentation', () => {
       /\.challenge-leaderboard__viewport\s*\{[^}]*overflow-x:\s*auto;/,
     )
     expect(leaderboardStyles).toMatch(
-      /\.challenge-leaderboard__table\s*\{[^}]*min-width:\s*760px;/,
+      /\.challenge-leaderboard__table\s*\{[^}]*min-width:\s*620px;/,
     )
     expect(leaderboardStyles).toContain('.challenge-leaderboard__empty')
+    expect(hubStyles).toMatch(
+      /\.challenge-hub__leaderboard-header > \.challenge-leaderboard__summary\s*\{[^}]*text-align:\s*right;/,
+    )
+    expect(hubStyles).toMatch(
+      /@media \(max-width: 760px\) \{[\s\S]*?\.challenge-hub__leaderboard-header > \.challenge-leaderboard__summary\s*\{[^}]*max-width:\s*none;[^}]*text-align:\s*left;/,
+    )
   })
 
   it('limits stage-number styles to direct stage children', () => {
