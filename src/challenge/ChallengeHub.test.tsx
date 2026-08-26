@@ -169,6 +169,24 @@ describe('ChallengeHub', () => {
 })
 
 describe('ChallengeHub presentation', () => {
+  it('offsets every sticky-navigation target below the header', () => {
+    const { container } = render(<ChallengeHub />)
+    const targetIds = [
+      'overview',
+      'tasks',
+      'evaluation',
+      'prizes',
+      'leaderboard',
+    ]
+
+    for (const targetId of targetIds) {
+      expect(container.querySelector(`#${targetId}`)).not.toBeNull()
+    }
+    expect(hubStyles).toMatch(
+      /\.challenge-hub :is\(#overview, #tasks, #evaluation, #prizes, #leaderboard\)\s*\{[^}]*scroll-margin-top:\s*96px;/,
+    )
+  })
+
   it('defines responsive and reduced-motion-aware presentation', () => {
     expect(hubStyles).toContain('.challenge-hub__header')
     expect(hubStyles).toContain('.challenge-hub__hero')
