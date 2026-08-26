@@ -32,9 +32,11 @@ Keep the organizer CSV outside the repository, then import it with:
 npm run leaderboard:import -- "/absolute/path/to/leaderboard.csv"
 ```
 
-The importer reads columns by header name. When a `status` column exists, it publishes only rows marked `valid`. Each `team_name` must contain exactly one privacy delimiter (` - `); the importer removes the private leader suffix. It rejects duplicate headers, ranks, and Team IDs, validates numeric fields, and writes only the public fields to `src/data/challengeLeaderboard.generated.ts`.
+The importer reads columns by header name. When a `status` column exists, it first skips rows not marked `valid`. Each remaining, published row must have exactly one privacy delimiter (` - `) in `team_name`; the importer removes the private leader suffix. It rejects duplicate headers, ranks, and Team IDs, validates numeric fields, and writes only the public fields to `src/data/challengeLeaderboard.generated.ts`.
 
-After every import, review the generated diff, run `npm test`, `npm run lint`, and `npm run build`, then preview both `/` and `/challenge/`. Commit and push the generated update only after it is approved.
+Legitimate ranking changes may also require independently reviewing and updating the expected-result assertions in `src/data/challengeLeaderboard.generated.test.ts`, `src/data/challengeHub.test.ts`, `src/App.test.tsx`, and `src/challenge/ChallengeHub.test.tsx`. These tests are an intentional review gate; do not regenerate or update them blindly.
+
+After every import, review the generated and expected-result diffs, then run `npm test`, `npm run lint`, and `npm run build`. Start the preview with `npm run preview -- --host 127.0.0.1` and check `/` and `/challenge/` at the printed local origin. Commit and push the update only after it is approved.
 
 ## Quality checks
 
