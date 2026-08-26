@@ -70,7 +70,7 @@ describe('ChallengeLeaderboard', () => {
       /\.challenge-leaderboard__table th,\s*\.challenge-leaderboard__table td\s*\{[^}]*padding:\s*15px\s+12px;/,
     )
     expect(leaderboardStyles).toMatch(
-      /\.challenge-leaderboard__score-align\s*\{[^}]*text-align:\s*right;/,
+      /\.challenge-leaderboard__table \.challenge-leaderboard__score-align\s*\{[^}]*text-align:\s*right;/,
     )
     expect(leaderboardStyles).toContain('.challenge-leaderboard__rank')
     expect(leaderboardStyles).toContain('.challenge-leaderboard__team-id')
@@ -79,9 +79,18 @@ describe('ChallengeLeaderboard', () => {
       /\.challenge-leaderboard__table tbody td:(?:first-child|nth-child\(2\)|last-child)/,
     )
     const generalCellSelector = '.challenge-leaderboard__table tbody td'
+    const scoreAlignSelector =
+      '.challenge-leaderboard__table .challenge-leaderboard__score-align'
     const emptyCellSelector =
       '.challenge-leaderboard__table .challenge-leaderboard__empty td'
     expect(selectorSpecificity(generalCellSelector)).toEqual([0, 1, 2])
+    const scoreAlignSpecificity = selectorSpecificity(scoreAlignSelector)
+    const genericCellSpecificity = selectorSpecificity(
+      '.challenge-leaderboard__table td',
+    )
+    expect(scoreAlignSpecificity).toEqual([0, 2, 0])
+    expect(genericCellSpecificity).toEqual([0, 1, 1])
+    expect(scoreAlignSpecificity[1]).toBeGreaterThan(genericCellSpecificity[1])
     expect(selectorSpecificity(emptyCellSelector)).toEqual([0, 2, 1])
     expect(leaderboardStyles.indexOf(emptyCellSelector)).toBeGreaterThan(
       leaderboardStyles.indexOf(generalCellSelector),

@@ -80,7 +80,7 @@
   font-variant-numeric: tabular-nums;
 }
 
-.challenge-leaderboard__score-align {
+.challenge-leaderboard__table .challenge-leaderboard__score-align {
   text-align: right;
 }
 
