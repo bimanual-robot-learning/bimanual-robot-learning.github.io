@@ -70,17 +70,27 @@ describe('ChallengeLeaderboard', () => {
       /\.challenge-leaderboard__table th,\s*\.challenge-leaderboard__table td\s*\{[^}]*padding:\s*15px\s+12px;/,
     )
     expect(leaderboardStyles).toMatch(
-      /\.challenge-leaderboard__table \.challenge-leaderboard__score-align\s*\{[^}]*text-align:\s*right;/,
+      /\.challenge-leaderboard__table \.challenge-leaderboard__score-align\s*\{[^}]*text-align:\s*left;/,
+    )
+    expect(leaderboardStyles).toMatch(
+      /\.challenge-leaderboard__table \.challenge-leaderboard__rank-align\s*\{[^}]*text-align:\s*center;/,
+    )
+    expect(leaderboardStyles).toMatch(
+      /\.challenge-leaderboard__rank-badge\s*\{[^}]*display:\s*inline-grid;[^}]*width:\s*28px;[^}]*height:\s*28px;[^}]*place-items:\s*center;[^}]*border-radius:\s*50%;/,
     )
     expect(leaderboardStyles).toContain('.challenge-leaderboard__rank')
     expect(leaderboardStyles).toContain('.challenge-leaderboard__team-id')
-    expect(leaderboardStyles).toContain('.challenge-leaderboard__score')
+    expect(leaderboardStyles).toMatch(
+      /\.challenge-leaderboard__table \.challenge-leaderboard__score\s*\{[^}]*color:\s*var\(--cyan\);[^}]*font-weight:\s*800;/,
+    )
     expect(leaderboardStyles).not.toMatch(
       /\.challenge-leaderboard__table tbody td:(?:first-child|nth-child\(2\)|last-child)/,
     )
     const generalCellSelector = '.challenge-leaderboard__table tbody td'
     const scoreAlignSelector =
       '.challenge-leaderboard__table .challenge-leaderboard__score-align'
+    const rankAlignSelector =
+      '.challenge-leaderboard__table .challenge-leaderboard__rank-align'
     const emptyCellSelector =
       '.challenge-leaderboard__table .challenge-leaderboard__empty td'
     expect(selectorSpecificity(generalCellSelector)).toEqual([0, 1, 2])
@@ -91,6 +101,9 @@ describe('ChallengeLeaderboard', () => {
     expect(scoreAlignSpecificity).toEqual([0, 2, 0])
     expect(genericCellSpecificity).toEqual([0, 1, 1])
     expect(scoreAlignSpecificity[1]).toBeGreaterThan(genericCellSpecificity[1])
+    const rankAlignSpecificity = selectorSpecificity(rankAlignSelector)
+    expect(rankAlignSpecificity).toEqual([0, 2, 0])
+    expect(rankAlignSpecificity[1]).toBeGreaterThan(genericCellSpecificity[1])
     expect(selectorSpecificity(emptyCellSelector)).toEqual([0, 2, 1])
     expect(leaderboardStyles.indexOf(emptyCellSelector)).toBeGreaterThan(
       leaderboardStyles.indexOf(generalCellSelector),
@@ -99,12 +112,15 @@ describe('ChallengeLeaderboard', () => {
       /\.challenge-leaderboard__table \.challenge-leaderboard__empty td\s*\{[^}]*color:\s*var\(--slate-light-readable\);[^}]*font-family:\s*var\(--font-body\);[^}]*font-size:\s*0\.92rem;[^}]*font-weight:\s*400;[^}]*line-height:\s*1\.6;[^}]*text-align:\s*left;/,
     )
     expect(leaderboardStyles).toContain('font-variant-numeric: tabular-nums')
-    expect(leaderboardStyles).toContain('[data-rank-accent="gold"]')
-    expect(leaderboardStyles).toContain('#f1c75b')
-    expect(leaderboardStyles).toContain('[data-rank-accent="silver"]')
-    expect(leaderboardStyles).toContain('#c7d2d9')
-    expect(leaderboardStyles).toContain('[data-rank-accent="bronze"]')
-    expect(leaderboardStyles).toContain('#d99568')
+    expect(leaderboardStyles).toMatch(
+      /\.challenge-leaderboard__table tr\[data-rank-accent="gold"\] > \.challenge-leaderboard__rank \.challenge-leaderboard__rank-badge\s*\{[^}]*background:\s*#f1c75b;/,
+    )
+    expect(leaderboardStyles).toMatch(
+      /\.challenge-leaderboard__table tr\[data-rank-accent="silver"\] > \.challenge-leaderboard__rank \.challenge-leaderboard__rank-badge\s*\{[^}]*background:\s*#c7d2d9;/,
+    )
+    expect(leaderboardStyles).toMatch(
+      /\.challenge-leaderboard__table tr\[data-rank-accent="bronze"\] > \.challenge-leaderboard__rank \.challenge-leaderboard__rank-badge\s*\{[^}]*background:\s*#d99568;/,
+    )
     expect(leaderboardStyles).not.toContain(
       '.challenge-leaderboard__opening-date',
     )
@@ -113,7 +129,7 @@ describe('ChallengeLeaderboard', () => {
     )
   })
 
-  it('renders two-decimal scores, semantic row headers, and top-three accents', () => {
+  it('renders two-decimal scores, semantic row headers, and rank medals', () => {
     const entries: readonly ChallengeLeaderboardEntry[] = [
       {
         rank: 1,
@@ -145,6 +161,11 @@ describe('ChallengeLeaderboard', () => {
     expect(rows[0].querySelectorAll('td')[0]).toHaveClass(
       'challenge-leaderboard__rank',
     )
+    rows.forEach((row) => {
+      expect(row.querySelectorAll('td')[0]).toHaveClass(
+        'challenge-leaderboard__rank-align',
+      )
+    })
     expect(rows[0].querySelectorAll('td')[1]).toHaveClass(
       'challenge-leaderboard__team-id',
     )
@@ -154,8 +175,21 @@ describe('ChallengeLeaderboard', () => {
     expect(screen.getByRole('columnheader', { name: 'Total Score' })).toHaveClass(
       'challenge-leaderboard__score-align',
     )
+    expect(screen.getByRole('columnheader', { name: 'Rank' })).toHaveClass(
+      'challenge-leaderboard__rank-align',
+    )
     expect(rows[0].querySelectorAll('td')[2]).toHaveClass(
       'challenge-leaderboard__score-align',
     )
+    expect(rows[0].querySelector('.challenge-leaderboard__rank-badge')).toHaveTextContent(
+      '1',
+    )
+    expect(rows[1].querySelector('.challenge-leaderboard__rank-badge')).toHaveTextContent(
+      '2',
+    )
+    expect(rows[2].querySelector('.challenge-leaderboard__rank-badge')).toHaveTextContent(
+      '3',
+    )
+    expect(rows[3].querySelector('.challenge-leaderboard__rank-badge')).toBeNull()
   })
 })

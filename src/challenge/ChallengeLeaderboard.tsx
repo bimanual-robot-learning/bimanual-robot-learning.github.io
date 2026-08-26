@@ -43,7 +43,9 @@ function ChallengeLeaderboard({ entries }: ChallengeLeaderboardProps) {
         </colgroup>
         <thead>
           <tr>
-            <th scope="col">Rank</th>
+            <th scope="col" className="challenge-leaderboard__rank-align">
+              Rank
+            </th>
             <th scope="col">Team ID</th>
             <th scope="col">Team Name</th>
             <th scope="col" className="challenge-leaderboard__score-align">
@@ -60,22 +62,34 @@ function ChallengeLeaderboard({ entries }: ChallengeLeaderboardProps) {
               </td>
             </tr>
           ) : (
-            entries.map((entry) => (
-              <tr
-                data-rank-accent={getRankAccent(entry.rank)}
-                data-testid="challenge-leaderboard-entry"
-                key={entry.teamId}
-              >
-                <td className="challenge-leaderboard__rank">{entry.rank}</td>
-                <td className="challenge-leaderboard__team-id">
-                  {formatTeamId(entry.teamId)}
-                </td>
-                <th scope="row">{entry.teamName}</th>
-                <td className="challenge-leaderboard__score challenge-leaderboard__score-align">
-                  {formatScore(entry.totalScore)}
-                </td>
-              </tr>
-            ))
+            entries.map((entry) => {
+              const rankAccent = getRankAccent(entry.rank)
+
+              return (
+                <tr
+                  data-rank-accent={rankAccent}
+                  data-testid="challenge-leaderboard-entry"
+                  key={entry.teamId}
+                >
+                  <td className="challenge-leaderboard__rank challenge-leaderboard__rank-align">
+                    {rankAccent ? (
+                      <span className="challenge-leaderboard__rank-badge">
+                        {entry.rank}
+                      </span>
+                    ) : (
+                      entry.rank
+                    )}
+                  </td>
+                  <td className="challenge-leaderboard__team-id">
+                    {formatTeamId(entry.teamId)}
+                  </td>
+                  <th scope="row">{entry.teamName}</th>
+                  <td className="challenge-leaderboard__score challenge-leaderboard__score-align">
+                    {formatScore(entry.totalScore)}
+                  </td>
+                </tr>
+              )
+            })
           )}
         </tbody>
       </table>

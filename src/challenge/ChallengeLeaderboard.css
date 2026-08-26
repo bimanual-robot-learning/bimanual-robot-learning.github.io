@@ -81,10 +81,14 @@
 }
 
 .challenge-leaderboard__table .challenge-leaderboard__score-align {
-  text-align: right;
+  text-align: left;
 }
 
-.challenge-leaderboard__score {
+.challenge-leaderboard__table .challenge-leaderboard__rank-align {
+  text-align: center;
+}
+
+.challenge-leaderboard__table .challenge-leaderboard__score {
   color: var(--cyan);
   font-weight: 800;
 }
@@ -99,14 +103,24 @@
   text-align: left;
 }
 
-.challenge-leaderboard__table tr[data-rank-accent="gold"] > .challenge-leaderboard__rank {
-  color: #f1c75b;
+.challenge-leaderboard__rank-badge {
+  display: inline-grid;
+  width: 28px;
+  height: 28px;
+  place-items: center;
+  color: rgba(3, 20, 29, 0.94);
+  border-radius: 50%;
+  box-shadow: 0 0 0 3px rgba(230, 241, 243, 0.16);
 }
 
-.challenge-leaderboard__table tr[data-rank-accent="silver"] > .challenge-leaderboard__rank {
-  color: #c7d2d9;
+.challenge-leaderboard__table tr[data-rank-accent="gold"] > .challenge-leaderboard__rank .challenge-leaderboard__rank-badge {
+  background: #f1c75b;
 }
 
-.challenge-leaderboard__table tr[data-rank-accent="bronze"] > .challenge-leaderboard__rank {
-  color: #d99568;
+.challenge-leaderboard__table tr[data-rank-accent="silver"] > .challenge-leaderboard__rank .challenge-leaderboard__rank-badge {
+  background: #c7d2d9;
+}
+
+.challenge-leaderboard__table tr[data-rank-accent="bronze"] > .challenge-leaderboard__rank .challenge-leaderboard__rank-badge {
+  background: #d99568;
 }
