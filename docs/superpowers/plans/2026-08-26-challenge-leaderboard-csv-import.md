@@ -196,6 +196,7 @@ Expected: FAIL because `scripts/import-leaderboard.mjs` does not exist.
 Create `scripts/import-leaderboard.mjs`:
 
 ```js
+import { randomUUID } from 'node:crypto'
 import { mkdir, readFile, rename, rm, writeFile } from 'node:fs/promises'
 import { dirname, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
@@ -203,79 +204,131 @@ import { parse } from 'csv-parse/sync'
 
 const requiredHeaders = ['rank', 'team_name', 'team_id', 'total_score']
 const privacyDelimiter = ' - '
+const positiveBase10IntegerPattern = /^\d+$/
+const nonExponentDecimalPattern = /^[+-]?\d+(?:\.\d+)?$/
 const defaultOutputPath = fileURLToPath(
   new URL('../src/data/challengeLeaderboard.generated.ts', import.meta.url),
 )
 
-const fail = (message) => {
+function fail(message) {
   throw new Error(message)
 }
 
 export function parseLeaderboardCsv(source) {
   let headers = []
-  const rows = parse(source, {
-    bom: true,
-    columns: (values) => {
-      headers = values.map((value) => value.trim())
-      return headers
-    },
-    skip_empty_lines: true,
-    trim: true,
-  })
+  let rows
+  let duplicateHeader
+
+  try {
+    rows = parse(source, {
+      bom: true,
+      columns: (values) => {
+        headers = values.map((value) => value.trim())
+        const seenHeaders = new Set()
+        for (const header of headers) {
+          if (seenHeaders.has(header)) {
+            duplicateHeader = header
+            fail('Duplicate CSV header')
+          }
+          seenHeaders.add(header)
+        }
+        return headers
+      },
+      skip_empty_lines: true,
+      trim: true,
+    })
+  } catch {
+    if (duplicateHeader !== undefined) {
+      fail(`Duplicate CSV header: ${duplicateHeader}`)
+    }
+    fail('Unable to parse leaderboard CSV')
+  }
 
   for (const header of requiredHeaders) {
-    if (!headers.includes(header)) fail(`Missing required CSV header: ${header}`)
+    if (!headers.includes(header)) {
+      fail(`Missing required CSV header: ${header}`)
+    }
   }
 
   const entries = []
   let skippedRows = 0
+  const hasStatusHeader = headers.includes('status')
 
   rows.forEach((row, index) => {
     const rowNumber = index + 2
-    if (row.status && row.status.trim().toLowerCase() !== 'valid') {
+
+    if (
+      hasStatusHeader &&
+      String(row.status ?? '').trim().toLowerCase() !== 'valid'
+    ) {
       skippedRows += 1
       return
     }
 
-    const rank = Number(row.rank)
-    if (!Number.isInteger(rank) || rank <= 0) {
+    const rawRank = String(row.rank ?? '').trim()
+    const rank = Number(rawRank)
+    if (
+      !positiveBase10IntegerPattern.test(rawRank) ||
+      !Number.isSafeInteger(rank) ||
+      rank <= 0
+    ) {
       fail(`Row ${rowNumber}: rank must be a positive integer`)
     }
 
     const teamId = String(row.team_id ?? '').trim()
-    if (!teamId) fail(`Row ${rowNumber}: team_id must not be empty`)
+    if (!teamId) {
+      fail(`Row ${rowNumber}: team_id must not be empty`)
+    }
 
     const combinedTeamName = String(row.team_name ?? '')
     const delimiterIndex = combinedTeamName.indexOf(privacyDelimiter)
     if (delimiterIndex < 0) {
-      fail(`Row ${rowNumber}: team_name must use the required privacy delimiter`)
+      fail(
+        `Row ${rowNumber}: team_name must use the required privacy delimiter`,
+      )
     }
     if (delimiterIndex !== combinedTeamName.lastIndexOf(privacyDelimiter)) {
-      fail(`Row ${rowNumber}: team_name must contain exactly one privacy delimiter`)
+      fail(
+        `Row ${rowNumber}: team_name must contain exactly one privacy delimiter`,
+      )
     }
-    const teamName = combinedTeamName.slice(0, delimiterIndex).trim()
-    if (!teamName) fail(`Row ${rowNumber}: sanitized team name must not be empty`)
 
-    const totalScore = Number(row.total_score)
-    if (!Number.isFinite(totalScore)) {
+    const teamName = combinedTeamName.slice(0, delimiterIndex).trim()
+    if (!teamName) {
+      fail(`Row ${rowNumber}: sanitized team name must not be empty`)
+    }
+
+    const rawTotalScore = String(row.total_score ?? '').trim()
+    const totalScore = Number(rawTotalScore)
+    if (
+      !nonExponentDecimalPattern.test(rawTotalScore) ||
+      !Number.isFinite(totalScore)
+    ) {
       fail(`Row ${rowNumber}: total_score must be a finite number`)
     }
 
     entries.push({ rank, teamId, teamName, totalScore })
   })
 
-  if (entries.length === 0) fail('No valid leaderboard rows were found')
+  if (entries.length === 0) {
+    fail('No valid leaderboard rows were found')
+  }
 
   const teamIds = new Set()
   const ranks = new Set()
   for (const entry of entries) {
-    if (teamIds.has(entry.teamId)) fail(`Duplicate Team ID: ${entry.teamId}`)
-    if (ranks.has(entry.rank)) fail(`Duplicate rank: ${entry.rank}`)
+    if (teamIds.has(entry.teamId)) {
+      fail(`Duplicate Team ID: ${entry.teamId}`)
+    }
+    if (ranks.has(entry.rank)) {
+      fail(`Duplicate rank: ${entry.rank}`)
+    }
     teamIds.add(entry.teamId)
     ranks.add(entry.rank)
   }
 
   entries.sort((left, right) => left.rank - right.rank)
+
   return { entries, skippedRows }
 }
 
@@ -306,29 +359,40 @@ ${rows}
 `
 }
 
-export async function importLeaderboard(inputPath, outputPath = defaultOutputPath) {
+export async function importLeaderboard(
+  inputPath,
+  outputPath = defaultOutputPath,
+) {
   const source = await readFile(inputPath, 'utf8')
   const { entries, skippedRows } = parseLeaderboardCsv(source)
   const output = renderGeneratedModule(entries)
-  const temporaryPath = `${outputPath}.${process.pid}.tmp`
+  const temporaryPath = `${outputPath}.${process.pid}.${randomUUID()}.tmp`
 
   await mkdir(dirname(outputPath), { recursive: true })
   try {
     await writeFile(temporaryPath, output, 'utf8')
     await rename(temporaryPath, outputPath)
   } catch (error) {
-    await rm(temporaryPath, { force: true })
+    await rm(temporaryPath, { force: true }).catch(() => {})
     throw error
   }
 
-  return { importedRows: entries.length, skippedRows, failedRows: 0, outputPath }
+  return {
+    importedRows: entries.length,
+    skippedRows,
+    failedRows: 0,
+    outputPath,
+  }
 }
 
 const invokedPath = process.argv[1] ? resolve(process.argv[1]) : ''
 if (invokedPath === fileURLToPath(import.meta.url)) {
   const inputPath = process.argv[2]
+
   if (!inputPath) {
-    console.error('Usage: npm run leaderboard:import -- /absolute/path/to/results.csv')
+    console.error(
+      'Usage: npm run leaderboard:import -- /absolute/path/to/results.csv',
+    )
     process.exitCode = 1
   } else {
     try {
@@ -337,7 +401,9 @@ if (invokedPath === fileURLToPath(import.meta.url)) {
         `Imported ${result.importedRows} rows; skipped ${result.skippedRows}; failed ${result.failedRows}; wrote ${result.outputPath}`,
       )
     } catch (error) {
-      console.error(error instanceof Error ? error.message : String(error))
+      const message =
+        error instanceof Error ? error.message : 'Unknown leaderboard import error'
+      console.error(`Leaderboard import failed: ${message}`)
       process.exitCode = 1
     }
   }
