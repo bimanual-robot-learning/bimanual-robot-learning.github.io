@@ -186,6 +186,9 @@ describe('ChallengeHub presentation', () => {
   })
 
   it('ships an accessible horizontally scrollable leaderboard table', () => {
+    expect(hubStyles).not.toMatch(
+      /\.challenge-hub__leaderboard\s*\{[^}]*overflow:\s*hidden;/,
+    )
     expect(leaderboardStyles).toContain('.challenge-leaderboard__viewport')
     expect(leaderboardStyles).toMatch(
       /\.challenge-leaderboard__viewport\s*\{[^}]*overflow-x:\s*auto;/,

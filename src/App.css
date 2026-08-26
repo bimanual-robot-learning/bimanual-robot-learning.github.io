@@ -1445,7 +1445,6 @@
 .challenge-home-leaderboard {
   padding: clamp(28px, 4vw, 44px);
   margin-bottom: 32px;
-  overflow: hidden;
   color: var(--paper);
   background: var(--ink-950);
   border: 1px solid rgba(27, 132, 153, 0.28);

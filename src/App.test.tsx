@@ -7,6 +7,7 @@ import userEvent from '@testing-library/user-event'
 import { describe, expect, it } from 'vitest'
 import App from './App'
 import appStyles from './App.css?raw'
+import leaderboardStyles from './challenge/ChallengeLeaderboard.css?raw'
 import ChallengeVideoGallery from './components/ChallengeVideoGallery'
 import galleryStyles from './components/ChallengeVideoGallery.css?raw'
 import indexStyles from './index.css?raw'
@@ -1271,6 +1272,15 @@ describe('workshop landing page', () => {
   it('owns a homepage-aligned leaderboard surface', () => {
     expect(appStyles).toContain('.challenge-home-leaderboard')
     expect(appStyles).toContain('.challenge-home-leaderboard__header')
+    expect(
+      extractCssProperty(
+        extractCssRule(appStyles, '.challenge-home-leaderboard').declarations,
+        'overflow',
+      ),
+    ).toBeUndefined()
+    expect(leaderboardStyles).toMatch(
+      /\.challenge-leaderboard__viewport\s*\{[^}]*overflow-x:\s*auto;/,
+    )
     expectOwnedCssProperties(
       appStyles,
       '.challenge-home-leaderboard__header > .challenge-leaderboard__summary',
