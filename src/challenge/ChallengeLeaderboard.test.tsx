@@ -4,6 +4,16 @@ import type { ChallengeLeaderboardEntry } from '../data/challengeHub'
 import leaderboardStyles from './ChallengeLeaderboard.css?raw'
 import ChallengeLeaderboard from './ChallengeLeaderboard'
 
+const selectorSpecificity = (selector: string) => {
+  const idCount = selector.match(/#[\w-]+/g)?.length ?? 0
+  const classCount = selector.match(/\.[\w-]+/g)?.length ?? 0
+  const elementCount = selector
+    .split(/[\s>+~]+/)
+    .filter((part) => /^[a-z][\w-]*/i.test(part)).length
+
+  return [idCount, classCount, elementCount] as const
+}
+
 describe('ChallengeLeaderboard', () => {
   it('renders a semantic, scrollable four-column empty leaderboard', () => {
     render(<ChallengeLeaderboard entries={[]} />)
@@ -50,8 +60,16 @@ describe('ChallengeLeaderboard', () => {
     expect(leaderboardStyles).not.toMatch(
       /\.challenge-leaderboard__table tbody td:(?:first-child|nth-child\(2\)|last-child)/,
     )
+    const generalCellSelector = '.challenge-leaderboard__table tbody td'
+    const emptyCellSelector =
+      '.challenge-leaderboard__table .challenge-leaderboard__empty td'
+    expect(selectorSpecificity(generalCellSelector)).toEqual([0, 1, 2])
+    expect(selectorSpecificity(emptyCellSelector)).toEqual([0, 2, 1])
+    expect(leaderboardStyles.indexOf(emptyCellSelector)).toBeGreaterThan(
+      leaderboardStyles.indexOf(generalCellSelector),
+    )
     expect(leaderboardStyles).toMatch(
-      /\.challenge-leaderboard__empty td\s*\{[^}]*color:\s*var\(--slate-light-readable\);[^}]*font-family:\s*var\(--font-body\);[^}]*font-size:\s*0\.92rem;[^}]*font-weight:\s*400;[^}]*line-height:\s*1\.6;[^}]*text-align:\s*left;/,
+      /\.challenge-leaderboard__table \.challenge-leaderboard__empty td\s*\{[^}]*color:\s*var\(--slate-light-readable\);[^}]*font-family:\s*var\(--font-body\);[^}]*font-size:\s*0\.92rem;[^}]*font-weight:\s*400;[^}]*line-height:\s*1\.6;[^}]*text-align:\s*left;/,
     )
     expect(leaderboardStyles).toContain('font-variant-numeric: tabular-nums')
     expect(leaderboardStyles).toContain('[data-rank-accent="gold"]')
