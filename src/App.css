@@ -1313,6 +1313,18 @@
   line-height: 1.5;
 }
 
+.important-dates__previous,
+.important-dates__current {
+  display: block;
+}
+
+.important-dates__previous {
+  margin-bottom: 3px;
+  color: var(--slate-readable);
+  text-decoration-thickness: 1px;
+  text-decoration-color: currentColor;
+}
+
 .section--challenge {
   position: relative;
   overflow: hidden;

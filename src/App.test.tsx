@@ -1919,6 +1919,30 @@ describe('workshop landing page', () => {
     ).toBeInTheDocument()
   })
 
+  it('shows the extended submission deadline while retaining the previous deadline', () => {
+    render(<App />)
+
+    const datesPanel = screen.getByRole('complementary', { name: 'Important Dates' })
+    const submissionRow = within(datesPanel).getByText('Submission deadline').parentElement
+
+    expect(submissionRow).not.toBeNull()
+    expect(
+      within(submissionRow as HTMLElement).getByText('August 27, 2026 · 11:59 PM AOE'),
+    ).toHaveClass('important-dates__current')
+    expect(
+      within(submissionRow as HTMLElement).getByText(
+        'August 24, 2026 · 11:59 PM AOE',
+        { selector: 'del' },
+      ),
+    ).toHaveClass('important-dates__previous')
+    expect(
+      within(datesPanel).getByText('September 6, 2026 · 11:59 PM AOE'),
+    ).toBeInTheDocument()
+    expect(
+      within(datesPanel).getByText('September 20, 2026 · 11:59 PM AOE'),
+    ).toBeInTheDocument()
+  })
+
   it('presents award recipients and per-paper prizes without multiplication notation', () => {
     render(<App />)
 

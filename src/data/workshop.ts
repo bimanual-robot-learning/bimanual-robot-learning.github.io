@@ -671,9 +671,21 @@ export const awards: AwardItem[] = [
 ]
 
 export const importantDates = [
-  { label: 'Submission deadline', value: 'August 24, 2026 · 11:59 PM AOE' },
-  { label: 'Acceptance notification', value: 'September 6, 2026 · 11:59 PM AOE' },
-  { label: 'Camera-ready deadline', value: 'September 20, 2026 · 11:59 PM AOE' },
+  {
+    label: 'Submission deadline',
+    previousValue: 'August 24, 2026 · 11:59 PM AOE',
+    value: 'August 27, 2026 · 11:59 PM AOE',
+  },
+  {
+    label: 'Acceptance notification',
+    previousValue: undefined,
+    value: 'September 6, 2026 · 11:59 PM AOE',
+  },
+  {
+    label: 'Camera-ready deadline',
+    previousValue: undefined,
+    value: 'September 20, 2026 · 11:59 PM AOE',
+  },
 ]
 
 export const sponsor = {

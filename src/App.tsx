@@ -486,7 +486,14 @@ function App() {
                   {importantDates.map((date) => (
                     <div key={date.label}>
                       <dt>{date.label}</dt>
-                      <dd>{date.value}</dd>
+                      <dd>
+                        {date.previousValue && (
+                          <del className="important-dates__previous">
+                            {date.previousValue}
+                          </del>
+                        )}
+                        <span className="important-dates__current">{date.value}</span>
+                      </dd>
                     </div>
                   ))}
                 </dl>
