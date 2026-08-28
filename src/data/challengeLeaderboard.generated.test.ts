@@ -32,7 +32,7 @@ describe('generated challenge leaderboard data', () => {
       {
         rank: 5,
         teamId: 'T000019',
-        teamName: 'TeamName',
+        teamName: 'PeaceVLA',
         totalScore: 46.477536092119884,
       },
       {
