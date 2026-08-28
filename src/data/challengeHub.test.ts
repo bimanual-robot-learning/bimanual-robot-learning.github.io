@@ -25,6 +25,7 @@ describe('challengeHub content', () => {
       href: '#leaderboard',
     })
     expect(challengeHub.leaderboard.status).toBe('Verified results')
+    expect(challengeHub.leaderboard.updatedAt).toBe('Updated Aug. 28, 2026')
     expect(challengeHub.leaderboard).not.toHaveProperty('openingDate')
     expect(challengeHub.leaderboard.entries).toHaveLength(10)
     expect(challengeHub.leaderboard.entries[0]).toEqual({

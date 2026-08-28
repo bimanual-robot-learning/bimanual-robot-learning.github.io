@@ -655,10 +655,24 @@
 .challenge-hub__leaderboard-status {
   display: inline-flex;
   margin: 0 0 12px;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 9px;
   color: var(--orange);
   font: 700 0.72rem/1 var(--font-mono);
   letter-spacing: 0.1em;
   text-transform: uppercase;
+}
+
+.challenge-hub__leaderboard-updated {
+  color: rgba(230, 241, 243, 0.62);
+  font-weight: 600;
+}
+
+.challenge-hub__leaderboard-updated::before {
+  margin-right: 9px;
+  color: rgba(230, 241, 243, 0.38);
+  content: '·';
 }
 
 .challenge-hub__leaderboard h2 {

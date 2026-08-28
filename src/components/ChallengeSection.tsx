@@ -137,7 +137,12 @@ function ChallengeSection() {
         >
           <header className="challenge-home-leaderboard__header">
             <div>
-              <p className="eyebrow">Verified results</p>
+              <p className="challenge-home-leaderboard__meta">
+                <span>{challengeHub.leaderboard.status}</span>
+                <span className="challenge-home-leaderboard__updated">
+                  {challengeHub.leaderboard.updatedAt}
+                </span>
+              </p>
               <h3 id="challenge-home-leaderboard-title">
                 Challenge Leaderboard
               </h3>

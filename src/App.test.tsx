@@ -609,6 +609,9 @@ describe('workshop landing page', () => {
     ).toHaveLength(10)
     expect(within(homepageLeaderboard).getByText('10 verified teams')).toBeVisible()
     expect(
+      within(homepageLeaderboard).getByText('Updated Aug. 28, 2026'),
+    ).toBeVisible()
+    expect(
       within(homepageLeaderboard).getByRole('row', {
         name: '1 T12 sota 91.39',
       }),

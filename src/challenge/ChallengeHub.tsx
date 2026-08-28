@@ -268,7 +268,10 @@ function ChallengeHub() {
           <header className="challenge-hub__leaderboard-header">
             <div>
               <p className="challenge-hub__leaderboard-status">
-                {challengeHub.leaderboard.status}
+                <span>{challengeHub.leaderboard.status}</span>
+                <span className="challenge-hub__leaderboard-updated">
+                  {challengeHub.leaderboard.updatedAt}
+                </span>
               </p>
               <h2 id="challenge-hub-leaderboard-title">Leaderboard</h2>
             </div>

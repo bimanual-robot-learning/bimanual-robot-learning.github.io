@@ -1471,9 +1471,27 @@
   gap: 24px;
 }
 
-.challenge-home-leaderboard__header .eyebrow {
+.challenge-home-leaderboard__meta {
+  display: inline-flex;
   margin: 0 0 8px;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 9px;
   color: var(--cyan);
+  font: 700 0.72rem/1 var(--font-mono);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.challenge-home-leaderboard__updated {
+  color: rgba(230, 241, 243, 0.62);
+  font-weight: 600;
+}
+
+.challenge-home-leaderboard__updated::before {
+  margin-right: 9px;
+  color: rgba(230, 241, 243, 0.38);
+  content: '·';
 }
 
 .challenge-home-leaderboard__header h3 {
