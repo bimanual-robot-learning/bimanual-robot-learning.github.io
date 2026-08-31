@@ -25,14 +25,14 @@ describe('challengeHub content', () => {
       href: '#leaderboard',
     })
     expect(challengeHub.leaderboard.status).toBe('Verified results')
-    expect(challengeHub.leaderboard.updatedAt).toBe('Updated Aug. 28, 2026')
+    expect(challengeHub.leaderboard.updatedAt).toBe('Updated Aug. 31, 2026')
     expect(challengeHub.leaderboard).not.toHaveProperty('openingDate')
     expect(challengeHub.leaderboard.entries).toHaveLength(10)
     expect(challengeHub.leaderboard.entries[0]).toEqual({
       rank: 1,
       teamId: 'T000012',
       teamName: 'sota',
-      totalScore: 91.39079444134364,
+      totalScore: 92.37289954342617,
     })
   })
 })
