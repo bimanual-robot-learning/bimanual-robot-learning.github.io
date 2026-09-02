@@ -606,10 +606,10 @@ describe('workshop landing page', () => {
     ).toEqual(['Rank', 'Team ID', 'Team Name', 'Total Score'])
     expect(
       within(homepageLeaderboard).getAllByTestId('challenge-leaderboard-entry'),
-    ).toHaveLength(10)
-    expect(within(homepageLeaderboard).getByText('10 verified teams')).toBeVisible()
+    ).toHaveLength(13)
+    expect(within(homepageLeaderboard).getByText('13 verified teams')).toBeVisible()
     expect(
-      within(homepageLeaderboard).getByText('Updated Aug. 31, 2026'),
+      within(homepageLeaderboard).getByText('Updated Sep. 2, 2026'),
     ).toBeVisible()
     expect(
       within(homepageLeaderboard).getByRole('row', {
