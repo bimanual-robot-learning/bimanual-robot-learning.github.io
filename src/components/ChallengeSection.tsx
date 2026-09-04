@@ -152,7 +152,15 @@ function ChallengeSection() {
               {verifiedTeamCount === 1 ? 'team' : 'teams'}
             </p>
           </header>
-          <ChallengeLeaderboard entries={challengeHub.leaderboard.entries} />
+          <ChallengeLeaderboard entries={challengeHub.leaderboard.entries} previewRows={10} />
+          <div className="challenge-home-leaderboard__footer">
+            <a
+              className="text-link challenge-home-leaderboard__full-link"
+              href="/challenge/#leaderboard"
+            >
+              View full leaderboard <ArrowUpRight size={16} aria-hidden="true" />
+            </a>
+          </div>
         </section>
 
         <div className="challenge-logistics" data-testid="challenge-logistics">

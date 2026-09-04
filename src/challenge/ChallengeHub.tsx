@@ -1,3 +1,4 @@
+import { useLayoutEffect } from 'react'
 import { ArrowDown, ArrowLeft, ArrowUpRight } from 'lucide-react'
 import ChallengeStageDescription from '../components/ChallengeStageDescription'
 import ChallengeVideoGallery from '../components/ChallengeVideoGallery'
@@ -12,6 +13,12 @@ const externalLinkProps = {
 
 function ChallengeHub() {
   const verifiedTeamCount: number = challengeHub.leaderboard.entries.length
+
+  useLayoutEffect(() => {
+    // The initial HTML has no sections until React mounts, so honor incoming anchors now.
+    const target = document.getElementById(window.location.hash.slice(1))
+    target?.scrollIntoView({ block: 'start', behavior: 'instant' })
+  }, [])
 
   return (
     <div className="challenge-hub">

@@ -1471,6 +1471,24 @@
   gap: 24px;
 }
 
+.challenge-home-leaderboard__footer {
+  display: flex;
+  justify-content: flex-end;
+  width: min(100%, 800px);
+  margin: 10px auto 0;
+}
+
+.challenge-home-leaderboard__full-link {
+  min-height: 32px;
+  font-size: 0.85rem;
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+.challenge-home-leaderboard__full-link:hover {
+  text-decoration: underline;
+}
+
 .challenge-home-leaderboard__meta {
   display: inline-flex;
   margin: 0 0 8px;

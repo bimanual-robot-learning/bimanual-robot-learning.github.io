@@ -15,6 +15,65 @@ const selectorSpecificity = (selector: string) => {
 }
 
 describe('ChallengeLeaderboard', () => {
+  const previewEntries: ChallengeLeaderboardEntry[] = Array.from(
+    { length: 15 },
+    (_, index) => ({
+      rank: index + 1,
+      teamId: `T0000${index + 10}`,
+      teamName: `Test team ${index + 1}`,
+      totalScore: 90 - index,
+    }),
+  )
+
+  it('keeps every team in the ten-row preview and explains vertical scrolling', () => {
+    render(<ChallengeLeaderboard entries={previewEntries} previewRows={10} />)
+    const viewport = screen.getByLabelText(
+      'Challenge leaderboard table; scroll vertically for more teams and horizontally for all columns',
+    )
+    expect(viewport).toHaveClass('challenge-leaderboard__viewport--preview')
+    expect(viewport).toHaveAttribute('tabindex', '0')
+    expect(viewport).toHaveAccessibleDescription('15 teams · Scroll to view more')
+    expect(screen.getAllByTestId('challenge-leaderboard-entry')).toHaveLength(15)
+    expect(screen.getByRole('row', { name: '15 T24 Test team 15 76.00' })).toBeInTheDocument()
+    expect(screen.queryByRole('link')).not.toBeInTheDocument()
+  })
+
+  it('removes preview mode when entries no longer exceed ten rows', () => {
+    const { rerender } = render(
+      <ChallengeLeaderboard entries={previewEntries} previewRows={10} />,
+    )
+    expect(screen.getByText('15 teams · Scroll to view more')).toBeVisible()
+    rerender(<ChallengeLeaderboard entries={previewEntries.slice(0, 10)} previewRows={10} />)
+    const viewport = screen.getByLabelText(
+      'Challenge leaderboard table; scroll horizontally to view all columns',
+    )
+    expect(viewport).not.toHaveClass('challenge-leaderboard__viewport--preview')
+    expect(viewport).not.toHaveAttribute('aria-describedby')
+    expect(viewport.style.getPropertyValue('--leaderboard-preview-height')).toBe('')
+    expect(screen.queryByText(/Scroll to view more/)).not.toBeInTheDocument()
+    rerender(<ChallengeLeaderboard entries={[]} previewRows={10} />)
+    expect(screen.queryByText(/Scroll to view more/)).not.toBeInTheDocument()
+  })
+
+  it('leaves the full leaderboard uncapped by default', () => {
+    render(<ChallengeLeaderboard entries={previewEntries} />)
+    expect(screen.getAllByTestId('challenge-leaderboard-entry')).toHaveLength(15)
+    expect(screen.getByLabelText(
+      'Challenge leaderboard table; scroll horizontally to view all columns',
+    )).not.toHaveClass('challenge-leaderboard__viewport--preview')
+    expect(screen.queryByText(/Scroll to view more/)).not.toBeInTheDocument()
+  })
+
+  it('scopes the vertical viewport and opaque sticky column headers to preview mode', () => {
+    expect(leaderboardStyles).toMatch(
+      /\.challenge-leaderboard__viewport--preview\s*\{[^}]*max-height:\s*var\(--leaderboard-preview-height\);[^}]*overflow-y:\s*auto;/,
+    )
+    expect(leaderboardStyles).toMatch(
+      /\.challenge-leaderboard__viewport--preview thead th\s*\{[^}]*position:\s*sticky;[^}]*top:\s*0;[^}]*z-index:\s*2;[^}]*background:\s*#091821;/,
+    )
+    expect(leaderboardStyles).toContain('.challenge-leaderboard__scroll-hint')
+  })
+
   it('renders a semantic, scrollable four-column empty leaderboard', () => {
     render(<ChallengeLeaderboard entries={[]} />)
 

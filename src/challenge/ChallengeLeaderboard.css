@@ -19,6 +19,32 @@
   border-radius: 999px;
 }
 
+.challenge-leaderboard__viewport--preview {
+  max-height: var(--leaderboard-preview-height);
+  overflow-y: auto;
+  scrollbar-gutter: stable;
+}
+
+.challenge-leaderboard__viewport--preview::-webkit-scrollbar {
+  width: 8px;
+}
+
+.challenge-leaderboard__viewport--preview thead th {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  background: #091821;
+  box-shadow: inset 0 -1px rgba(183, 220, 230, 0.3);
+}
+
+.challenge-leaderboard__scroll-hint {
+  width: min(100%, 800px);
+  margin: 12px auto 0;
+  color: rgba(230, 241, 243, 0.74);
+  font: 500 0.8rem/1.5 var(--font-body);
+  text-align: right;
+}
+
 .challenge-leaderboard__viewport:focus-visible {
   outline: 3px solid var(--orange);
   outline-offset: 4px;

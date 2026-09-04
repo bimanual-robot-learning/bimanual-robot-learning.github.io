@@ -608,6 +608,16 @@ describe('workshop landing page', () => {
       within(homepageLeaderboard).getAllByTestId('challenge-leaderboard-entry'),
     ).toHaveLength(15)
     expect(within(homepageLeaderboard).getByText('15 verified teams')).toBeVisible()
+    expect(within(homepageLeaderboard).getByText('15 teams · Scroll to view more')).toBeVisible()
+    expect(within(homepageLeaderboard).getByLabelText(
+      'Challenge leaderboard table; scroll vertically for more teams and horizontally for all columns',
+    )).toHaveClass('challenge-leaderboard__viewport--preview')
+    const fullLeaderboardLink = within(homepageLeaderboard).getByRole('link', {
+      name: 'View full leaderboard',
+    })
+    expect(fullLeaderboardLink).toHaveAttribute('href', '/challenge/#leaderboard')
+    expect(fullLeaderboardLink).toHaveClass('challenge-home-leaderboard__full-link')
+    expect(within(homepageLeaderboard).getAllByRole('link')).toHaveLength(1)
     expect(
       within(homepageLeaderboard).getByText('Updated Sep. 4, 2026'),
     ).toBeVisible()

@@ -1,5 +1,5 @@
 import { render, screen, within } from '@testing-library/react'
-import { describe, expect, it } from 'vitest'
+import { describe, expect, it, vi } from 'vitest'
 import challengeHtml from '../../challenge/index.html?raw'
 import { challengeHub } from '../data/challengeHub'
 import {
@@ -14,6 +14,27 @@ import ChallengeHub from './ChallengeHub'
 import indexStyles from '../index.css?raw'
 
 describe('ChallengeHub', () => {
+  it('positions an incoming leaderboard deep link after rendering', () => {
+    const original = Object.getOwnPropertyDescriptor(Element.prototype, 'scrollIntoView')
+    const scrollIntoView = vi.fn()
+    Object.defineProperty(Element.prototype, 'scrollIntoView', {
+      configurable: true,
+      value: scrollIntoView,
+    })
+    window.history.replaceState(null, '', '/challenge/#leaderboard')
+    try {
+      render(<ChallengeHub />)
+      expect(scrollIntoView).toHaveBeenCalledWith({ block: 'start', behavior: 'instant' })
+      expect(scrollIntoView.mock.contexts[0]).toBe(
+        screen.getByRole('region', { name: 'Leaderboard' }),
+      )
+    } finally {
+      window.history.replaceState(null, '', '/')
+      if (original) Object.defineProperty(Element.prototype, 'scrollIntoView', original)
+      else Reflect.deleteProperty(Element.prototype, 'scrollIntoView')
+    }
+  })
+
   it('renders the refined challenge content and leaderboard contract', () => {
     const { container } = render(<ChallengeHub />)
 
@@ -86,6 +107,10 @@ describe('ChallengeHub', () => {
       within(leaderboard).getAllByTestId('challenge-leaderboard-entry'),
     ).toHaveLength(15)
     expect(within(leaderboard).getByText('15 verified teams')).toBeVisible()
+    expect(within(leaderboard).queryByText(/Scroll to view more/)).not.toBeInTheDocument()
+    expect(within(leaderboard).getByLabelText(
+      'Challenge leaderboard table; scroll horizontally to view all columns',
+    )).not.toHaveClass('challenge-leaderboard__viewport--preview')
     expect(
       within(leaderboard).getByRole('row', {
         name: '1 T12 sota 92.37',
