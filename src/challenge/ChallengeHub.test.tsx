@@ -69,7 +69,7 @@ describe('ChallengeHub', () => {
     expect(leaderboard).toHaveAttribute('id', 'leaderboard')
     expect(within(leaderboard).getByText('Verified results')).toBeVisible()
     expect(
-      within(leaderboard).getByText('Updated Sep. 2, 2026'),
+      within(leaderboard).getByText('Updated Sep. 4, 2026'),
     ).toBeVisible()
     expect(
       within(leaderboard).getByRole('heading', {
@@ -84,8 +84,8 @@ describe('ChallengeHub', () => {
     ).toEqual(['Rank', 'Team ID', 'Team Name', 'Total Score'])
     expect(
       within(leaderboard).getAllByTestId('challenge-leaderboard-entry'),
-    ).toHaveLength(13)
-    expect(within(leaderboard).getByText('13 verified teams')).toBeVisible()
+    ).toHaveLength(15)
+    expect(within(leaderboard).getByText('15 verified teams')).toBeVisible()
     expect(
       within(leaderboard).getByRole('row', {
         name: '1 T12 sota 92.37',

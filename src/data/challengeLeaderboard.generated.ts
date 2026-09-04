@@ -22,21 +22,21 @@ export const challengeLeaderboardEntries = [
   },
   {
     rank: 3,
-    teamId: "T000020",
-    teamName: "hit-miao",
-    totalScore: 85.12080971560738,
+    teamId: "T000015",
+    teamName: "NPU-EAI",
+    totalScore: 85.56472369370465,
   },
   {
     rank: 4,
     teamId: "T000022",
     teamName: "XJTU_Talent",
-    totalScore: 84.93039695738516,
+    totalScore: 85.4081892151743,
   },
   {
     rank: 5,
-    teamId: "T000015",
-    teamName: "NPU-EAI",
-    totalScore: 81.16407845650562,
+    teamId: "T000020",
+    teamName: "hit-miao",
+    totalScore: 85.12080971560738,
   },
   {
     rank: 6,
@@ -54,7 +54,7 @@ export const challengeLeaderboardEntries = [
     rank: 8,
     teamId: "T000019",
     teamName: "PeaceVLA",
-    totalScore: 58.2384178292082,
+    totalScore: 56.79468275889551,
   },
   {
     rank: 9,
@@ -85,5 +85,17 @@ export const challengeLeaderboardEntries = [
     teamId: "T000013",
     teamName: "RoboDeamers",
     totalScore: 47.42043671278776,
+  },
+  {
+    rank: 14,
+    teamId: "T000023",
+    teamName: "ACTVisionOnly",
+    totalScore: 35.43485146979003,
+  },
+  {
+    rank: 15,
+    teamId: "T000024",
+    teamName: "longteam",
+    totalScore: 19.880257879315934,
   },
 ] as const satisfies readonly ChallengeLeaderboardEntry[]

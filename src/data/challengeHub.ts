@@ -86,7 +86,7 @@ export const challengeHub = {
     'Real-robot evaluation covers up to four household tasks, including washer manipulation and clothing folding.',
   leaderboard: {
     status: 'Verified results',
-    updatedAt: 'Updated Sep. 2, 2026',
+    updatedAt: 'Updated Sep. 4, 2026',
     entries: challengeLeaderboardEntries,
   } satisfies ChallengeHubLeaderboard,
 } as const
