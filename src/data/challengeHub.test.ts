@@ -25,14 +25,14 @@ describe('challengeHub content', () => {
       href: '#leaderboard',
     })
     expect(challengeHub.leaderboard.status).toBe('Verified results')
-    expect(challengeHub.leaderboard.updatedAt).toBe('Updated Sep. 4, 2026')
+    expect(challengeHub.leaderboard.updatedAt).toBe('Updated Sep. 7, 2026')
     expect(challengeHub.leaderboard).not.toHaveProperty('openingDate')
-    expect(challengeHub.leaderboard.entries).toHaveLength(15)
+    expect(challengeHub.leaderboard.entries).toHaveLength(17)
     expect(challengeHub.leaderboard.entries[0]).toEqual({
       rank: 1,
-      teamId: 'T000012',
-      teamName: 'sota',
-      totalScore: 92.37289954342617,
+      teamId: 'T000010',
+      teamName: 'Primotion',
+      totalScore: 93.62288505564715,
     })
   })
 })

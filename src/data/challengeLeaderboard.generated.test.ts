@@ -4,97 +4,33 @@ import { challengeLeaderboardEntries } from './challengeLeaderboard.generated'
 
 describe('generated challenge leaderboard data', () => {
   it('contains only the verified public rankings', () => {
-    expect(challengeLeaderboardEntries).toEqual([
-      {
-        rank: 1,
-        teamId: 'T000012',
-        teamName: 'sota',
-        totalScore: 92.37289954342617,
-      },
-      {
-        rank: 2,
-        teamId: 'T000010',
-        teamName: 'Primotion',
-        totalScore: 92.19324603152762,
-      },
-      {
-        rank: 3,
-        teamId: 'T000015',
-        teamName: 'NPU-EAI',
-        totalScore: 85.56472369370465,
-      },
-      {
-        rank: 4,
-        teamId: 'T000022',
-        teamName: 'XJTU_Talent',
-        totalScore: 85.4081892151743,
-      },
-      {
-        rank: 5,
-        teamId: 'T000020',
-        teamName: 'hit-miao',
-        totalScore: 85.12080971560738,
-      },
-      {
-        rank: 6,
-        teamId: 'T000021',
-        teamName: 'cot4b_x2w_step60k',
-        totalScore: 74.38451757806249,
-      },
-      {
-        rank: 7,
-        teamId: 'T000018',
-        teamName: 'Northstar',
-        totalScore: 69.17817863110619,
-      },
-      {
-        rank: 8,
-        teamId: 'T000019',
-        teamName: 'PeaceVLA',
-        totalScore: 56.79468275889551,
-      },
-      {
-        rank: 9,
-        teamId: 'T000016',
-        teamName: 'Nova',
-        totalScore: 51.38199473968168,
-      },
-      {
-        rank: 10,
-        teamId: 'T000014',
-        teamName: 'Spark',
-        totalScore: 50.75683078390648,
-      },
-      {
-        rank: 11,
-        teamId: 'T000017',
-        teamName: 'JustTry',
-        totalScore: 49.46441169355271,
-      },
-      {
-        rank: 12,
-        teamId: 'T000011',
-        teamName: 'Horizon',
-        totalScore: 48.118633605621966,
-      },
-      {
-        rank: 13,
-        teamId: 'T000013',
-        teamName: 'RoboDeamers',
-        totalScore: 47.42043671278776,
-      },
-      {
-        rank: 14,
-        teamId: 'T000023',
-        teamName: 'ACTVisionOnly',
-        totalScore: 35.43485146979003,
-      },
-      {
-        rank: 15,
-        teamId: 'T000024',
-        teamName: 'longteam',
-        totalScore: 19.880257879315934,
-      },
+    expect(
+      challengeLeaderboardEntries.map(
+        ({ rank, teamId, teamName, totalScore }) => [
+          rank,
+          teamId,
+          teamName,
+          totalScore,
+        ],
+      ),
+    ).toEqual([
+      [1, 'T000010', 'Primotion', 93.62288505564715],
+      [2, 'T000012', 'sota', 92.37289954342617],
+      [3, 'T000015', 'NPU-EAI', 85.56472369370465],
+      [4, 'T000022', 'XJTU_Talent', 85.4081892151743],
+      [5, 'T000020', 'hit-miao', 85.12080971560738],
+      [6, 'T000021', 'cot4b_x2w_step60k', 74.38451757806249],
+      [7, 'T000018', 'Northstar', 69.17817863110619],
+      [8, 'T000026', 'Stage1_official_validation_under_100m', 66.32770334240178],
+      [9, 'T000025', 'Generalist', 61.31186920020299],
+      [10, 'T000019', 'PeaceVLA', 57.97280698623386],
+      [11, 'T000024', 'longteam', 55.67809158955456],
+      [12, 'T000016', 'Nova', 51.38199473968168],
+      [13, 'T000014', 'Spark', 50.75683078390648],
+      [14, 'T000017', 'JustTry', 49.46441169355271],
+      [15, 'T000011', 'Horizon', 48.118633605621966],
+      [16, 'T000013', 'RoboDeamers', 47.42043671278776],
+      [17, 'T000023', 'ACTVisionOnly', 39.130536713459584],
     ])
 
     for (const entry of challengeLeaderboardEntries) {

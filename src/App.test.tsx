@@ -606,9 +606,9 @@ describe('workshop landing page', () => {
     ).toEqual(['Rank', 'Team ID', 'Team Name', 'Total Score'])
     expect(
       within(homepageLeaderboard).getAllByTestId('challenge-leaderboard-entry'),
-    ).toHaveLength(15)
-    expect(within(homepageLeaderboard).getByText('15 verified teams')).toBeVisible()
-    expect(within(homepageLeaderboard).getByText('15 teams · Scroll to view more')).toBeVisible()
+    ).toHaveLength(17)
+    expect(within(homepageLeaderboard).getByText('17 verified teams')).toBeVisible()
+    expect(within(homepageLeaderboard).getByText('17 teams · Scroll to view more')).toBeVisible()
     expect(within(homepageLeaderboard).getByLabelText(
       'Challenge leaderboard table; scroll vertically for more teams and horizontally for all columns',
     )).toHaveClass('challenge-leaderboard__viewport--preview')
@@ -619,11 +619,11 @@ describe('workshop landing page', () => {
     expect(fullLeaderboardLink).toHaveClass('challenge-home-leaderboard__full-link')
     expect(within(homepageLeaderboard).getAllByRole('link')).toHaveLength(1)
     expect(
-      within(homepageLeaderboard).getByText('Updated Sep. 4, 2026'),
+      within(homepageLeaderboard).getByText('Updated Sep. 7, 2026'),
     ).toBeVisible()
     expect(
       within(homepageLeaderboard).getByRole('row', {
-        name: '1 T12 sota 92.37',
+        name: '1 T10 Primotion 93.62',
       }),
     ).toBeVisible()
     expect(homepageLeaderboard).not.toHaveTextContent('August 25, 2026')
