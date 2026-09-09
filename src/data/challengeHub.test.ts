@@ -25,9 +25,9 @@ describe('challengeHub content', () => {
       href: '#leaderboard',
     })
     expect(challengeHub.leaderboard.status).toBe('Verified results')
-    expect(challengeHub.leaderboard.updatedAt).toBe('Updated Sep. 7, 2026')
+    expect(challengeHub.leaderboard.updatedAt).toBe('Updated Sep. 9, 2026')
     expect(challengeHub.leaderboard).not.toHaveProperty('openingDate')
-    expect(challengeHub.leaderboard.entries).toHaveLength(17)
+    expect(challengeHub.leaderboard.entries).toHaveLength(19)
     expect(challengeHub.leaderboard.entries[0]).toEqual({
       rank: 1,
       teamId: 'T000010',

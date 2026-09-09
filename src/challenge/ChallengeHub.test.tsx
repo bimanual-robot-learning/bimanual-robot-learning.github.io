@@ -90,7 +90,7 @@ describe('ChallengeHub', () => {
     expect(leaderboard).toHaveAttribute('id', 'leaderboard')
     expect(within(leaderboard).getByText('Verified results')).toBeVisible()
     expect(
-      within(leaderboard).getByText('Updated Sep. 7, 2026'),
+      within(leaderboard).getByText('Updated Sep. 9, 2026'),
     ).toBeVisible()
     expect(
       within(leaderboard).getByRole('heading', {
@@ -105,8 +105,8 @@ describe('ChallengeHub', () => {
     ).toEqual(['Rank', 'Team ID', 'Team Name', 'Total Score'])
     expect(
       within(leaderboard).getAllByTestId('challenge-leaderboard-entry'),
-    ).toHaveLength(17)
-    expect(within(leaderboard).getByText('17 verified teams')).toBeVisible()
+    ).toHaveLength(19)
+    expect(within(leaderboard).getByText('19 verified teams')).toBeVisible()
     expect(within(leaderboard).queryByText(/Scroll to view more/)).not.toBeInTheDocument()
     expect(within(leaderboard).getByLabelText(
       'Challenge leaderboard table; scroll horizontally to view all columns',

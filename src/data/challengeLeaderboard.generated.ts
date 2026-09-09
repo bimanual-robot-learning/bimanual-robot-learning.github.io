@@ -40,39 +40,39 @@ export const challengeLeaderboardEntries = [
   },
   {
     rank: 6,
+    teamId: "T000018",
+    teamName: "Northstar",
+    totalScore: 80.27585469615003,
+  },
+  {
+    rank: 7,
+    teamId: "T000028",
+    teamName: "QQ",
+    totalScore: 77.28630124088222,
+  },
+  {
+    rank: 8,
     teamId: "T000021",
     teamName: "cot4b_x2w_step60k",
     totalScore: 74.38451757806249,
   },
   {
-    rank: 7,
-    teamId: "T000018",
-    teamName: "Northstar",
-    totalScore: 69.17817863110619,
-  },
-  {
-    rank: 8,
+    rank: 9,
     teamId: "T000026",
     teamName: "Stage1_official_validation_under_100m",
     totalScore: 66.32770334240178,
   },
   {
-    rank: 9,
+    rank: 10,
     teamId: "T000025",
     teamName: "Generalist",
     totalScore: 61.31186920020299,
   },
   {
-    rank: 10,
+    rank: 11,
     teamId: "T000019",
     teamName: "PeaceVLA",
-    totalScore: 57.97280698623386,
-  },
-  {
-    rank: 11,
-    teamId: "T000024",
-    teamName: "longteam",
-    totalScore: 55.67809158955456,
+    totalScore: 59.02255636634523,
   },
   {
     rank: 12,
@@ -106,8 +106,20 @@ export const challengeLeaderboardEntries = [
   },
   {
     rank: 17,
+    teamId: "T000024",
+    teamName: "longteam",
+    totalScore: 42.89436813492114,
+  },
+  {
+    rank: 18,
     teamId: "T000023",
     teamName: "ACTVisionOnly",
     totalScore: 39.130536713459584,
+  },
+  {
+    rank: 19,
+    teamId: "T000027",
+    teamName: "DBX",
+    totalScore: 2.843938684624341,
   },
 ] as const satisfies readonly ChallengeLeaderboardEntry[]
