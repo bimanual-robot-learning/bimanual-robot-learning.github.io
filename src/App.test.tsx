@@ -619,7 +619,7 @@ describe('workshop landing page', () => {
     expect(fullLeaderboardLink).toHaveClass('challenge-home-leaderboard__full-link')
     expect(within(homepageLeaderboard).getAllByRole('link')).toHaveLength(1)
     expect(
-      within(homepageLeaderboard).getByText('Updated Sep. 9, 2026'),
+      within(homepageLeaderboard).getByText('Updated Sep. 11, 2026'),
     ).toBeVisible()
     expect(
       within(homepageLeaderboard).getByRole('row', {

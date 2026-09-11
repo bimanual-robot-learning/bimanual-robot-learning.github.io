@@ -90,7 +90,7 @@ describe('ChallengeHub', () => {
     expect(leaderboard).toHaveAttribute('id', 'leaderboard')
     expect(within(leaderboard).getByText('Verified results')).toBeVisible()
     expect(
-      within(leaderboard).getByText('Updated Sep. 9, 2026'),
+      within(leaderboard).getByText('Updated Sep. 11, 2026'),
     ).toBeVisible()
     expect(
       within(leaderboard).getByRole('heading', {
