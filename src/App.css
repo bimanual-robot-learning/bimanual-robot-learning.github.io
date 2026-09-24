@@ -1133,12 +1133,62 @@
 }
 
 .cfp-practical {
-  display: grid;
   overflow: hidden;
   color: var(--ink-950);
   background: var(--paper);
   border-radius: 7px;
+}
+
+.cfp-practical__summary {
+  display: grid;
+  padding: 24px 30px;
+  align-items: center;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 18px;
+  cursor: pointer;
+  list-style: none;
+}
+
+.cfp-practical__summary::-webkit-details-marker {
+  display: none;
+}
+
+.cfp-practical__summary:focus-visible {
+  outline-offset: -4px;
+}
+
+.cfp-practical__summary .eyebrow {
+  margin: 0 0 4px;
+}
+
+.cfp-practical__summary h3 {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 1.45rem;
+  letter-spacing: -0.025em;
+}
+
+.cfp-practical__toggle {
+  display: grid;
+  width: 34px;
+  height: 34px;
+  place-items: center;
+  color: var(--cyan-deep);
+  border: 1px solid rgba(8, 116, 135, 0.36);
+  border-radius: 50%;
+  font-size: 1.35rem;
+  font-weight: 400;
+  line-height: 1;
+}
+
+.cfp-practical[open] .cfp-practical__toggle {
+  transform: rotate(45deg);
+}
+
+.cfp-practical__body {
+  display: grid;
   grid-template-columns: minmax(0, 1.5fr) minmax(270px, 0.5fr);
+  border-top: 1px solid rgba(8, 25, 43, 0.1);
 }
 
 .submission-panel {
@@ -1153,7 +1203,7 @@
   display: grid;
   padding: 30px;
   align-items: center;
-  grid-template-columns: auto minmax(0, 1fr) auto;
+  grid-template-columns: auto minmax(0, 1fr);
   gap: 22px;
 }
 
@@ -1178,7 +1228,7 @@
 
 .submission-panel__intro {
   max-width: 680px;
-  margin: 9px 0 0;
+  margin: 0 30px 24px;
   color: var(--slate-readable);
   font-size: 1rem;
   font-weight: 500;
@@ -1323,6 +1373,117 @@
   color: var(--slate-readable);
   text-decoration-thickness: 1px;
   text-decoration-color: currentColor;
+}
+
+.accepted-papers {
+  margin-top: 28px;
+  overflow: hidden;
+  color: var(--ink-950);
+  background: var(--paper);
+  border-radius: 7px;
+}
+
+.accepted-papers__heading {
+  display: flex;
+  padding: 30px;
+  align-items: end;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.accepted-papers__heading .eyebrow {
+  margin-bottom: 4px;
+}
+
+.accepted-papers__heading h3 {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: clamp(1.9rem, 3vw, 2.6rem);
+  letter-spacing: -0.045em;
+}
+
+.accepted-papers__heading > p {
+  margin: 0 0 3px;
+  color: var(--slate-readable);
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  font-weight: 600;
+}
+
+.accepted-papers__table-wrap {
+  padding: 0 30px 30px;
+  overflow-x: auto;
+}
+
+.accepted-papers table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+
+.accepted-papers th {
+  padding: 14px 18px;
+  color: var(--slate-readable);
+  background: rgba(7, 16, 29, 0.045);
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.07em;
+  text-align: left;
+  text-transform: uppercase;
+}
+
+.accepted-papers th:last-child,
+.accepted-papers td:last-child {
+  width: 160px;
+  text-align: center;
+}
+
+.accepted-papers td {
+  padding: 18px;
+  border-bottom: 1px solid var(--line-light);
+  font-size: 0.98rem;
+  line-height: 1.5;
+  vertical-align: middle;
+}
+
+.accepted-papers tr:last-child td {
+  border-bottom: 0;
+}
+
+.accepted-papers td a {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 7px;
+  color: var(--ink-950);
+  font-weight: 650;
+  text-decoration: none;
+}
+
+.accepted-papers td a:hover {
+  color: var(--cyan-deep);
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+.accepted-papers td a svg {
+  flex: none;
+  align-self: center;
+  color: var(--cyan-deep);
+}
+
+.accepted-papers__tag {
+  display: inline-block;
+  min-width: 92px;
+  padding: 7px 11px;
+  color: var(--slate-readable);
+  background: rgba(7, 16, 29, 0.06);
+  border-radius: 3px;
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
 }
 
 .section--challenge {
@@ -2115,14 +2276,6 @@
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
-  .submission-panel__header {
-    grid-template-columns: auto minmax(0, 1fr);
-  }
-
-  .submission-panel__header .button {
-    grid-column: 2;
-    justify-self: start;
-  }
 }
 
 @media (max-width: 920px) {
@@ -2222,13 +2375,19 @@
     min-height: auto;
   }
 
-  .cfp-practical {
+  .cfp-practical__body {
     grid-template-columns: 1fr;
   }
 
   .important-dates {
     border-top: 1px solid rgba(8, 25, 43, 0.1);
     border-left: 0;
+  }
+
+  .important-dates dl {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 24px;
   }
 
   .award-card__breakdown {
@@ -2415,16 +2574,33 @@
     min-height: 220px;
   }
 
-  .submission-panel__header {
-    grid-template-columns: auto minmax(0, 1fr);
-  }
-
-  .submission-panel__header .button {
-    grid-column: 1 / -1;
-  }
-
   .submission-guidelines {
     grid-template-columns: 1fr;
+  }
+
+  .accepted-papers__heading {
+    align-items: start;
+    flex-direction: column;
+  }
+
+  .accepted-papers th:last-child,
+  .accepted-papers td:last-child {
+    width: 112px;
+  }
+
+  .accepted-papers td {
+    padding: 14px 10px;
+    font-size: 0.9rem;
+  }
+
+  .accepted-papers th {
+    padding: 12px 10px;
+  }
+
+  .accepted-papers__tag {
+    min-width: 0;
+    padding: 6px 8px;
+    font-size: 0.63rem;
   }
 
   .submission-presentation {
@@ -2571,11 +2747,16 @@
 
   .submission-panel__header {
     padding: 22px;
-    grid-template-columns: 1fr;
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: 12px;
   }
 
-  .submission-panel__header .button {
-    grid-column: 1;
+  .cfp-practical__summary {
+    padding: 22px;
+  }
+
+  .submission-panel__intro {
+    margin: 0 22px 22px;
   }
 
   .submission-guidelines {
@@ -2632,6 +2813,29 @@
 
   .important-dates {
     padding: 24px 22px;
+  }
+
+  .important-dates dl {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+
+  .accepted-papers__heading {
+    padding: 24px 20px;
+  }
+
+  .accepted-papers__table-wrap {
+    padding: 0 12px 20px;
+  }
+
+  .accepted-papers th:last-child,
+  .accepted-papers td:last-child {
+    width: 102px;
+  }
+
+  .accepted-papers th {
+    font-size: 0.64rem;
+    letter-spacing: 0.02em;
   }
 }
 

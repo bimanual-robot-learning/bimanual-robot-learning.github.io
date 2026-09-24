@@ -1,5 +1,8 @@
 import { useState } from 'react'
 import {
+  acceptedPapers,
+} from './data/acceptedPapers'
+import {
   ArrowDown,
   ArrowUpRight,
   CalendarDays,
@@ -114,11 +117,9 @@ function App() {
 
           <a
             className="nav-cta"
-            href={workshopMeta.openReviewUrl}
-            target="_blank"
-            rel="noreferrer"
+            href="#accepted-papers"
           >
-            Submit
+            Papers
             <ArrowUpRight size={15} aria-hidden="true" />
           </a>
         </nav>
@@ -176,11 +177,9 @@ function App() {
             <div className="hero__actions">
               <a
                 className="button button--primary"
-                href={workshopMeta.openReviewUrl}
-                target="_blank"
-                rel="noreferrer"
+                href="#accepted-papers"
               >
-                Submit via OpenReview
+                View accepted papers
                 <ArrowUpRight size={18} aria-hidden="true" />
               </a>
               <a className="button button--ghost" href="#introduction">
@@ -339,11 +338,11 @@ function App() {
               </p>
               <a
                 className="text-link"
-                href={workshopMeta.openReviewUrl}
+                href={`${workshopMeta.openReviewUrl}#tab-accept`}
                 target="_blank"
                 rel="noreferrer"
               >
-                OpenReview submission portal
+                Accepted papers on OpenReview
                 <ArrowUpRight size={18} aria-hidden="true" />
               </a>
             </div>
@@ -412,92 +411,102 @@ function App() {
               </div>
             </section>
 
-            <section className="cfp-practical" data-testid="cfp-practical">
-              <section
-                className="submission-panel"
-                aria-labelledby="submission-title"
-                data-testid="submission-panel"
-              >
-                <header className="submission-panel__header">
-                  <div className="submission-panel__icon" aria-hidden="true">
-                    <FileText />
-                  </div>
-                  <div>
-                    <p className="eyebrow">{submission.eyebrow}</p>
-                    <h3 id="submission-title">{submission.title}</h3>
-                    <p className="submission-panel__intro">
-                      {submission.introduction}
-                    </p>
-                  </div>
-                  <a
-                    className="button button--orange"
-                    href={workshopMeta.openReviewUrl}
-                    target="_blank"
-                    rel="noreferrer"
-                  >
-                    Submit your work
-                    <ArrowUpRight size={18} aria-hidden="true" />
-                  </a>
-                </header>
-
-                <ul
-                  className="submission-guidelines"
-                  aria-label="Submission requirements"
-                >
-                  {submission.guidelines.map((guideline) => (
-                    <li
-                      className="submission-guideline"
-                      data-testid="submission-guideline"
-                      key={guideline.label}
-                    >
-                      <h4>{guideline.label}</h4>
-                      <p>
-                        {guideline.prefix}
-                        {guideline.link && (
-                          <a
-                            href={guideline.link.href}
-                            target="_blank"
-                            rel="noreferrer"
-                          >
-                            {guideline.link.label}
-                          </a>
-                        )}
-                        {guideline.suffix}
-                      </p>
-                    </li>
-                  ))}
-                </ul>
-
-                <div className="submission-presentation">
-                  <span>At the workshop</span>
-                  <p>{submission.presentation}</p>
+            <details className="cfp-practical" data-testid="cfp-practical">
+              <summary className="cfp-practical__summary">
+                <div>
+                  <p className="eyebrow">Submission information</p>
+                  <h3>Format &amp; Important Dates</h3>
                 </div>
-              </section>
+                <span className="cfp-practical__toggle" aria-hidden="true">+</span>
+              </summary>
 
-              <aside className="important-dates" aria-labelledby="dates-title">
-                <div className="important-dates__heading">
-                  <CalendarDays aria-hidden="true" />
-                  <div>
-                    <p className="eyebrow">Mark your calendar</p>
-                    <h3 id="dates-title">Important Dates</h3>
-                  </div>
-                </div>
-                <dl>
-                  {importantDates.map((date) => (
-                    <div key={date.label}>
-                      <dt>{date.label}</dt>
-                      <dd>
-                        {date.previousValue && (
-                          <del className="important-dates__previous">
-                            {date.previousValue}
-                          </del>
-                        )}
-                        <span className="important-dates__current">{date.value}</span>
-                      </dd>
+              <div className="cfp-practical__body">
+                <section className="submission-panel" aria-labelledby="submission-title" data-testid="submission-panel">
+                  <header className="submission-panel__header">
+                    <div className="submission-panel__icon" aria-hidden="true">
+                      <FileText />
                     </div>
-                  ))}
-                </dl>
-              </aside>
+                    <div>
+                      <p className="eyebrow">{submission.eyebrow}</p>
+                      <h3 id="submission-title">{submission.title}</h3>
+                    </div>
+                  </header>
+
+                  <p className="submission-panel__intro">{submission.introduction}</p>
+
+                  <ul className="submission-guidelines" aria-label="Submission requirements">
+                    {submission.guidelines.map((guideline) => (
+                      <li className="submission-guideline" data-testid="submission-guideline" key={guideline.label}>
+                        <h4>{guideline.label}</h4>
+                        <p>
+                          {guideline.prefix}
+                          {guideline.link && (
+                            <a href={guideline.link.href} target="_blank" rel="noreferrer">
+                              {guideline.link.label}
+                            </a>
+                          )}
+                          {guideline.suffix}
+                        </p>
+                      </li>
+                    ))}
+                  </ul>
+
+                  <div className="submission-presentation">
+                    <span>At the workshop</span>
+                    <p>{submission.presentation}</p>
+                  </div>
+                </section>
+
+                <aside className="important-dates" aria-labelledby="dates-title">
+                  <div className="important-dates__heading">
+                    <CalendarDays aria-hidden="true" />
+                    <div>
+                      <p className="eyebrow">Mark your calendar</p>
+                      <h3 id="dates-title">Important Dates</h3>
+                    </div>
+                  </div>
+                  <dl>
+                    {importantDates.map((date) => (
+                      <div key={date.label}>
+                        <dt>{date.label}</dt>
+                        <dd>
+                          {date.previousValue && <del className="important-dates__previous">{date.previousValue}</del>}
+                          <span className="important-dates__current">{date.value}</span>
+                        </dd>
+                      </div>
+                    ))}
+                  </dl>
+                </aside>
+              </div>
+            </details>
+
+            <section className="accepted-papers" id="accepted-papers" aria-labelledby="accepted-papers-title" data-testid="accepted-papers">
+              <div className="accepted-papers__heading">
+                <div>
+                  <p className="eyebrow">Workshop program</p>
+                  <h3 id="accepted-papers-title">Accepted Papers</h3>
+                </div>
+                <p>{acceptedPapers.length} accepted papers</p>
+              </div>
+              <div className="accepted-papers__table-wrap">
+                <table>
+                  <thead>
+                    <tr><th scope="col">Paper</th><th scope="col">Presentation</th></tr>
+                  </thead>
+                  <tbody>
+                    {acceptedPapers.map((paper) => (
+                      <tr key={paper.url}>
+                        <td>
+                          <a href={paper.url} target="_blank" rel="noreferrer">
+                            {paper.title}<ArrowUpRight size={16} aria-hidden="true" />
+                          </a>
+                        </td>
+                        <td><span className="accepted-papers__tag">{paper.spotlight ? 'Spotlight' : 'Poster'}</span></td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
             </section>
           </div>
         </section>
@@ -575,11 +584,9 @@ function App() {
           <div className="site-footer__actions">
             <a
               className="button button--primary"
-              href={workshopMeta.openReviewUrl}
-              target="_blank"
-              rel="noreferrer"
+              href="#accepted-papers"
             >
-              Submit via OpenReview
+              View accepted papers
               <ArrowUpRight size={18} aria-hidden="true" />
             </a>
             <a

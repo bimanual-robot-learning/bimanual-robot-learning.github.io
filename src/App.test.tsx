@@ -6,6 +6,7 @@ import { render, screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { describe, expect, it } from 'vitest'
 import App from './App'
+import { acceptedPapers } from './data/acceptedPapers'
 import appStyles from './App.css?raw'
 import leaderboardStyles from './challenge/ChallengeLeaderboard.css?raw'
 import ChallengeVideoGallery from './components/ChallengeVideoGallery'
@@ -15,7 +16,6 @@ import {
   challenge,
   challengeOrganizers,
   challengeVideos,
-  workshopMeta,
 } from './data/workshop'
 import type { ChallengeResource } from './data/workshop'
 import viteConfigSource from '../vite.config.ts?raw'
@@ -1807,14 +1807,14 @@ describe('workshop landing page', () => {
     const awardBreakdownRule = appStyles.match(
       /\.award-card__breakdown\s*\{([^}]*)\}/,
     )?.[1]
-    const practicalRule = appStyles.match(/\.cfp-practical\s*\{([^}]*)\}/)?.[1]
+    const practicalRule = appStyles.match(/\.cfp-practical__body\s*\{([^}]*)\}/)?.[1]
     const tabletStart = appStyles.indexOf('@media (max-width: 920px)')
     const mobileStart = appStyles.indexOf('@media (max-width: 720px)')
     const compactStart = appStyles.indexOf('@media (max-width: 480px)', mobileStart)
     const tabletMedia = appStyles.slice(tabletStart, mobileStart)
     const mobileMedia = appStyles.slice(mobileStart, compactStart)
     const tabletPracticalRule = tabletMedia.match(
-      /\.cfp-practical\s*\{([^}]*)\}/,
+      /\.cfp-practical__body\s*\{([^}]*)\}/,
     )?.[1]
     const tabletAwardBreakdownRule = tabletMedia.match(
       /\.award-card__breakdown\s*\{([^}]*)\}/,
@@ -1915,7 +1915,7 @@ describe('workshop landing page', () => {
     })
   })
 
-  it('places awards directly after the CFP topics and before practical information', () => {
+  it('places awards before a shared submission-and-dates disclosure', async () => {
     render(<App />)
 
     const topicCards = screen.getAllByTestId('topic-card')
@@ -1926,15 +1926,20 @@ describe('workshop landing page', () => {
     expect(topicGrid).not.toBeNull()
     expect(topicGrid?.nextElementSibling).toBe(awardsShowcase)
     expect(awardsShowcase.nextElementSibling).toBe(practicalPanel)
+    expect(practicalPanel.tagName).toBe('DETAILS')
+    expect(practicalPanel).not.toHaveAttribute('open')
+    await userEvent.click(within(practicalPanel).getByText('Submission information'))
+    expect(practicalPanel).toHaveAttribute('open')
     expect(within(practicalPanel).getByTestId('submission-panel')).toBeInTheDocument()
     expect(
       within(practicalPanel).getByRole('heading', { name: 'Important Dates' }),
     ).toBeInTheDocument()
   })
 
-  it('shows the extended submission deadline while retaining the previous deadline', () => {
+  it('shows the extended submission deadline while retaining the previous deadline', async () => {
     render(<App />)
 
+    await userEvent.click(within(screen.getByTestId('cfp-practical')).getByText('Submission information'))
     const datesPanel = screen.getByRole('complementary', { name: 'Important Dates' })
     const submissionRow = within(datesPanel).getByText('Submission deadline').parentElement
 
@@ -2007,10 +2012,19 @@ describe('workshop landing page', () => {
     expect(sponsorLink).toHaveAttribute('rel', 'noreferrer')
   })
 
-  it('presents complete submission guidance with safe IEEE and OpenReview links', () => {
+  it('collapses and opens submission guidance and Important Dates together', async () => {
     render(<App />)
 
-    const submissionPanel = screen.getByTestId('submission-panel')
+    const practicalPanel = screen.getByTestId('cfp-practical')
+    const submissionPanel = within(practicalPanel).getByTestId('submission-panel')
+
+    expect(practicalPanel.tagName).toBe('DETAILS')
+    expect(practicalPanel).not.toHaveAttribute('open')
+    expect(within(practicalPanel).getByText('Important Dates').closest('details')).toBe(practicalPanel)
+    expect(within(practicalPanel).getByText('Short papers & extended abstracts').closest('details')).toBe(practicalPanel)
+    await userEvent.click(within(practicalPanel).getByText('Submission information'))
+    expect(practicalPanel).toHaveAttribute('open')
+    expect(within(practicalPanel).getByRole('heading', { name: 'Important Dates' })).toBeInTheDocument()
 
     expect(
       within(submissionPanel).getByRole('heading', {
@@ -2061,12 +2075,68 @@ describe('workshop landing page', () => {
       ),
     ).toBeInTheDocument()
 
-    const submitLink = within(submissionPanel).getByRole('link', {
+    expect(within(submissionPanel).queryByRole('link', {
       name: 'Submit your work',
-    })
-    expect(submitLink).toHaveAttribute('href', workshopMeta.openReviewUrl)
-    expect(submitLink).toHaveAttribute('target', '_blank')
-    expect(submitLink).toHaveAttribute('rel', 'noreferrer')
+    })).not.toBeInTheDocument()
+
+    await userEvent.click(within(practicalPanel).getByText('Submission information'))
+    expect(practicalPanel).not.toHaveAttribute('open')
+  })
+
+  it('lists every accepted OpenReview paper and marks exactly four spotlights', () => {
+    render(<App />)
+
+    const acceptedSection = screen.getByTestId('accepted-papers')
+    const rows = within(acceptedSection).getAllByRole('row')
+    expect(rows).toHaveLength(12)
+    expect(acceptedPapers).toHaveLength(11)
+    expect(acceptedPapers.map((paper) => paper.title)).toEqual([
+      'Scaling Bimanual Household Manipulation from 1,500 hours of Demonstrations to On-Policy Corrections',
+      'Scaling Latent Motor Adaptation to Coordinated Bimanual Manipulation',
+      'Egocentric Cross-Embodiment Manipulation with Embodiment Dreaming',
+      'ManiLadder: Benchmarking Robot Manipulation Through a Categorized and Multi-Level Task Ladder',
+      'When Bimanual Structure Is an Illusion: Amplitude Compression in Single-Arm Tasks',
+      'HUGS: Guiding Unified Dexterous Grasp Synthesis Across Modes and Scales via Learned Human Priors',
+      'Scaling Does Not Fix Sequencing: A Minimal Structural Prior for Long-Horizon Bimanual Manipulation',
+      'Scaling and Structure Are Not Free: Bimanual Manipulation Within an 8 GB Budget',
+      'HoMMI: Learning Whole-Body Mobile Manipulation from Human Demonstrations',
+      'SLAC: Safe and Efficient Real-Robot Reinforcement Learning via Unsupervised Simulation Pre-Training',
+      'CRAFT: Video Diffusion for Bimanual Robot Data Generation',
+    ])
+    expect(within(acceptedSection).getByRole('columnheader', { name: 'Paper' })).toBeInTheDocument()
+    expect(within(acceptedSection).getByRole('columnheader', { name: 'Presentation' })).toBeInTheDocument()
+
+    const spotlightTitles = [
+      'ManiLadder: Benchmarking Robot Manipulation Through a Categorized and Multi-Level Task Ladder',
+      'HoMMI: Learning Whole-Body Mobile Manipulation from Human Demonstrations',
+      'CRAFT: Video Diffusion for Bimanual Robot Data Generation',
+      'HUGS: Guiding Unified Dexterous Grasp Synthesis Across Modes and Scales via Learned Human Priors',
+    ]
+
+    for (const paper of acceptedPapers) {
+      const paperLink = within(acceptedSection).getByRole('link', { name: paper.title })
+      expect(paperLink).toHaveAttribute('href', paper.url)
+      expect(paperLink).toHaveAttribute('target', '_blank')
+      expect(paperLink).toHaveAttribute('rel', 'noreferrer')
+      const row = paperLink.closest('tr')
+      expect(row).not.toBeNull()
+      expect(within(row as HTMLElement).getByText(paper.spotlight ? 'Spotlight' : 'Poster')).toBeInTheDocument()
+    }
+
+    expect(acceptedPapers.filter((paper) => paper.spotlight).map((paper) => paper.title)).toEqual(expect.arrayContaining(spotlightTitles))
+    expect(within(acceptedSection).getAllByText('Spotlight')).toHaveLength(4)
+    expect(new Set(within(acceptedSection).getAllByText(/^(Spotlight|Poster)$/).map((tag) => tag.className))).toEqual(new Set(['accepted-papers__tag']))
+  })
+
+  it('directs workshop calls to action to the accepted papers after submissions close', () => {
+    render(<App />)
+
+    expect(screen.queryAllByRole('link', { name: /submit via openreview|submit your work|openreview submission portal/i })).toHaveLength(0)
+    expect(screen.getByRole('navigation', { name: 'Primary navigation' }).querySelector('.nav-cta')).toHaveAttribute('href', '#accepted-papers')
+    expect(screen.getByRole('link', { name: 'Accepted papers on OpenReview' })).toHaveAttribute(
+      'href',
+      'https://openreview.net/group?id=IEEE.org%2FIROS%2F2026%2FWorkshop%2FBimanual_Manipulation#tab-accept',
+    )
   })
 
   it('uses accessible local portraits and safe external calls to action', () => {
