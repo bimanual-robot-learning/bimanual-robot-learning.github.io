@@ -171,7 +171,7 @@ export const workshopMeta: WorkshopMeta = {
   subtitle: 'Rethinking Bimanual Manipulation Beyond Single-Arm Policies',
   date: 'September 27, 2026',
   time: '8:00 AM–12:30 PM EDT',
-  location: 'Pittsburgh, PA, USA',
+  location: 'Room 320 · David L. Lawrence Convention Center, Pittsburgh, PA, USA',
   conferenceUrl: 'https://2026.ieee-iros.org/',
   openReviewUrl:
     'https://openreview.net/group?id=IEEE.org%2FIROS%2F2026%2FWorkshop%2FBimanual_Manipulation',

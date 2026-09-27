@@ -103,6 +103,15 @@ const expectOwnedCssProperties = (
 }
 
 describe('workshop landing page', () => {
+  it('shows the full room, venue, and city location at the top and footer', () => {
+    render(<App />)
+
+    const location =
+      'Room 320 · David L. Lawrence Convention Center, Pittsburgh, PA, USA'
+    expect(within(screen.getByLabelText('Workshop details')).getByText(location)).toBeInTheDocument()
+    expect(within(screen.getByRole('contentinfo')).getByText(location)).toBeInTheDocument()
+  })
+
   it('accepts Challenge Hub copy without changing selected-video behavior', () => {
     render(
       <ChallengeVideoGallery
