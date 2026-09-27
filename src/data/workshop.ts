@@ -462,8 +462,8 @@ export const schedule: ScheduleEntry[] = [
   {
     time: '09:40–10:05',
     speakerOrSession: 'Dr. Joonho Lee',
-    talkTitle: 'Bimanual Manipulation for Manufacturing Automation',
-    status: 'tentative',
+    talkTitle: 'Scale Above, Structure Below: Lessons from Learned Manipulation in the Field',
+    status: 'confirmed',
     kind: 'talk',
   },
   {
@@ -483,8 +483,8 @@ export const schedule: ScheduleEntry[] = [
   {
     time: '11:00–11:25',
     speakerOrSession: 'Dr. Kaifeng Zhang',
-    talkTitle: 'Pending',
-    status: 'pending',
+    talkTitle: 'Towards Human-Like Dexterous Manipulation',
+    status: 'confirmed',
     kind: 'talk',
   },
   {

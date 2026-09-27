@@ -1524,8 +1524,29 @@ describe('workshop landing page', () => {
       name: 'IROS 2026 workshop schedule',
     })
     expect(within(scheduleTable).getAllByRole('row')).toHaveLength(11)
-    expect(within(scheduleTable).getAllByText('Tentative')).toHaveLength(2)
-    expect(within(scheduleTable).getAllByText('Pending')).toHaveLength(3)
+    expect(within(scheduleTable).getAllByText('Tentative')).toHaveLength(1)
+    expect(within(scheduleTable).getAllByText('Pending')).toHaveLength(2)
+  })
+
+  it('shows the announced Joonho Lee and Kaifeng Zhang talk titles', () => {
+    render(<App />)
+
+    const scheduleTable = screen.getByRole('table', {
+      name: 'IROS 2026 workshop schedule',
+    })
+    expect(
+      within(scheduleTable).getByText(
+        'Scale Above, Structure Below: Lessons from Learned Manipulation in the Field',
+      ),
+    ).toBeInTheDocument()
+    expect(
+      within(scheduleTable).getByText('Towards Human-Like Dexterous Manipulation'),
+    ).toBeInTheDocument()
+    expect(
+      within(within(scheduleTable).getByRole('row', { name: /Dr\. Joonho Lee/ })).queryByText(
+        'Tentative',
+      ),
+    ).not.toBeInTheDocument()
   })
 
   it('renders independent Workshop and Challenge organizer sections', () => {
