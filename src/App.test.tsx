@@ -582,7 +582,7 @@ describe('workshop landing page', () => {
     )
     const prizePool = within(challengeSection).getByTestId('challenge-prize-pool')
     const homepageLeaderboard = within(challengeSection).getByRole('region', {
-      name: 'Challenge Leaderboard',
+      name: 'Challenge Final Ranking',
     })
     const logistics = within(challengeSection).getByTestId('challenge-logistics')
 
@@ -612,34 +612,32 @@ describe('workshop landing page', () => {
       within(homepageLeaderboard)
         .getAllByRole('columnheader')
         .map(({ textContent }) => textContent),
-    ).toEqual(['Rank', 'Team ID', 'Team Name', 'Total Score'])
+    ).toEqual(['Rank', 'Team ID', 'Team Name', 'Final Score'])
     expect(
       within(homepageLeaderboard).getAllByTestId('challenge-leaderboard-entry'),
-    ).toHaveLength(19)
-    expect(within(homepageLeaderboard).getByText('19 verified teams')).toBeVisible()
-    expect(within(homepageLeaderboard).getByText('19 teams · Scroll to view more')).toBeVisible()
+    ).toHaveLength(6)
+    expect(within(homepageLeaderboard).getByText('6 teams')).toBeVisible()
+    expect(within(homepageLeaderboard).queryByText(/Scroll to view more/)).not.toBeInTheDocument()
     expect(within(homepageLeaderboard).getByLabelText(
-      'Challenge leaderboard table; scroll vertically for more teams and horizontally for all columns',
-    )).toHaveClass('challenge-leaderboard__viewport--preview')
+      'Final ranking table; scroll horizontally to view all columns',
+    )).not.toHaveClass('challenge-leaderboard__viewport--preview')
     const fullLeaderboardLink = within(homepageLeaderboard).getByRole('link', {
-      name: 'View full leaderboard',
+      name: 'View challenge results',
     })
     expect(fullLeaderboardLink).toHaveAttribute('href', '/challenge/#leaderboard')
     expect(fullLeaderboardLink).toHaveClass('challenge-home-leaderboard__full-link')
     expect(within(homepageLeaderboard).getAllByRole('link')).toHaveLength(1)
-    expect(
-      within(homepageLeaderboard).getByText('Updated Sep. 11, 2026'),
-    ).toBeVisible()
+    expect(within(homepageLeaderboard).getByText('Official results')).toBeVisible()
     expect(
       within(homepageLeaderboard).getByRole('row', {
-        name: '1 T10 Primotion 93.62',
+        name: '1 T10 Primotion 46.599',
       }),
     ).toBeVisible()
     expect(homepageLeaderboard).not.toHaveTextContent('August 25, 2026')
     expect(homepageLeaderboard).not.toHaveTextContent('Leaderboard opens')
     expect(homepageLeaderboard).not.toHaveTextContent('Online Score')
     expect(homepageLeaderboard).not.toHaveTextContent('Real-Robot Score')
-    expect(homepageLeaderboard).not.toHaveTextContent('Final Score')
+    expect(homepageLeaderboard).toHaveTextContent('Final Score')
     expect(homepageLeaderboard).not.toHaveTextContent('Status')
     expect(
       within(homepageLeaderboard).queryByText('Team A'),
@@ -702,6 +700,37 @@ describe('workshop landing page', () => {
     expect(challengeSection).not.toHaveTextContent(
       'Detailed scoring protocols will be announced before online evaluation opens.',
     )
+  })
+
+  it('keeps the earlier online leaderboard on the homepage in a separate disclosure', async () => {
+    const user = userEvent.setup()
+    render(<App />)
+
+    const challengeSection = screen.getByTestId('challenge-section')
+    const finalRanking = within(challengeSection).getByRole('region', {
+      name: 'Challenge Final Ranking',
+    })
+    const onlineResults = within(challengeSection).getByTestId(
+      'challenge-home-online-results',
+    )
+    const disclosure = onlineResults.querySelector('details') as HTMLDetailsElement
+
+    expect(finalRanking.compareDocumentPosition(onlineResults)).toBe(
+      Node.DOCUMENT_POSITION_FOLLOWING,
+    )
+    expect(disclosure).not.toHaveAttribute('open')
+    expect(within(onlineResults).getByText('Earlier stage')).toBeVisible()
+    expect(within(onlineResults).getByText('19 teams')).toBeVisible()
+
+    await user.click(within(onlineResults).getByText('Online Evaluation Results'))
+
+    expect(disclosure).toHaveAttribute('open')
+    expect(onlineResults).toHaveTextContent('Updated Sep. 11, 2026')
+    expect(
+      within(onlineResults).getAllByRole('columnheader').map(({ textContent }) => textContent),
+    ).toEqual(['Rank', 'Team ID', 'Team Name', 'Online Score'])
+    expect(within(onlineResults).getAllByTestId('challenge-leaderboard-entry')).toHaveLength(19)
+    expect(within(finalRanking).getAllByTestId('challenge-leaderboard-entry')).toHaveLength(6)
   })
 
   it('keeps the homepage evaluation details closed until each disclosure is opened', async () => {
@@ -1293,6 +1322,7 @@ describe('workshop landing page', () => {
 
   it('owns a homepage-aligned leaderboard surface', () => {
     expect(appStyles).toContain('.challenge-home-leaderboard')
+    expect(appStyles).toContain('.challenge-home-leaderboard::before')
     expect(appStyles).toContain('.challenge-home-leaderboard__header')
     const leaderboardCardRule = extractCssRule(
       appStyles,
@@ -1323,6 +1353,18 @@ describe('workshop landing page', () => {
         'white-space': 'nowrap',
       },
     )
+  })
+
+  it('visually separates the homepage online history from the final ranking', () => {
+    expectOwnedCssProperties(appStyles, '.challenge-home-online-results', {
+      'border-top': '3px solid rgba(82, 216, 230, 0.6)',
+    })
+    expectOwnedCssProperties(appStyles, '.challenge-home-online-results summary', {
+      display: 'flex',
+      cursor: 'pointer',
+    })
+    expect(appStyles).toContain('.challenge-home-online-results summary:focus-visible')
+    expect(appStyles).toContain('.challenge-home-online-results details[open] summary::after')
   })
 
   it('styles homepage logistics as native disclosure panels', () => {

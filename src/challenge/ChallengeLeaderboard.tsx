@@ -5,12 +5,14 @@ import './ChallengeLeaderboard.css'
 interface ChallengeLeaderboardProps {
   entries: readonly ChallengeLeaderboardEntry[]
   previewRows?: number
+  stage?: 'final' | 'online'
 }
 
-function formatScore(score: number) {
+function formatScore(score: number, stage: 'final' | 'online') {
+  const fractionDigits = stage === 'final' ? 3 : 2
   return score.toLocaleString('en-US', {
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
+    minimumFractionDigits: fractionDigits,
+    maximumFractionDigits: fractionDigits,
   })
 }
 
@@ -26,7 +28,7 @@ function getRankAccent(rank: number) {
   return undefined
 }
 
-function ChallengeLeaderboard({ entries, previewRows }: ChallengeLeaderboardProps) {
+function ChallengeLeaderboard({ entries, previewRows, stage = 'online' }: ChallengeLeaderboardProps) {
   const viewportRef = useRef<HTMLDivElement>(null)
   const hintId = useId()
   const isPreview = previewRows !== undefined && previewRows > 0 && entries.length > previewRows
@@ -66,15 +68,15 @@ function ChallengeLeaderboard({ entries, previewRows }: ChallengeLeaderboardProp
       <div
         ref={viewportRef}
         aria-label={isPreview
-          ? 'Challenge leaderboard table; scroll vertically for more teams and horizontally for all columns'
-          : 'Challenge leaderboard table; scroll horizontally to view all columns'}
+          ? `${stage === 'final' ? 'Final ranking' : 'Online evaluation'} table; scroll vertically for more teams and horizontally for all columns`
+          : `${stage === 'final' ? 'Final ranking' : 'Online evaluation'} table; scroll horizontally to view all columns`}
         aria-describedby={isPreview ? hintId : undefined}
         className={`challenge-leaderboard__viewport${isPreview ? ' challenge-leaderboard__viewport--preview' : ''}`}
         tabIndex={0}
       >
-        <table className="challenge-leaderboard__table">
+        <table className="challenge-leaderboard__table" data-stage={stage}>
           <caption className="sr-only">
-            Household Bimanual Manipulation Challenge rankings
+            Household Bimanual Manipulation Challenge {stage === 'final' ? 'final rankings' : 'online evaluation rankings'}
           </caption>
           <colgroup>
             <col className="challenge-leaderboard__rank-column" />
@@ -90,7 +92,7 @@ function ChallengeLeaderboard({ entries, previewRows }: ChallengeLeaderboardProp
               <th scope="col">Team ID</th>
               <th scope="col">Team Name</th>
               <th scope="col" className="challenge-leaderboard__score-align">
-                Total Score
+                {stage === 'final' ? 'Final Score' : 'Online Score'}
               </th>
             </tr>
           </thead>
@@ -104,7 +106,7 @@ function ChallengeLeaderboard({ entries, previewRows }: ChallengeLeaderboardProp
               </tr>
             ) : (
               entries.map((entry) => {
-                const rankAccent = getRankAccent(entry.rank)
+                const rankAccent = stage === 'final' ? getRankAccent(entry.rank) : undefined
 
                 return (
                   <tr
@@ -126,7 +128,7 @@ function ChallengeLeaderboard({ entries, previewRows }: ChallengeLeaderboardProp
                     </td>
                     <th scope="row">{entry.teamName}</th>
                     <td className="challenge-leaderboard__score challenge-leaderboard__score-align">
-                      {formatScore(entry.totalScore)}
+                      {formatScore(entry.totalScore, stage)}
                     </td>
                   </tr>
                 )

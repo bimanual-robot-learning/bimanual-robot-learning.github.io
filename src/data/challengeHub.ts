@@ -2,6 +2,7 @@ import {
   challengeLeaderboardEntries,
   type ChallengeLeaderboardEntry,
 } from './challengeLeaderboard.generated'
+import { challengeFinalLeaderboardEntries } from './challengeFinalLeaderboard'
 import { challengeDatasetUrl } from './workshop'
 
 export type { ChallengeLeaderboardEntry } from './challengeLeaderboard.generated'
@@ -18,8 +19,8 @@ export interface ChallengeHubParticipationStep {
 }
 
 export interface ChallengeHubLeaderboard {
-  status: 'Verified results'
-  updatedAt: string
+  status: 'Official results' | 'Verified results'
+  updatedAt?: string
   entries: readonly ChallengeLeaderboardEntry[]
 }
 
@@ -85,6 +86,10 @@ export const challengeHub = {
   taskScope:
     'Real-robot evaluation covers up to four household tasks, including washer manipulation and clothing folding.',
   leaderboard: {
+    status: 'Official results',
+    entries: challengeFinalLeaderboardEntries,
+  } satisfies ChallengeHubLeaderboard,
+  onlineLeaderboard: {
     status: 'Verified results',
     updatedAt: 'Updated Sep. 11, 2026',
     entries: challengeLeaderboardEntries,

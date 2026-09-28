@@ -1,4 +1,4 @@
-import { render, screen, within } from '@testing-library/react'
+import { fireEvent, render, screen, within } from '@testing-library/react'
 import { describe, expect, it, vi } from 'vitest'
 import challengeHtml from '../../challenge/index.html?raw'
 import { challengeHub } from '../data/challengeHub'
@@ -26,7 +26,7 @@ describe('ChallengeHub', () => {
       render(<ChallengeHub />)
       expect(scrollIntoView).toHaveBeenCalledWith({ block: 'start', behavior: 'instant' })
       expect(scrollIntoView.mock.contexts[0]).toBe(
-        screen.getByRole('region', { name: 'Leaderboard' }),
+        screen.getByRole('region', { name: 'Final Ranking' }),
       )
     } finally {
       window.history.replaceState(null, '', '/')
@@ -86,46 +86,54 @@ describe('ChallengeHub', () => {
     expect(screen.getAllByTestId('challenge-hub-organizer')).toHaveLength(
       challengeOrganizers.length,
     )
-    const leaderboard = screen.getByRole('region', { name: 'Leaderboard' })
+    const leaderboard = screen.getByRole('region', { name: 'Final Ranking' })
     expect(leaderboard).toHaveAttribute('id', 'leaderboard')
-    expect(within(leaderboard).getByText('Verified results')).toBeVisible()
-    expect(
-      within(leaderboard).getByText('Updated Sep. 11, 2026'),
-    ).toBeVisible()
+    expect(within(leaderboard).getByText('Official results')).toBeVisible()
     expect(
       within(leaderboard).getByRole('heading', {
         level: 2,
-        name: 'Leaderboard',
+        name: 'Final Ranking',
       }),
     ).toBeVisible()
     expect(
       within(leaderboard)
         .getAllByRole('columnheader')
         .map(({ textContent }) => textContent),
-    ).toEqual(['Rank', 'Team ID', 'Team Name', 'Total Score'])
+    ).toEqual(['Rank', 'Team ID', 'Team Name', 'Final Score'])
     expect(
       within(leaderboard).getAllByTestId('challenge-leaderboard-entry'),
-    ).toHaveLength(19)
-    expect(within(leaderboard).getByText('19 verified teams')).toBeVisible()
+    ).toHaveLength(6)
+    expect(within(leaderboard).getByText('6 teams')).toBeVisible()
     expect(within(leaderboard).queryByText(/Scroll to view more/)).not.toBeInTheDocument()
     expect(within(leaderboard).getByLabelText(
-      'Challenge leaderboard table; scroll horizontally to view all columns',
+      'Final ranking table; scroll horizontally to view all columns',
     )).not.toHaveClass('challenge-leaderboard__viewport--preview')
     expect(
       within(leaderboard).getByRole('row', {
-        name: '1 T10 Primotion 93.62',
+        name: '1 T10 Primotion 46.599',
       }),
     ).toBeVisible()
     expect(leaderboard).not.toHaveTextContent('August 25, 2026')
     expect(leaderboard).not.toHaveTextContent('Leaderboard opens')
     expect(leaderboard).not.toHaveTextContent('Online Score')
     expect(leaderboard).not.toHaveTextContent('Real-Robot Score')
-    expect(leaderboard).not.toHaveTextContent('Final Score')
+    expect(leaderboard).toHaveTextContent('Final Score')
     expect(leaderboard).not.toHaveTextContent('Status')
     expect(
       within(leaderboard).queryByTestId('challenge-hub-leaderboard-stage'),
     ).toBeNull()
     expect(within(leaderboard).queryByText('Team A')).not.toBeInTheDocument()
+
+    const onlineResults = screen.getByRole('region', { name: 'Online Evaluation Results' })
+    expect(within(onlineResults).getByRole('heading', { level: 3, name: 'Online Evaluation Results' })).toBeVisible()
+    const disclosure = onlineResults.querySelector('details')
+    expect(disclosure).not.toHaveAttribute('open')
+    expect(within(onlineResults).getByText('Online Evaluation Results')).toBeVisible()
+    expect(within(onlineResults).getByText('19 teams')).toBeVisible()
+    fireEvent.click(within(onlineResults).getByText('Online Evaluation Results'))
+    expect(disclosure).toHaveAttribute('open')
+    expect(within(onlineResults).getByRole('columnheader', { name: 'Online Score' })).toBeVisible()
+    expect(within(onlineResults).getAllByTestId('challenge-leaderboard-entry')).toHaveLength(19)
 
     const gallery = screen.getByRole('region', {
       name: 'See the challenge in action',
@@ -238,6 +246,8 @@ describe('ChallengeHub presentation', () => {
 
   it('defines the refined hero, prize sponsor, and leaderboard styling hooks', () => {
     expect(hubStyles).toContain('.challenge-hub__leaderboard')
+    expect(hubStyles).toContain('.challenge-hub__online-results')
+    expect(hubStyles).toContain('.challenge-hub__leaderboard-method')
     expect(hubStyles).toContain('.challenge-hub__prize-sponsor')
     expect(hubStyles).toContain('.challenge-hub__hero-title-line')
     expect(hubStyles).toContain('@media (max-width: 760px)')
@@ -255,6 +265,9 @@ describe('ChallengeHub presentation', () => {
       /\.challenge-leaderboard__table\s*\{[^}]*min-width:\s*540px;/,
     )
     expect(leaderboardStyles).toContain('.challenge-leaderboard__empty')
+    expect(leaderboardStyles).toMatch(
+      /@media \(max-width: 520px\) \{[\s\S]*?\.challenge-leaderboard__table\[data-stage="final"\]\s*\{[^}]*min-width:\s*0;/,
+    )
     expect(hubStyles).toMatch(
       /\.challenge-hub__leaderboard-header > \.challenge-leaderboard__summary\s*\{[^}]*text-align:\s*right;/,
     )

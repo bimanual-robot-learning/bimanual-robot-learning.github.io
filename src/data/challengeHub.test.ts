@@ -24,15 +24,16 @@ describe('challengeHub content', () => {
       label: 'Leaderboard',
       href: '#leaderboard',
     })
-    expect(challengeHub.leaderboard.status).toBe('Verified results')
-    expect(challengeHub.leaderboard.updatedAt).toBe('Updated Sep. 11, 2026')
+    expect(challengeHub.leaderboard.status).toBe('Official results')
     expect(challengeHub.leaderboard).not.toHaveProperty('openingDate')
-    expect(challengeHub.leaderboard.entries).toHaveLength(19)
+    expect(challengeHub.leaderboard.entries).toHaveLength(6)
     expect(challengeHub.leaderboard.entries[0]).toEqual({
       rank: 1,
       teamId: 'T000010',
       teamName: 'Primotion',
-      totalScore: 93.62288505564715,
+      totalScore: 46.599,
     })
+    expect(challengeHub.onlineLeaderboard.updatedAt).toBe('Updated Sep. 11, 2026')
+    expect(challengeHub.onlineLeaderboard.entries).toHaveLength(19)
   })
 })

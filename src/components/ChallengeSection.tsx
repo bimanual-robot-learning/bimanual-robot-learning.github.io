@@ -7,7 +7,8 @@ import ChallengeStageDescription from './ChallengeStageDescription'
 import ChallengeVideoGallery from './ChallengeVideoGallery'
 
 function ChallengeSection() {
-  const verifiedTeamCount: number = challengeHub.leaderboard.entries.length
+  const finalTeamCount: number = challengeHub.leaderboard.entries.length
+  const onlineTeamCount: number = challengeHub.onlineLeaderboard.entries.length
 
   return (
     <section
@@ -139,28 +140,52 @@ function ChallengeSection() {
             <div>
               <p className="challenge-home-leaderboard__meta">
                 <span>{challengeHub.leaderboard.status}</span>
-                <span className="challenge-home-leaderboard__updated">
-                  {challengeHub.leaderboard.updatedAt}
-                </span>
               </p>
               <h3 id="challenge-home-leaderboard-title">
-                Challenge Leaderboard
+                Challenge Final Ranking
               </h3>
             </div>
             <p className="challenge-leaderboard__summary">
-              {verifiedTeamCount} verified{' '}
-              {verifiedTeamCount === 1 ? 'team' : 'teams'}
+              {finalTeamCount} {finalTeamCount === 1 ? 'team' : 'teams'}
             </p>
           </header>
-          <ChallengeLeaderboard entries={challengeHub.leaderboard.entries} previewRows={10} />
+          <ChallengeLeaderboard entries={challengeHub.leaderboard.entries} stage="final" />
           <div className="challenge-home-leaderboard__footer">
             <a
               className="text-link challenge-home-leaderboard__full-link"
               href="/challenge/#leaderboard"
             >
-              View full leaderboard <ArrowUpRight size={16} aria-hidden="true" />
+              View challenge results <ArrowUpRight size={16} aria-hidden="true" />
             </a>
           </div>
+        </section>
+
+        <section
+          aria-labelledby="challenge-home-online-title"
+          className="challenge-home-online-results"
+          data-testid="challenge-home-online-results"
+        >
+          <details>
+            <summary>
+              <span>
+                <span className="challenge-home-online-results__eyebrow">Earlier stage</span>
+                <h3 id="challenge-home-online-title">Online Evaluation Results</h3>
+              </span>
+              <span className="challenge-home-online-results__count">
+                {onlineTeamCount} teams
+              </span>
+            </summary>
+            <div className="challenge-home-online-results__content">
+              <p>
+                These online evaluation scores are not final scores.{' '}
+                {challengeHub.onlineLeaderboard.updatedAt}.
+              </p>
+              <ChallengeLeaderboard
+                entries={challengeHub.onlineLeaderboard.entries}
+                stage="online"
+              />
+            </div>
+          </details>
         </section>
 
         <div className="challenge-logistics" data-testid="challenge-logistics">

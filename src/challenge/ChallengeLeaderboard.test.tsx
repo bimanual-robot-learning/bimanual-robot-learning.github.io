@@ -28,7 +28,7 @@ describe('ChallengeLeaderboard', () => {
   it('keeps every team in the ten-row preview and explains vertical scrolling', () => {
     render(<ChallengeLeaderboard entries={previewEntries} previewRows={10} />)
     const viewport = screen.getByLabelText(
-      'Challenge leaderboard table; scroll vertically for more teams and horizontally for all columns',
+      'Online evaluation table; scroll vertically for more teams and horizontally for all columns',
     )
     expect(viewport).toHaveClass('challenge-leaderboard__viewport--preview')
     expect(viewport).toHaveAttribute('tabindex', '0')
@@ -45,7 +45,7 @@ describe('ChallengeLeaderboard', () => {
     expect(screen.getByText('15 teams · Scroll to view more')).toBeVisible()
     rerender(<ChallengeLeaderboard entries={previewEntries.slice(0, 10)} previewRows={10} />)
     const viewport = screen.getByLabelText(
-      'Challenge leaderboard table; scroll horizontally to view all columns',
+      'Online evaluation table; scroll horizontally to view all columns',
     )
     expect(viewport).not.toHaveClass('challenge-leaderboard__viewport--preview')
     expect(viewport).not.toHaveAttribute('aria-describedby')
@@ -59,7 +59,7 @@ describe('ChallengeLeaderboard', () => {
     render(<ChallengeLeaderboard entries={previewEntries} />)
     expect(screen.getAllByTestId('challenge-leaderboard-entry')).toHaveLength(15)
     expect(screen.getByLabelText(
-      'Challenge leaderboard table; scroll horizontally to view all columns',
+      'Online evaluation table; scroll horizontally to view all columns',
     )).not.toHaveClass('challenge-leaderboard__viewport--preview')
     expect(screen.queryByText(/Scroll to view more/)).not.toBeInTheDocument()
   })
@@ -79,14 +79,14 @@ describe('ChallengeLeaderboard', () => {
 
     expect(
       screen.getAllByRole('columnheader').map((header) => header.textContent),
-    ).toEqual(['Rank', 'Team ID', 'Team Name', 'Total Score'])
+    ).toEqual(['Rank', 'Team ID', 'Team Name', 'Online Score'])
     expect(
       screen.getByRole('table', {
-        name: 'Household Bimanual Manipulation Challenge rankings',
+        name: 'Household Bimanual Manipulation Challenge online evaluation rankings',
       }),
     ).toBeVisible()
     const viewport = screen.getByLabelText(
-      'Challenge leaderboard table; scroll horizontally to view all columns',
+      'Online evaluation table; scroll horizontally to view all columns',
     )
     expect(viewport).toHaveClass('challenge-leaderboard__viewport')
     expect(viewport).toHaveAttribute('tabindex', '0')
@@ -188,13 +188,13 @@ describe('ChallengeLeaderboard', () => {
     )
   })
 
-  it('renders two-decimal scores, semantic row headers, and rank medals', () => {
+  it('renders three-decimal final scores, semantic row headers, and rank medals', () => {
     const entries: readonly ChallengeLeaderboardEntry[] = [
       {
         rank: 1,
         teamId: 'T000015',
         teamName: 'npu-eai',
-        totalScore: 73.89246498024903,
+        totalScore: 73.892246498024903,
       },
       { rank: 2, teamId: 'T000012', teamName: 'sota', totalScore: 61.8 },
       { rank: 3, teamId: 'T000010', teamName: 'Primotion', totalScore: 61 },
@@ -202,14 +202,14 @@ describe('ChallengeLeaderboard', () => {
     ]
     const firstEntry = entries[0]
 
-    render(<ChallengeLeaderboard entries={entries} />)
+    render(<ChallengeLeaderboard entries={entries} stage="final" />)
 
     const rows = screen.getAllByTestId('challenge-leaderboard-entry')
     expect(rows).toHaveLength(4)
-    expect(rows[0]).toHaveAccessibleName('1 T15 npu-eai 73.89')
-    expect(rows[1]).toHaveAccessibleName('2 T12 sota 61.80')
-    expect(rows[2]).toHaveAccessibleName('3 T10 Primotion 61.00')
-    expect(rows[3]).toHaveAccessibleName('4 T11 Horizon 45.32')
+    expect(rows[0]).toHaveAccessibleName('1 T15 npu-eai 73.892')
+    expect(rows[1]).toHaveAccessibleName('2 T12 sota 61.800')
+    expect(rows[2]).toHaveAccessibleName('3 T10 Primotion 61.000')
+    expect(rows[3]).toHaveAccessibleName('4 T11 Horizon 45.316')
     expect(firstEntry.teamId).toBe('T000015')
     expect(rows[0]).toHaveAttribute('data-rank-accent', 'gold')
     expect(rows[1]).toHaveAttribute('data-rank-accent', 'silver')
@@ -234,7 +234,7 @@ describe('ChallengeLeaderboard', () => {
       expect(scoreCell).toHaveClass('challenge-leaderboard__score')
       expect(scoreCell).toHaveClass('challenge-leaderboard__score-align')
     })
-    expect(screen.getByRole('columnheader', { name: 'Total Score' })).toHaveClass(
+    expect(screen.getByRole('columnheader', { name: 'Final Score' })).toHaveClass(
       'challenge-leaderboard__score-align',
     )
     expect(screen.getByRole('columnheader', { name: 'Rank' })).toHaveClass(
@@ -251,4 +251,43 @@ describe('ChallengeLeaderboard', () => {
     )
     expect(rows[3].querySelector('.challenge-leaderboard__rank-badge')).toBeNull()
   })
+
+  it('distinguishes final and online score tables for readers', () => {
+    const entry: readonly ChallengeLeaderboardEntry[] = [
+      { rank: 1, teamId: 'T000010', teamName: 'Primotion', totalScore: 46.599 },
+    ]
+    const { rerender } = render(<ChallengeLeaderboard entries={entry} stage="final" />)
+
+    expect(screen.getByRole('table')).toHaveAttribute('data-stage', 'final')
+    expect(screen.getByRole('columnheader', { name: 'Final Score' })).toBeVisible()
+    expect(screen.getByRole('row', { name: '1 T10 Primotion 46.599' })).toBeVisible()
+    expect(screen.getByLabelText(
+      'Final ranking table; scroll horizontally to view all columns',
+    )).toBeVisible()
+
+    rerender(<ChallengeLeaderboard entries={entry} stage="online" />)
+    expect(screen.getByRole('table')).toHaveAttribute('data-stage', 'online')
+    expect(screen.getByRole('columnheader', { name: 'Online Score' })).toBeVisible()
+    expect(screen.getByRole('row', { name: '1 T10 Primotion 46.60' })).toBeVisible()
+    expect(screen.getByRole('cell', { name: '1' }).querySelector('.challenge-leaderboard__rank-badge')).toBeNull()
+    expect(screen.getByLabelText(
+      'Online evaluation table; scroll horizontally to view all columns',
+    )).toBeVisible()
+  })
+
+  it('uses gold final scores with a neutral heading while online scores stay cyan', () => {
+    expect(leaderboardStyles).toMatch(
+      /\.challenge-leaderboard__table thead th\s*\{[^}]*color:\s*rgba\(230,\s*241,\s*243,\s*0\.74\);/,
+    )
+    expect(leaderboardStyles).toMatch(
+      /\.challenge-leaderboard__table \.challenge-leaderboard__score\s*\{[^}]*color:\s*var\(--cyan\);/,
+    )
+    expect(leaderboardStyles).toMatch(
+      /\.challenge-leaderboard__table\[data-stage="final"\] \.challenge-leaderboard__score\s*\{[^}]*color:\s*#f1c75b;/,
+    )
+    expect(leaderboardStyles).not.toMatch(
+      /\.challenge-leaderboard__table\[data-stage="final"\] tr\[data-rank-accent\] \.challenge-leaderboard__score\s*\{/,
+    )
+  })
+
 })

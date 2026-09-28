@@ -119,6 +119,10 @@
   font-weight: 800;
 }
 
+.challenge-leaderboard__table[data-stage="final"] .challenge-leaderboard__score {
+  color: #f1c75b;
+}
+
 .challenge-leaderboard__table .challenge-leaderboard__empty td {
   padding: clamp(38px, 5vw, 56px) 18px;
   color: var(--slate-light-readable);
@@ -151,4 +155,46 @@
 .challenge-leaderboard__table tr[data-rank-accent="bronze"] > .challenge-leaderboard__rank .challenge-leaderboard__rank-badge {
   background: #d99568;
   box-shadow: 0 0 0 3px rgba(217, 149, 104, 0.22);
+}
+
+@media (max-width: 520px) {
+  .challenge-leaderboard__table[data-stage="final"] {
+    min-width: 0;
+  }
+
+  .challenge-leaderboard__table[data-stage="final"] .challenge-leaderboard__rank-column {
+    width: 13%;
+  }
+
+  .challenge-leaderboard__table[data-stage="final"] .challenge-leaderboard__id-column {
+    width: 16%;
+  }
+
+  .challenge-leaderboard__table[data-stage="final"] .challenge-leaderboard__name-column {
+    width: 43%;
+  }
+
+  .challenge-leaderboard__table[data-stage="final"] .challenge-leaderboard__score-column {
+    width: 28%;
+  }
+
+  .challenge-leaderboard__table[data-stage="final"] th,
+  .challenge-leaderboard__table[data-stage="final"] td {
+    padding: 11px 3px;
+  }
+
+  .challenge-leaderboard__table[data-stage="final"] thead th {
+    font-size: 0.56rem;
+    letter-spacing: 0.03em;
+  }
+
+  .challenge-leaderboard__table[data-stage="final"] tbody th,
+  .challenge-leaderboard__table[data-stage="final"] tbody td {
+    font-size: 0.73rem;
+  }
+
+  .challenge-leaderboard__table[data-stage="final"] .challenge-leaderboard__rank-badge {
+    width: 24px;
+    height: 24px;
+  }
 }

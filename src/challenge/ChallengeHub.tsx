@@ -12,7 +12,8 @@ const externalLinkProps = {
 } as const
 
 function ChallengeHub() {
-  const verifiedTeamCount: number = challengeHub.leaderboard.entries.length
+  const finalTeamCount: number = challengeHub.leaderboard.entries.length
+  const onlineTeamCount: number = challengeHub.onlineLeaderboard.entries.length
 
   useLayoutEffect(() => {
     // The initial HTML has no sections until React mounts, so honor incoming anchors now.
@@ -276,18 +277,42 @@ function ChallengeHub() {
             <div>
               <p className="challenge-hub__leaderboard-status">
                 <span>{challengeHub.leaderboard.status}</span>
-                <span className="challenge-hub__leaderboard-updated">
-                  {challengeHub.leaderboard.updatedAt}
-                </span>
               </p>
-              <h2 id="challenge-hub-leaderboard-title">Leaderboard</h2>
+              <h2 id="challenge-hub-leaderboard-title">Final Ranking</h2>
             </div>
             <p className="challenge-leaderboard__summary">
-              {verifiedTeamCount} verified{' '}
-              {verifiedTeamCount === 1 ? 'team' : 'teams'}
+              {finalTeamCount} {finalTeamCount === 1 ? 'team' : 'teams'}
             </p>
           </header>
-          <ChallengeLeaderboard entries={challengeHub.leaderboard.entries} />
+          <ChallengeLeaderboard entries={challengeHub.leaderboard.entries} stage="final" />
+          <p className="challenge-hub__leaderboard-method">
+            Final score: task progress (50%) · success rate (30%) · online evaluation (20%).
+          </p>
+        </section>
+
+        <section
+          aria-labelledby="challenge-hub-online-title"
+          className="challenge-hub__online-results"
+          data-testid="challenge-online-results"
+        >
+          <details>
+            <summary>
+              <span>
+                <span className="challenge-hub__online-eyebrow">Earlier stage</span>
+                <h3 className="challenge-hub__online-title" id="challenge-hub-online-title">
+                  Online Evaluation Results
+                </h3>
+              </span>
+              <span className="challenge-hub__online-count">{onlineTeamCount} teams</span>
+            </summary>
+            <div className="challenge-hub__online-content">
+              <p>
+                These online evaluation scores are not final scores.{' '}
+                {challengeHub.onlineLeaderboard.updatedAt}.
+              </p>
+              <ChallengeLeaderboard entries={challengeHub.onlineLeaderboard.entries} stage="online" />
+            </div>
+          </details>
         </section>
 
         <section
