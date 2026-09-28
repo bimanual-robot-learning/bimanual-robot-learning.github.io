@@ -612,11 +612,17 @@ describe('workshop landing page', () => {
       within(homepageLeaderboard)
         .getAllByRole('columnheader')
         .map(({ textContent }) => textContent),
-    ).toEqual(['Rank', 'Team ID', 'Team Name', 'Final Score'])
+    ).toEqual([
+      'Rank', 'Team ID', 'Team Name', 'Avg. Task Progress (50%)',
+      'Avg. Success Rate (30%)', 'Online Score (20%)', 'Final Score',
+    ])
     expect(
       within(homepageLeaderboard).getAllByTestId('challenge-leaderboard-entry'),
     ).toHaveLength(6)
     expect(within(homepageLeaderboard).getByText('6 teams')).toBeVisible()
+    expect(within(homepageLeaderboard).getByText(
+      'Final score: average task progress (50%) · average success rate (30%) · online evaluation (20%).',
+    )).toBeVisible()
     expect(within(homepageLeaderboard).queryByText(/Scroll to view more/)).not.toBeInTheDocument()
     expect(within(homepageLeaderboard).getByLabelText(
       'Final ranking table; scroll horizontally to view all columns',
@@ -630,12 +636,12 @@ describe('workshop landing page', () => {
     expect(within(homepageLeaderboard).getByText('Official results')).toBeVisible()
     expect(
       within(homepageLeaderboard).getByRole('row', {
-        name: '1 T10 Primotion 46.599',
+        name: '1 T10 Primotion 43.75 20.00 93.62 46.599',
       }),
     ).toBeVisible()
     expect(homepageLeaderboard).not.toHaveTextContent('August 25, 2026')
     expect(homepageLeaderboard).not.toHaveTextContent('Leaderboard opens')
-    expect(homepageLeaderboard).not.toHaveTextContent('Online Score')
+    expect(within(homepageLeaderboard).getByRole('columnheader', { name: 'Online Score (20%)' })).toBeVisible()
     expect(homepageLeaderboard).not.toHaveTextContent('Real-Robot Score')
     expect(homepageLeaderboard).toHaveTextContent('Final Score')
     expect(homepageLeaderboard).not.toHaveTextContent('Status')

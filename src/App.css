@@ -1648,6 +1648,14 @@
   margin: 10px auto 0;
 }
 
+.challenge-home-leaderboard__method {
+  width: min(100%, 800px);
+  margin: 16px auto 0;
+  color: rgba(230, 241, 243, 0.74);
+  font-size: 0.84rem;
+  line-height: 1.55;
+}
+
 .challenge-home-leaderboard__full-link {
   min-height: 32px;
   font-size: 0.85rem;

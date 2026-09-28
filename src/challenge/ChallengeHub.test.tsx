@@ -99,7 +99,10 @@ describe('ChallengeHub', () => {
       within(leaderboard)
         .getAllByRole('columnheader')
         .map(({ textContent }) => textContent),
-    ).toEqual(['Rank', 'Team ID', 'Team Name', 'Final Score'])
+    ).toEqual([
+      'Rank', 'Team ID', 'Team Name', 'Avg. Task Progress (50%)',
+      'Avg. Success Rate (30%)', 'Online Score (20%)', 'Final Score',
+    ])
     expect(
       within(leaderboard).getAllByTestId('challenge-leaderboard-entry'),
     ).toHaveLength(6)
@@ -110,12 +113,12 @@ describe('ChallengeHub', () => {
     )).not.toHaveClass('challenge-leaderboard__viewport--preview')
     expect(
       within(leaderboard).getByRole('row', {
-        name: '1 T10 Primotion 46.599',
+        name: '1 T10 Primotion 43.75 20.00 93.62 46.599',
       }),
     ).toBeVisible()
     expect(leaderboard).not.toHaveTextContent('August 25, 2026')
     expect(leaderboard).not.toHaveTextContent('Leaderboard opens')
-    expect(leaderboard).not.toHaveTextContent('Online Score')
+    expect(within(leaderboard).getByRole('columnheader', { name: 'Online Score (20%)' })).toBeVisible()
     expect(leaderboard).not.toHaveTextContent('Real-Robot Score')
     expect(leaderboard).toHaveTextContent('Final Score')
     expect(leaderboard).not.toHaveTextContent('Status')
@@ -266,7 +269,7 @@ describe('ChallengeHub presentation', () => {
     )
     expect(leaderboardStyles).toContain('.challenge-leaderboard__empty')
     expect(leaderboardStyles).toMatch(
-      /@media \(max-width: 520px\) \{[\s\S]*?\.challenge-leaderboard__table\[data-stage="final"\]\s*\{[^}]*min-width:\s*0;/,
+      /\.challenge-leaderboard__table\[data-stage="final"\]\s*\{[^}]*min-width:\s*960px;/,
     )
     expect(hubStyles).toMatch(
       /\.challenge-hub__leaderboard-header > \.challenge-leaderboard__summary\s*\{[^}]*text-align:\s*right;/,

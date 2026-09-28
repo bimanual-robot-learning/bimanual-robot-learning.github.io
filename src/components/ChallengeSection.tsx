@@ -150,6 +150,9 @@ function ChallengeSection() {
             </p>
           </header>
           <ChallengeLeaderboard entries={challengeHub.leaderboard.entries} stage="final" />
+          <p className="challenge-home-leaderboard__method">
+            Final score: average task progress (50%) · average success rate (30%) · online evaluation (20%).
+          </p>
           <div className="challenge-home-leaderboard__footer">
             <a
               className="text-link challenge-home-leaderboard__full-link"

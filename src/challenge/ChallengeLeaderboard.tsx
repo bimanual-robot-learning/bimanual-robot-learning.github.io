@@ -1,12 +1,14 @@
 import { useId, useLayoutEffect, useRef } from 'react'
 import type { ChallengeLeaderboardEntry } from '../data/challengeHub'
+import type { ChallengeFinalLeaderboardEntry } from '../data/challengeFinalLeaderboard'
 import './ChallengeLeaderboard.css'
 
-interface ChallengeLeaderboardProps {
-  entries: readonly ChallengeLeaderboardEntry[]
+type ChallengeLeaderboardProps = {
   previewRows?: number
-  stage?: 'final' | 'online'
-}
+} & (
+  | { entries: readonly ChallengeFinalLeaderboardEntry[]; stage: 'final' }
+  | { entries: readonly ChallengeLeaderboardEntry[]; stage?: 'online' }
+)
 
 function formatScore(score: number, stage: 'final' | 'online') {
   const fractionDigits = stage === 'final' ? 3 : 2
@@ -65,6 +67,9 @@ function ChallengeLeaderboard({ entries, previewRows, stage = 'online' }: Challe
 
   return (
     <>
+      {stage === 'final' && (
+        <p className="challenge-leaderboard__mobile-hint">Swipe to view all scores →</p>
+      )}
       <div
         ref={viewportRef}
         aria-label={isPreview
@@ -82,6 +87,13 @@ function ChallengeLeaderboard({ entries, previewRows, stage = 'online' }: Challe
             <col className="challenge-leaderboard__rank-column" />
             <col className="challenge-leaderboard__id-column" />
             <col className="challenge-leaderboard__name-column" />
+            {stage === 'final' && (
+              <>
+                <col className="challenge-leaderboard__component-column challenge-leaderboard__progress-column" />
+                <col className="challenge-leaderboard__component-column challenge-leaderboard__success-column" />
+                <col className="challenge-leaderboard__component-column challenge-leaderboard__online-column" />
+              </>
+            )}
             <col className="challenge-leaderboard__score-column" />
           </colgroup>
           <thead>
@@ -91,6 +103,19 @@ function ChallengeLeaderboard({ entries, previewRows, stage = 'online' }: Challe
               </th>
               <th scope="col">Team ID</th>
               <th scope="col">Team Name</th>
+              {stage === 'final' && (
+                <>
+                  <th scope="col" className="challenge-leaderboard__component-heading">
+                    Avg. Task Progress <span>(50%)</span>
+                  </th>
+                  <th scope="col" className="challenge-leaderboard__component-heading">
+                    Avg. Success Rate <span>(30%)</span>
+                  </th>
+                  <th scope="col" className="challenge-leaderboard__component-heading">
+                    Online Score <span>(20%)</span>
+                  </th>
+                </>
+              )}
               <th scope="col" className="challenge-leaderboard__score-align">
                 {stage === 'final' ? 'Final Score' : 'Online Score'}
               </th>
@@ -99,7 +124,7 @@ function ChallengeLeaderboard({ entries, previewRows, stage = 'online' }: Challe
           <tbody>
             {entries.length === 0 ? (
               <tr className="challenge-leaderboard__empty">
-                <td colSpan={4}>
+                <td colSpan={stage === 'final' ? 7 : 4}>
                   Verified online evaluation results will be published here as
                   submissions are evaluated.
                 </td>
@@ -127,6 +152,13 @@ function ChallengeLeaderboard({ entries, previewRows, stage = 'online' }: Challe
                       {formatTeamId(entry.teamId)}
                     </td>
                     <th scope="row">{entry.teamName}</th>
+                    {stage === 'final' && (
+                      <>
+                        <td className="challenge-leaderboard__component">{formatScore((entry as ChallengeFinalLeaderboardEntry).taskProgress, 'online')}</td>
+                        <td className="challenge-leaderboard__component">{formatScore((entry as ChallengeFinalLeaderboardEntry).successRate, 'online')}</td>
+                        <td className="challenge-leaderboard__component">{formatScore((entry as ChallengeFinalLeaderboardEntry).onlineScore, 'online')}</td>
+                      </>
+                    )}
                     <td className="challenge-leaderboard__score challenge-leaderboard__score-align">
                       {formatScore(entry.totalScore, stage)}
                     </td>

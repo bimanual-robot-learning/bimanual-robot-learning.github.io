@@ -31,6 +31,9 @@ describe('challengeHub content', () => {
       rank: 1,
       teamId: 'T000010',
       teamName: 'Primotion',
+      taskProgress: 43.75,
+      successRate: 20,
+      onlineScore: 93.62,
       totalScore: 46.599,
     })
     expect(challengeHub.onlineLeaderboard.updatedAt).toBe('Updated Sep. 11, 2026')

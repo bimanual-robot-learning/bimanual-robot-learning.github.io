@@ -286,7 +286,7 @@ function ChallengeHub() {
           </header>
           <ChallengeLeaderboard entries={challengeHub.leaderboard.entries} stage="final" />
           <p className="challenge-hub__leaderboard-method">
-            Final score: task progress (50%) · success rate (30%) · online evaluation (20%).
+            Final score: average task progress (50%) · average success rate (30%) · online evaluation (20%).
           </p>
         </section>
 
